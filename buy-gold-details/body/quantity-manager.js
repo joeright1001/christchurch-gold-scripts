@@ -1,5 +1,6 @@
-/* qty-limits.js – with red “min / max” badges 5 px right of the field */
+/* qty-limits.js – shows red min/max badges 5 px right of field */
 (function () {
+
   /* ------------------------------------------------------------------
      Elements
   ------------------------------------------------------------------ */
@@ -42,7 +43,7 @@
   ------------------------------------------------------------------ */
   function createWarn(message, className) {
     const span = document.createElement("span");
-    span.className  = className;
+    span.className   = className;
     span.textContent = message;
     span.style.display = "none";
     qtyInput.parentNode.insertBefore(span, qtyInput.nextSibling);
@@ -59,7 +60,7 @@
   function enforceQtyLimits() {
     if (!qtyInput) return;
 
-    // --- read min / max values ---
+    // read min / max values from DOM
     let minQty = 1;
     if (minQtyEl) {
       const parsed = parseInt(minQtyEl.textContent.trim(), 10);
@@ -71,13 +72,13 @@
       if (!isNaN(parsed)) maxQty = parsed;
     }
 
-    // --- clamp input value ---
+    // clamp value
     let val = parseInt(qtyInput.value, 10) || minQty;
     if (val < minQty) val = minQty;
     if (val > maxQty) val = maxQty;
     qtyInput.value = val;
 
-    // --- show badges only after interaction ---
+    // show / hide badges once the shopper has interacted
     if (userInteracted) {
       if (minWarnSpan) minWarnSpan.style.display = (val <= minQty) ? "inline-block" : "none";
       if (maxWarnSpan) maxWarnSpan.style.display = (val >= maxQty) ? "inline-block" : "none";
@@ -92,7 +93,7 @@
   document.addEventListener("DOMContentLoaded", () => {
     if (!qtyInput) return;
 
-    /* inject one-off style block for the badges */
+    /* inject style for the badges once */
     if (!document.getElementById("qty-limits-style")) {
       const style = document.createElement("style");
       style.id = "qty-limits-style";
@@ -103,7 +104,7 @@
           font-size: 0.875rem;
           line-height: 1;
           vertical-align: middle;
-          color: #c00;            /* red */
+          color: #c00; /* red */
         }
       `;
       document.head.appendChild(style);
@@ -111,7 +112,7 @@
 
     qtyInput.style.display = "inline-block";
 
-    // ensure starting value obeys minimum
+    // ensure starting value meets minimum
     let minQty = 1;
     if (minQtyEl) {
       const parsed = parseInt(minQtyEl.textContent.trim(), 10);
@@ -137,20 +138,26 @@
       }
     }
 
-    // prevent Enter key from submitting form
+    /* helper: mark interaction + enforce immediately */
+    const touchAndEnforce = () => {
+      userInteracted = true;
+      enforceQtyLimits();
+    };
+
+    /* listeners */
     qtyInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") e.preventDefault();
+      if (e.key === "ArrowUp" || e.key === "ArrowDown") touchAndEnforce();
     });
+    qtyInput.addEventListener("focus",  touchAndEnforce);
+    qtyInput.addEventListener("click",  touchAndEnforce);  // spinner arrows
+    qtyInput.addEventListener("wheel",  touchAndEnforce);  // mouse wheel
+    qtyInput.addEventListener("input",  touchAndEnforce);
+    qtyInput.addEventListener("change", touchAndEnforce);
 
-    // mark interaction & enforce limits
-    const markInteract = () => { userInteracted = true; };
-    qtyInput.addEventListener("focus",  markInteract);
-    qtyInput.addEventListener("input",  markInteract);
-    qtyInput.addEventListener("change", markInteract);
-
-    qtyInput.addEventListener("input", enforceQtyLimits);
     document.addEventListener("price-refreshed", recalcTotals);
 
-    enforceQtyLimits();   // badges remain hidden until user interacts
+    /* initial clamp / totals (badges hidden) */
+    enforceQtyLimits();
   });
 })();
