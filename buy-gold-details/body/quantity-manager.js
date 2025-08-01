@@ -47,7 +47,7 @@ function createWarn(message, className) {
   return span;
 }
 
-function enforceQtyLimits() {
+function enforceQtyLimits(isInitialLoad = false) {
   if (!qtyInput) return;
 
   let minQty = 1;
@@ -62,22 +62,23 @@ function enforceQtyLimits() {
     if (!isNaN(parsed)) maxQty = parsed;
   }
 
-  let val = parseInt(qtyInput.value, 10) || minQty;
+  const originalVal = parseInt(qtyInput.value, 10);
+
+  if (!isInitialLoad) {
+    if (minWarnSpan) minWarnSpan.style.display = (originalVal <= minQty) ? "inline-block" : "none";
+    if (maxWarnSpan) maxWarnSpan.style.display = (originalVal >= maxQty) ? "inline-block" : "none";
+  }
+
+  let val = originalVal || minQty;
   if (val < minQty) val = minQty;
   if (val > maxQty) val = maxQty;
   qtyInput.value = val;
-
-  if (hasInteracted) {
-    if (minWarnSpan) minWarnSpan.style.display = (val < minQty) ? "inline-block" : "none";
-    if (maxWarnSpan) maxWarnSpan.style.display = (val > maxQty) ? "inline-block" : "none";
-  }
 
   recalcTotals();
 }
 
 let minWarnSpan = null;
 let maxWarnSpan = null;
-let hasInteracted = false;
 
 document.addEventListener("DOMContentLoaded", () => {
   if (!qtyInput) return;
@@ -114,11 +115,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Enter") e.preventDefault();
   });
 
-  qtyInput.addEventListener("input", () => {
-    if (!hasInteracted) hasInteracted = true;
-    enforceQtyLimits();
+  qtyInput.addEventListener("input", () => enforceQtyLimits(false));
+  qtyInput.addEventListener("blur", () => {
+    if (minWarnSpan) minWarnSpan.style.display = "none";
+    if (maxWarnSpan) maxWarnSpan.style.display = "none";
   });
+
   document.addEventListener("price-refreshed", recalcTotals);
 
-  enforceQtyLimits();
+  enforceQtyLimits(true);
 });
