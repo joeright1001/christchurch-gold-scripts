@@ -1,0 +1,69 @@
+.payment-button {
+    position: relative;
+    min-width: 200px;
+    text-align: center;
+    padding: 12px 24px;
+    border-radius: 4px;
+    background-color: #4a90e2;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.payment-button.processing {
+    background-color: #666;
+    cursor: wait;
+}
+
+.payment-button.ready {
+    background-color: #2ecc71;
+}
+
+.payment-button.error {
+    background-color: #e74c3c;
+}
+
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.status-icon {
+    width: 30px;
+    height: 30px;
+}
+
+.status-icon.processing {
+    border: 3px solid rgba(0,0,0,.3);
+    border-radius: 50%;
+    border-top-color: #419141;
+    animation: spin 1s linear infinite;
+}
+
+.status-icon.ready svg {
+    animation: fadeIn 0.3s ease-in;
+}
+
+.status-icon.error {
+    animation: none;
+    opacity: 1;
+}
+
+.status-icon.error svg {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
