@@ -1,0 +1,1 @@
+Do not use '&&' to chain commands in PowerShell. Use a semicolon ';' to separate commands that should run sequentially. For example: `git add .; git commit -m "message"; git push`

@@ -47,7 +47,35 @@ function createWarn(message, className) {
   return span;
 }
 
-function enforceQtyLimits() {
+function checkQtyLimits() {
+  if (!qtyInput) return;
+
+  let minQty = 1;
+  if (minQtyEl) {
+    const parsed = parseInt(minQtyEl.textContent.trim(), 10);
+    if (!isNaN(parsed)) minQty = parsed;
+  }
+
+  let maxQty = Infinity;
+  if (maxQtyEl) {
+    const parsed = parseInt(maxQtyEl.textContent.trim(), 10);
+    if (!isNaN(parsed)) maxQty = parsed;
+  }
+
+  const val = parseInt(qtyInput.value, 10);
+
+  if (isNaN(val)) {
+    if (minWarnSpan) minWarnSpan.style.display = "none";
+    if (maxWarnSpan) maxWarnSpan.style.display = "none";
+  } else {
+    if (minWarnSpan) minWarnSpan.style.display = (val < minQty) ? "inline-block" : "none";
+    if (maxWarnSpan) maxWarnSpan.style.display = (val > maxQty) ? "inline-block" : "none";
+  }
+
+  recalcTotals();
+}
+
+function clampQty() {
   if (!qtyInput) return;
 
   let minQty = 1;
@@ -67,8 +95,8 @@ function enforceQtyLimits() {
   if (val > maxQty) val = maxQty;
   qtyInput.value = val;
 
-  if (minWarnSpan) minWarnSpan.style.display = (val < minQty) ? "inline-block" : "none";
-  if (maxWarnSpan) maxWarnSpan.style.display = (val > maxQty) ? "inline-block" : "none";
+  if (minWarnSpan) minWarnSpan.style.display = "none";
+  if (maxWarnSpan) maxWarnSpan.style.display = "none";
 
   recalcTotals();
 }
@@ -80,16 +108,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!qtyInput) return;
 
   qtyInput.style.display = "inline-block";
-
-  let minQty = 1;
-  if (minQtyEl) {
-    const parsed = parseInt(minQtyEl.textContent.trim(), 10);
-    if (!isNaN(parsed)) minQty = parsed;
-  }
-
-  if (!qtyInput.value || parseInt(qtyInput.value, 10) < minQty) {
-    qtyInput.value = minQty;
-  }
 
   if (minQtyEl) {
     const minVal = parseInt(minQtyEl.textContent.trim(), 10);
@@ -108,11 +126,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   qtyInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") e.preventDefault();
+    if (e.key === "Enter") {
+      e.preventDefault();
+      clampQty();
+    }
   });
 
-  qtyInput.addEventListener("input", enforceQtyLimits);
+  qtyInput.addEventListener("input", checkQtyLimits);
+  qtyInput.addEventListener("blur", clampQty);
   document.addEventListener("price-refreshed", recalcTotals);
 
-  enforceQtyLimits();
+  clampQty();
 });
