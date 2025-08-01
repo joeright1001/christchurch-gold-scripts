@@ -1,7 +1,7 @@
 /* ------------------------------------------------------------------
    Configuration
 ------------------------------------------------------------------- */
-const COUNTDOWN_SECONDS = 300;         /* 300 s = 5 min */
+const COUNTDOWN_SECONDS = 120;         /* 120 s = 2 min */
 
 /* IDs updated from CMS on every refresh */
 const FIELDS_TO_UPDATE = [
