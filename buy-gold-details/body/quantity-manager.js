@@ -112,7 +112,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (minQtyEl) {
     const minVal = parseInt(minQtyEl.textContent.trim(), 10);
     if (!isNaN(minVal)) {
-      qtyInput.setAttribute("min", minVal);
       minWarnSpan = createWarn(`min: ${minVal}`, "min-qty-message");
     }
   }
@@ -120,7 +119,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (maxQtyEl) {
     const maxVal = parseInt(maxQtyEl.textContent.trim(), 10);
     if (!isNaN(maxVal)) {
-      qtyInput.setAttribute("max", maxVal);
       maxWarnSpan = createWarn(`max: ${maxVal}`, "max-qty-message");
     }
   }
