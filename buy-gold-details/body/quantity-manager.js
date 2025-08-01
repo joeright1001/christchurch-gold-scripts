@@ -67,8 +67,8 @@ function enforceQtyLimits() {
   if (val > maxQty) val = maxQty;
   qtyInput.value = val;
 
-  if (minWarnSpan) minWarnSpan.style.display = (val <= minQty) ? "inline-block" : "none";
-  if (maxWarnSpan) maxWarnSpan.style.display = (val >= maxQty) ? "inline-block" : "none";
+  if (minWarnSpan) minWarnSpan.style.display = (val < minQty) ? "inline-block" : "none";
+  if (maxWarnSpan) maxWarnSpan.style.display = (val > maxQty) ? "inline-block" : "none";
 
   recalcTotals();
 }
