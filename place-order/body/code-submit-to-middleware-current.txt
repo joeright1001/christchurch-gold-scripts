@@ -1,7 +1,16 @@
-// =======================================================================
-//  order-submit.js  –  Submit order to middleware, handle UX + session
-//  Requires order-submit.css for spinner / disabled button styling.
-// =======================================================================
+<style>
+/* --- error & spinner styles (unchanged) --- */
+.error-message{color:red;font-size:12px;margin-top:5px}
+.error{border-color:red!important}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid #f3f3f3;border-top:2px solid #333;border-radius:50%;animation:spin 1s linear infinite;margin-left:8px;vertical-align:middle}
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.button-processing{opacity:.7;cursor:not-allowed}
+</style>
+
+<script>
+/* ================================================================
+   0. API host selection constants / helpers
+   ================================================================*/
 const DEV_URL              = "https://cuddly-space-waddle-4jgr5gxqj6wg3q6jr-3000.app.github.dev";
 const STAGING_FALLBACK_URL = "https://mware3-staging.up.railway.app";
 const PROD_URL             = "https://mware3-production.up.railway.app";
@@ -20,17 +29,24 @@ async function getApiBaseUrl(){
   return PROD_URL;
 }
 
-function setSessionDataWithExpiry(k,v,min){
-  sessionStorage.setItem(k,JSON.stringify({value:v,expiry:Date.now()+min*60000}));
+/* ================================================================
+   1. session‑storage helpers with expiry
+   ================================================================*/
+function setSessionDataWithExpiry(key,val,min){
+  sessionStorage.setItem(key,JSON.stringify({value:val,expiry:Date.now()+min*60000}));
 }
-function getSessionDataWithExpiry(k){
-  const itm=JSON.parse(sessionStorage.getItem(k)||"null");
-  if(!itm||Date.now()>itm.expiry){sessionStorage.removeItem(k);return null;}
-  return itm.value;
+function getSessionDataWithExpiry(key){
+  const item=JSON.parse(sessionStorage.getItem(key)||"null");
+  if(!item||Date.now()>item.expiry){sessionStorage.removeItem(key);return null;}
+  return item.value;
 }
 
+/* ================================================================
+   2. DOMContentLoaded
+   ================================================================*/
 document.addEventListener('DOMContentLoaded',async()=>{
 
+  /* --- breadcrumb cache (unchanged) --- */
   (function(){
     const data={
       name :document.getElementById('breadcrumb-text')?.textContent||"",
@@ -47,6 +63,9 @@ document.addEventListener('DOMContentLoaded',async()=>{
   const form    =document.querySelector('#wf-form-bullion-order');
   if(!orderBtn||!form){console.error('Required elements not found');return;}
 
+  /* ==========================================================
+     2.1 UX helpers (identical to original)
+  ==========================================================*/
   function showError(field,msg){
     const ex=field.parentElement.querySelector('.error-message');if(ex)ex.remove();
     const div=document.createElement('div');
@@ -67,22 +86,26 @@ document.addEventListener('DOMContentLoaded',async()=>{
     btn.innerHTML=html;btn.classList.remove('button-processing');btn.disabled=false;
   }
 
+  /* ==========================================================
+     2.2 validateForm (original logic untouched)
+  ==========================================================*/
   function validateForm(fd){
-    let ok=true;
-    const req={
+    let ok=true,scrollDate=false,supplierErr=false;
+    const required={
       'first-name':'First name is required',
       'last-name' :'Last name is required',
       'email'     :'Email is required',
       'mobile'    :'Phone number is required'
     };
-    Object.keys(req).forEach(n=>{
+    Object.keys(required).forEach(n=>{
       const f=form.querySelector(`[name="${n}"]`);if(f)clearError(f);
     });
-    Object.entries(req).forEach(([n,msg])=>{
+    Object.entries(required).forEach(([n,msg])=>{
       const f=form.querySelector(`[name="${n}"]`);
       if(!fd.get(n)?.trim()){showError(f,msg);ok=false;}
     });
 
+    /* supplier checkbox rule (unchanged) */
     const prodType=document.getElementById('product-type');
     const supplierCb=document.getElementById('checkbox-supplier')||
                       form.querySelector('[name="checkbox-supplier"]');
@@ -91,10 +114,11 @@ document.addEventListener('DOMContentLoaded',async()=>{
       clearError(cbBlock);
       if(prodType.textContent.toLowerCase().trim()==='supplier'&&!supplierCb.checked){
         showError(cbBlock,'Please agree to supply ID if required');
-        ok=false;
+        ok=false;supplierErr=true;
       }
     }
 
+    /* special product selection */
     if(!fd.get('product-name-full')){
       const msg=document.getElementById('no-product-selected');
       if(msg){msg.style.display='block';msg.scrollIntoView({behavior:'smooth',block:'center'});}
@@ -103,21 +127,30 @@ document.addEventListener('DOMContentLoaded',async()=>{
     return ok;
   }
 
+  /* ==========================================================
+     3. order button click handler
+  ==========================================================*/
   orderBtn.addEventListener('click',async(evt)=>{
     evt.preventDefault();
     const fd=new FormData(form);
     if(!validateForm(fd))return;
 
+    /* --- collect values (no shipping arithmetic) --- */
     const shippingFee=document.querySelector('#shippingfee')?.value.trim()||"";
     const jsonData={
+      /* customer */
       first_name_order :fd.get('first-name'),
       last_name_order  :fd.get('last-name')||"",
       email_order      :fd.get('email'),
       phone_order      :fd.get('mobile')||"",
+
+      /* product */
       product_name_full:fd.get('product-name-full')||"",
       quantity         :fd.get('quantity')||"",
       price_nzd        :fd.get('price_nzd')||"",
       zoho_id          :fd.get('zoho-id')||"",
+
+      /* delivery / payment */
       delivery         :fd.get('delivery')||"",
       pay_in_person    :fd.get('pay-in-person')||"",
       checkbox_order   :fd.get('checkbox-order')||"",
@@ -125,13 +158,19 @@ document.addEventListener('DOMContentLoaded',async()=>{
       message          :fd.get('message')||"",
       date_picker_order:fd.get('date-picker')||"",
       time_picker_order:fd.get('time-picker')||"",
+
+      /* totals (shippingfee untouched) */
       total_price      :fd.get('total-price')||"",
       total_amount     :fd.get('total-amount')||"",
       shippingfee      :shippingFee,
+
+      /* GST + unit prices */
       unit_gst             :fd.get('unit-gst')||"",
       total_gst            :fd.get('total-gst')||"",
       unit_price_nzd       :fd.get('unit-price-nzd')||"",
       total_unit_price_nzd :fd.get('total-unit-price-nzd')||"",
+
+      /* supplier meta */
       supplier_status  :fd.get('market-status')||"",
       supplier_name    :fd.get('market')||"",
       sku              :fd.get('sku')||"",
@@ -148,6 +187,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
       });
       const out=await res.json();
       if(out.token&&out.trade_order){
+        /* store everything incl. new fields */
         setSessionDataWithExpiry('orderData',JSON.stringify(jsonData),30);
         setSessionDataWithExpiry('token',out.token,30);
         setSessionDataWithExpiry('trade_order',out.trade_order,30);
@@ -169,3 +209,4 @@ document.addEventListener('DOMContentLoaded',async()=>{
     }
   });
 });
+</script>
