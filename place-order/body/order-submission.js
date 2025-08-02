@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
     /* --- collect values (no shipping arithmetic) --- */
     let shippingFee = document.querySelector('#shippingfee')?.value.trim() || "";
     if (fd.get('delivery') !== 'true') {
-      shippingFee = "";
+      shippingFee = "0";
     }
     const jsonData={
       /* customer */
