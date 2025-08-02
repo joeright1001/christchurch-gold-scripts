@@ -1,0 +1,63 @@
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  try {
+    // Get the nested data structure from session storage
+    const storedData = sessionStorage.getItem('product_url');
+    console.log("Raw stored data:", storedData);
+    
+    if (!storedData) {
+      console.error("No data found in session storage");
+      return;
+    }
+    
+    // Parse the outer JSON structure
+    const outerData = JSON.parse(storedData);
+    console.log("Outer data structure:", outerData);
+    
+    // Extract and parse the inner JSON string from the "value" field
+    const productDataString = outerData.value;
+    const productData = JSON.parse(productDataString);
+    console.log("Product data:", productData);
+    
+    // Update breadcrumb elements
+    const breadcrumbUrl = document.getElementById('breadcrumb-url');
+    if (breadcrumbUrl && productData.url) {
+      breadcrumbUrl.href = productData.url.trim();
+      console.log("Updated breadcrumb URL to:", breadcrumbUrl.href);
+    } else {
+      console.error("Could not update breadcrumb URL");
+    }
+    
+    const breadcrumbText = document.getElementById('breadcrumb-text');
+    if (breadcrumbText && productData.name) {
+      breadcrumbText.textContent = productData.name;
+      console.log("Updated breadcrumb text to:", productData.name);
+    } else {
+      console.error("Could not update breadcrumb text");
+    }
+    
+    // Update CSS variables based on metal type
+    if (productData.metal) {
+      const root = document.documentElement;
+      const lowerCaseMetal = productData.metal.toLowerCase();
+      
+      // Set CSS variables based on metal type
+      if (lowerCaseMetal === 'gold') {
+        root.style.setProperty('--gold_silver', '#fff7e0');
+        root.style.setProperty('--gold_silver_background', '#fffff6');
+        console.log("Set CSS variables for gold styling");
+      } else if (lowerCaseMetal === 'silver') {
+        root.style.setProperty('--gold_silver', '#e6e6e6');
+        root.style.setProperty('--gold_silver_background', '#f6f9ff');
+        console.log("Set CSS variables for silver styling");
+      }
+      
+      // No need to manually set style on each element
+      // The CSS should be set up to use these variables in the stylesheets
+      console.log("CSS variables updated - elements using these variables will reflect the changes automatically");
+    }
+  } catch (error) {
+    console.error("Error processing data:", error);
+  }
+});
+</script>

@@ -1,9 +1,4 @@
-/**
- * Session Data Loader
- * Loads order data from session storage and populates page elements
- * Extracted from code-load-order-data-from-session-onstartup.txt
- */
-
+<script>
 /* ---------------------------------------------------------------
    session‑storage helper with expiry
 ---------------------------------------------------------------*/
@@ -87,3 +82,4 @@ document.addEventListener("DOMContentLoaded", () => {
   -------------------------------------------------------------*/
   update("shippingfee", data.shippingfee);
 });
+</script>

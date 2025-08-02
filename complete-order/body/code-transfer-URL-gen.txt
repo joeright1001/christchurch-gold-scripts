@@ -1,0 +1,44 @@
+<script>
+
+// --------------------take user to bank details with TO number via URL--------------
+
+// Use current domain for rootURL
+const rootURL = window.location.origin;
+
+// Add event listener to the paymentBank button
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentBankButton = document.getElementById('paymentBank');
+    
+    if (paymentBankButton) {
+        paymentBankButton.addEventListener('click', function() {
+            // Function to get value from an element (works for inputs, textareas, and display elements)
+            function getElementValue(id) {
+                const element = document.getElementById(id);
+                if (!element) return '';
+                
+                // If it's an input or textarea, use .value
+                if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                    return element.value;
+                } 
+                // Otherwise, use textContent for display elements
+                else {
+                    return element.textContent;
+                }
+            }
+            
+            // Get values from elements
+            const tradeOrder = getElementValue('trade-order');
+            const totalPrice = getElementValue('total-amount');
+            const productNameFull = getElementValue('product-name-full');
+            const orderCreationTime = getElementValue('order_creation_time');
+            
+            // Construct the URL with parameters
+            const targetURL = `${rootURL}/transfer?trade-order=${encodeURIComponent(tradeOrder)}&total-price=${encodeURIComponent(totalPrice)}&product-name-full=${encodeURIComponent(productNameFull)}&order_creation_time=${encodeURIComponent(orderCreationTime)}`;
+            
+            // Open the URL in a new tab
+            window.open(targetURL, '_blank');
+        });
+    }
+});
+
+</script>

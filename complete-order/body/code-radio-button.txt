@@ -1,0 +1,222 @@
+<style>
+.customRadio {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #444;
+    border-radius: 50%;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    position: relative;
+    background-color: white;
+}
+
+.customRadio:checked {
+    border-color: #2196F3;
+}
+
+.customRadio:checked::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #2196F3;
+}
+
+/* Hide the divs by default */
+#hidden1, #hidden2, #hidden3, #hidden4, #hidden5, #hidden6, #hidden7, #hidden8 {
+    display: none;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all required elements
+    const container1 = document.getElementById('radio1');
+    const container2 = document.getElementById('radio2');
+    const container3 = document.getElementById('radio3');
+    const container4 = document.getElementById('radio4');
+    const container5 = document.getElementById('radio5');
+    const container6 = document.getElementById('radio6');
+    const container7 = document.getElementById('radio7');
+    const container8 = document.getElementById('radio8');
+    const hidden1 = document.getElementById('hidden1');
+    const hidden2 = document.getElementById('hidden2');
+    const hidden3 = document.getElementById('hidden3');
+    const hidden4 = document.getElementById('hidden4');
+    const hidden5 = document.getElementById('hidden5');
+    const hidden6 = document.getElementById('hidden6');
+    const hidden7 = document.getElementById('hidden7');
+    const hidden8 = document.getElementById('hidden8');
+    
+    // Create radio buttons
+    const radioBtn1 = document.createElement('input');
+    radioBtn1.type = 'checkbox';
+    radioBtn1.id = 'customRadio1';
+    radioBtn1.className = 'customRadio';
+    radioBtn1.checked = false;
+    
+    const radioBtn2 = document.createElement('input');
+    radioBtn2.type = 'checkbox';
+    radioBtn2.id = 'customRadio2';
+    radioBtn2.className = 'customRadio';
+    radioBtn2.checked = false;
+
+    const radioBtn3 = document.createElement('input');
+    radioBtn3.type = 'checkbox';
+    radioBtn3.id = 'customRadio3';
+    radioBtn3.className = 'customRadio';
+    radioBtn3.checked = false;
+
+    const radioBtn4 = document.createElement('input');
+    radioBtn4.type = 'checkbox';
+    radioBtn4.id = 'customRadio4';
+    radioBtn4.className = 'customRadio';
+    radioBtn4.checked = false;
+
+    const radioBtn5 = document.createElement('input');
+    radioBtn5.type = 'checkbox';
+    radioBtn5.id = 'customRadio5';
+    radioBtn5.className = 'customRadio';
+    radioBtn5.checked = false;
+
+    const radioBtn6 = document.createElement('input');
+    radioBtn6.type = 'checkbox';
+    radioBtn6.id = 'customRadio6';
+    radioBtn6.className = 'customRadio';
+    radioBtn6.checked = false;
+
+    const radioBtn7 = document.createElement('input');
+    radioBtn7.type = 'checkbox';
+    radioBtn7.id = 'customRadio7';
+    radioBtn7.className = 'customRadio';
+    radioBtn7.checked = false;
+
+    const radioBtn8 = document.createElement('input');
+    radioBtn8.type = 'checkbox';
+    radioBtn8.id = 'customRadio8';
+    radioBtn8.className = 'customRadio';
+    radioBtn8.checked = false;
+    
+    // Add the radio buttons to their containers
+    container1.appendChild(radioBtn1);
+    container2.appendChild(radioBtn2);
+    container3.appendChild(radioBtn3);
+    container4.appendChild(radioBtn4);
+    container5.appendChild(radioBtn5);
+    container6.appendChild(radioBtn6);
+    container7.appendChild(radioBtn7);
+    container8.appendChild(radioBtn8);
+    
+    // Function to hide all divs
+    function hideAllDivs() {
+        hidden1.style.display = 'none';
+        hidden2.style.display = 'none';
+        hidden3.style.display = 'none';
+        hidden4.style.display = 'none';
+        hidden5.style.display = 'none';
+        hidden6.style.display = 'none';
+        hidden7.style.display = 'none';
+        hidden8.style.display = 'none';
+    }
+
+    // Function to uncheck all other buttons
+    function uncheckOthers(exceptThis) {
+        if(exceptThis !== radioBtn1) radioBtn1.checked = false;
+        if(exceptThis !== radioBtn2) radioBtn2.checked = false;
+        if(exceptThis !== radioBtn3) radioBtn3.checked = false;
+        if(exceptThis !== radioBtn4) radioBtn4.checked = false;
+        if(exceptThis !== radioBtn5) radioBtn5.checked = false;
+        if(exceptThis !== radioBtn6) radioBtn6.checked = false;
+        if(exceptThis !== radioBtn7) radioBtn7.checked = false;
+        if(exceptThis !== radioBtn8) radioBtn8.checked = false;
+    }
+    
+    // Add event listeners for all buttons
+    radioBtn1.addEventListener('change', function() {
+        if(this.checked) {
+            uncheckOthers(this);
+            hideAllDivs();
+            hidden1.style.display = 'block';
+        } else {
+            hideAllDivs();
+        }
+    });
+    
+    radioBtn2.addEventListener('change', function() {
+        if(this.checked) {
+            uncheckOthers(this);
+            hideAllDivs();
+            hidden2.style.display = 'block';
+        } else {
+            hideAllDivs();
+        }
+    });
+
+    radioBtn3.addEventListener('change', function() {
+        if(this.checked) {
+            uncheckOthers(this);
+            hideAllDivs();
+            hidden3.style.display = 'block';
+        } else {
+            hideAllDivs();
+        }
+    });
+
+    radioBtn4.addEventListener('change', function() {
+        if(this.checked) {
+            uncheckOthers(this);
+            hideAllDivs();
+            hidden4.style.display = 'block';
+        } else {
+            hideAllDivs();
+        }
+    });
+
+    radioBtn5.addEventListener('change', function() {
+        if(this.checked) {
+            uncheckOthers(this);
+            hideAllDivs();
+            hidden5.style.display = 'block';
+        } else {
+            hideAllDivs();
+        }
+    });
+
+    radioBtn6.addEventListener('change', function() {
+        if(this.checked) {
+            uncheckOthers(this);
+            hideAllDivs();
+            hidden6.style.display = 'block';
+        } else {
+            hideAllDivs();
+        }
+    });
+
+    radioBtn7.addEventListener('change', function() {
+        if(this.checked) {
+            uncheckOthers(this);
+            hideAllDivs();
+            hidden7.style.display = 'block';
+        } else {
+            hideAllDivs();
+        }
+    });
+
+    radioBtn8.addEventListener('change', function() {
+        if(this.checked) {
+            uncheckOthers(this);
+            hideAllDivs();
+            hidden8.style.display = 'block';
+        } else {
+            hideAllDivs();
+        }
+    });
+});
+</script>
