@@ -1,0 +1,37 @@
+/* === Custom Radio Button Styles === */
+/* Extracted from code-radio-button.txt for proper organization */
+
+.customRadio {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #444;
+    border-radius: 50%;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    position: relative;
+    background-color: white;
+}
+
+.customRadio:checked {
+    border-color: #2196F3;
+}
+
+.customRadio:checked::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #2196F3;
+}
+
+/* Hide the divs by default */
+#hidden1, #hidden2, #hidden3, #hidden4, #hidden5, #hidden6, #hidden7, #hidden8 {
+    display: none;
+}

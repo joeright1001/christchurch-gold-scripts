@@ -1,3 +1,6 @@
+/* === Payment Button Styles === */
+/* Extracted from code-payment-checker.txt for proper organization */
+
 .payment-button {
     position: relative;
     min-width: 200px;
