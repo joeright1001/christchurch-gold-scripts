@@ -68,21 +68,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setPair("breadcrumb-text", val("product-name"));
 
   /* ------------------------------------------------------------------
-     metal-based CSS variables
-  ------------------------------------------------------------------ */
-  const metal = val("metal").toLowerCase();
-  if (metal) {
-    const root = document.documentElement;
-    if (metal === "gold") {
-      root.style.setProperty("--gold_silver",           "#fff8e3");
-      root.style.setProperty("--gold_silver_background","#fffff5");
-    } else if (metal === "silver") {
-      root.style.setProperty("--gold_silver",           "#e6e6e6");
-      root.style.setProperty("--gold_silver_background","#f6f9ff");
-    }
-  }
-
-  /* ------------------------------------------------------------------
      business logic based on product-type
   ------------------------------------------------------------------ */
   const pType = val("product-type").toLowerCase();
