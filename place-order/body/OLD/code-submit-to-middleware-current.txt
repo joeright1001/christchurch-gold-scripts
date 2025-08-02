@@ -1,11 +1,15 @@
-/**
- * Order Submission to Middleware
- * Handles form validation and API submission
- * Extracted from code-submit-to-middleware-current.txt
- */
+<style>
+/* --- error & spinner styles (unchanged) --- */
+.error-message{color:red;font-size:12px;margin-top:5px}
+.error{border-color:red!important}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid #f3f3f3;border-top:2px solid #333;border-radius:50%;animation:spin 1s linear infinite;margin-left:8px;vertical-align:middle}
+@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.button-processing{opacity:.7;cursor:not-allowed}
+</style>
 
+<script>
 /* ================================================================
-   API host selection constants / helpers
+   0. API host selection constants / helpers
    ================================================================*/
 const DEV_URL              = "https://cuddly-space-waddle-4jgr5gxqj6wg3q6jr-3000.app.github.dev";
 const STAGING_FALLBACK_URL = "https://mware3-staging.up.railway.app";
@@ -18,7 +22,6 @@ async function isCodespaceAvailable(){
     clearTimeout(t);return ok;
   }catch{return false}
 }
-
 async function getApiBaseUrl(){
   if(location.hostname.includes('webflow.io')){
     return (await isCodespaceAvailable())?DEV_URL:STAGING_FALLBACK_URL;
@@ -27,12 +30,11 @@ async function getApiBaseUrl(){
 }
 
 /* ================================================================
-   session‑storage helpers with expiry
+   1. session‑storage helpers with expiry
    ================================================================*/
 function setSessionDataWithExpiry(key,val,min){
   sessionStorage.setItem(key,JSON.stringify({value:val,expiry:Date.now()+min*60000}));
 }
-
 function getSessionDataWithExpiry(key){
   const item=JSON.parse(sessionStorage.getItem(key)||"null");
   if(!item||Date.now()>item.expiry){sessionStorage.removeItem(key);return null;}
@@ -40,7 +42,7 @@ function getSessionDataWithExpiry(key){
 }
 
 /* ================================================================
-   DOMContentLoaded - Order Submission Logic
+   2. DOMContentLoaded
    ================================================================*/
 document.addEventListener('DOMContentLoaded',async()=>{
 
@@ -62,7 +64,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
   if(!orderBtn||!form){console.error('Required elements not found');return;}
 
   /* ==========================================================
-     UX helpers
+     2.1 UX helpers (identical to original)
   ==========================================================*/
   function showError(field,msg){
     const ex=field.parentElement.querySelector('.error-message');if(ex)ex.remove();
@@ -71,24 +73,21 @@ document.addEventListener('DOMContentLoaded',async()=>{
     div.style.color='red';div.style.fontSize='12px';div.style.marginTop='10px';
     field.parentElement.appendChild(div);field.style.borderColor='red';
   }
-  
   function clearError(field){
     field.parentElement.querySelector('.error-message')?.remove();
     field.style.borderColor='';
   }
-  
   function showProcessingState(btn){
     const html=btn.innerHTML;
     btn.innerHTML='Processing<span class="spinner"></span>';
     btn.classList.add('button-processing');btn.disabled=true;return html;
   }
-  
   function restoreButtonState(btn,html){
     btn.innerHTML=html;btn.classList.remove('button-processing');btn.disabled=false;
   }
 
   /* ==========================================================
-     validateForm (original logic untouched)
+     2.2 validateForm (original logic untouched)
   ==========================================================*/
   function validateForm(fd){
     let ok=true,scrollDate=false,supplierErr=false;
@@ -129,7 +128,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
   }
 
   /* ==========================================================
-     order button click handler
+     3. order button click handler
   ==========================================================*/
   orderBtn.addEventListener('click',async(evt)=>{
     evt.preventDefault();
@@ -137,10 +136,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
     if(!validateForm(fd))return;
 
     /* --- collect values (no shipping arithmetic) --- */
-    let shippingFee = document.querySelector('#shippingfee')?.value.trim() || "";
-    if (fd.get('delivery') !== 'true') {
-      shippingFee = "";
-    }
+    const shippingFee=document.querySelector('#shippingfee')?.value.trim()||"";
     const jsonData={
       /* customer */
       first_name_order :fd.get('first-name'),
@@ -213,3 +209,4 @@ document.addEventListener('DOMContentLoaded',async()=>{
     }
   });
 });
+</script>
