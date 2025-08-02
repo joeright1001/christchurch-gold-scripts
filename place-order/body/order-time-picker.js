@@ -67,11 +67,11 @@ document.addEventListener("DOMContentLoaded", function() {
         h = parseInt(h,10);
         if (pd === "PM" && h !== 12) h += 12;
         if (pd === "AM" && h === 12) h = 0;
-        outputField.value = \`\${h.toString().padStart(2,"0")}\${mnt}\`;
+        outputField.value = `${h.toString().padStart(2,"0")}${mnt}`;
       } else {
         outputField.value = "";
       }
     }
-    console.log(\`Selected: \${val} -> 24hr: \${outputField.value}\`);
+    console.log(`Selected: ${val} -> 24hr: ${outputField.value}`);
   });
 });
