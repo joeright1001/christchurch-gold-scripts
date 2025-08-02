@@ -94,7 +94,7 @@ if ($cssFiles.Count -gt 0) {
 
     # Minify CSS using clean-css-cli
     Write-Host "Minifying CSS to main.css..." -ForegroundColor Yellow
-    $cssProcess = Start-Process -FilePath "cmd" -ArgumentList "/c", "npx cleancss-cli `"$tempCssFile`" --output `"$outputCssFile`"" -Wait -NoNewWindow -PassThru
+    $cssProcess = Start-Process -FilePath "cmd" -ArgumentList "/c", "npx clean-css-cli `"$tempCssFile`" --output `"$outputCssFile`"" -Wait -NoNewWindow -PassThru
 
     # Clean up temp file
     Remove-Item $tempCssFile -ErrorAction SilentlyContinue
@@ -117,7 +117,7 @@ if ($cssFiles.Count -gt 0) {
             Write-Host "Retrying CSS minification..." -ForegroundColor Yellow
             $tempCssFile = Join-Path $scriptDir "temp-bundle.css"
             $combinedCss | Out-File -FilePath $tempCssFile -Encoding UTF8
-            $cssProcess2 = Start-Process -FilePath "cmd" -ArgumentList "/c", "npx cleancss-cli `"$tempCssFile`" --output `"$outputCssFile`"" -Wait -NoNewWindow -PassThru
+            $cssProcess2 = Start-Process -FilePath "cmd" -ArgumentList "/c", "npx clean-css-cli `"$tempCssFile`" --output `"$outputCssFile`"" -Wait -NoNewWindow -PassThru
             Remove-Item $tempCssFile -ErrorAction SilentlyContinue
             
             if ($cssProcess2.ExitCode -eq 0 -and (Test-Path $outputCssFile)) {
