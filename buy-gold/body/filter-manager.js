@@ -548,9 +548,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     clearAllFilters() {
       // Clear search input and search state FIRST
-      if (window.searchManager && window.searchManager.clearSearchInput) {
-        window.searchManager.clearSearchInput();
-        window.searchManager.clearSearchState();
+      if (window.searchManager && window.searchManager.clearSearch) {
+        window.searchManager.clearSearch();
       }
       
       // Reset regular filters without checking search
@@ -706,7 +705,6 @@ document.addEventListener('DOMContentLoaded', function() {
         this._lastLogTime = Date.now();
       }
     }
-
 
     setupGlobalNamespace() {
       window.filterControls = window.filterControls || {};
