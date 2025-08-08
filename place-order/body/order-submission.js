@@ -7,9 +7,9 @@
 /* ================================================================
    API host selection constants / helpers
    ================================================================*/
-const DEV_URL = "https://cuddly-space-waddle-4jgr5gxqj6wg3q6jr-3000.app.github.dev";
+const DEV_URL              = "https://cuddly-space-waddle-4jgr5gxqj6wg3q6jr-3000.app.github.dev";
 const STAGING_FALLBACK_URL = "https://mware3-staging.up.railway.app";
-const PROD_URL = "https://mware3-production.up.railway.app";
+const PROD_URL             = "https://mware3-production.up.railway.app";
 
 async function isCodespaceAvailable(){
   try{
