@@ -31,6 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setPair("quantity",          val("quantity"));
   setPair("total-price",       val("total-price"));
   setPair("zoho-id",           val("zoho-id"));
+  setPair("collect",           val("collect"));
   setPair("price_nzd",         val("price-nzd"));
 
   /* GST / unit price fields */
@@ -47,9 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setPair("sku",               val("sku"));
   setPair("auto-supplier",     val("auto-supplier"));
   setPair("supplier-item-id",  val("supplier-item-id"));
-
-  /* collect data */
-  setPair("collect",           val("collect"));
 
   /* ------------------------------------------------------------------
      image & breadcrumb URLs
