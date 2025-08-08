@@ -7,13 +7,13 @@
 /* ================================================================
    API host selection constants / helpers
    ================================================================*/
-const DEV_URL              = "https://cuddly-space-waddle-4jgr5gxqj6wg3q6jr-3000.app.github.dev";
+const DEV_URL              = "https://1lm50541-3000.aue.devtunnels.ms";
 const STAGING_FALLBACK_URL = "https://mware3-staging.up.railway.app";
 const PROD_URL             = "https://mware3-production.up.railway.app";
 
 async function isCodespaceAvailable(){
   try{
-    const c=new AbortController();const t=setTimeout(()=>c.abort(),3000);
+    const c=new AbortController();const t=setTimeout(()=>c.abort(),5000);
     const ok=(await fetch(DEV_URL+'/health',{signal:c.signal})).ok;
     clearTimeout(t);return ok;
   }catch{return false}
