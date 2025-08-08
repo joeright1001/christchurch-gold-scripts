@@ -34,6 +34,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const autoSupplierField       = $("auto-supplier");
   const supplierItemIdField     = $("supplier-item-id");
 
+  /* collect data */
+  const collectField            = $("collect");
+
   const placeOrderButton        = $("place-order");
 
   /* ---------- CMS wait helper ---------- */
@@ -78,7 +81,10 @@ document.addEventListener("DOMContentLoaded", function () {
         market                   : marketField?.textContent.trim() || "",
         sku                      : skuField?.textContent.trim() || "",
         "auto-supplier"          : autoSupplierField?.textContent.trim() || "",
-        "supplier-item-id"       : supplierItemIdField?.textContent.trim() || ""
+        "supplier-item-id"       : supplierItemIdField?.textContent.trim() || "",
+
+        /* collect */
+        collect                  : collectField?.textContent.trim() || ""
       });
 
       /* redirect to place-order page */
