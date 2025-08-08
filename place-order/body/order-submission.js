@@ -153,6 +153,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
       quantity         :fd.get('quantity')||"",
       price_nzd        :fd.get('price_nzd')||"",
       zoho_id          :fd.get('zoho-id')||"",
+      collect          :fd.get('collect')||"",
 
       /* delivery / payment */
       delivery         :fd.get('delivery')||"",
@@ -179,10 +180,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
       supplier_name    :fd.get('market')||"",
       sku              :fd.get('sku')||"",
       auto_supplier    :fd.get('auto-supplier')||"",
-      supplier_item_id :fd.get('supplier-item-id')||"",
-
-      /* collect info */
-      collect          :document.getElementById('collect')?.textContent||""
+      supplier_item_id :fd.get('supplier-item-id')||""
     };
 
     const originalHTML=showProcessingState(orderBtn);
