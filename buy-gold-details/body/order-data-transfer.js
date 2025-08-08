@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ---------- CMS wait helper ---------- */
   function waitForCMSData(cb, tries = 10) {
-    if (productNameField.textContent.trim() && totalPriceField.textContent.trim() && collectField.textContent.trim()) {
+    if (productNameField.textContent.trim() && totalPriceField.textContent.trim()) {
       cb();
     } else if (tries) {
       setTimeout(() => waitForCMSData(cb, tries - 1), 200);
