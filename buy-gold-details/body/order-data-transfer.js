@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const quantityField           = $("quantity");
   const totalPriceField         = $("total-price");
   const zohoIdField             = $("zoho-id");
+  const collectField            = $("collect");
   const priceNZDField           = $("price_nzd");
 
   /* NEW fields */
@@ -33,9 +34,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const skuField                = $("sku");
   const autoSupplierField       = $("auto-supplier");
   const supplierItemIdField     = $("supplier-item-id");
-
-  /* collect data */
-  const collectField            = $("collect");
 
   const placeOrderButton        = $("place-order");
 
@@ -60,6 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
         quantity                 : parseInt(quantityField.value, 10) || 1,
         "total-price"            : totalPriceField.textContent.trim(),
         "zoho-id"                : zohoIdField?.textContent.trim() || "",
+        collect                  : collectField?.textContent.trim() || "",
         "price-nzd"              : priceNZDField?.textContent.trim() || "",
 
         /* NEW params */
@@ -81,10 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
         market                   : marketField?.textContent.trim() || "",
         sku                      : skuField?.textContent.trim() || "",
         "auto-supplier"          : autoSupplierField?.textContent.trim() || "",
-        "supplier-item-id"       : supplierItemIdField?.textContent.trim() || "",
-
-        /* collect */
-        collect                  : collectField?.textContent.trim() || ""
+        "supplier-item-id"       : supplierItemIdField?.textContent.trim() || ""
       });
 
       /* redirect to place-order page */
