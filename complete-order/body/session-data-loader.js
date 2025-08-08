@@ -86,4 +86,9 @@ document.addEventListener("DOMContentLoaded", () => {
      5. Shipping fee (display only, no math)
   -------------------------------------------------------------*/
   update("shippingfee", data.shippingfee);
+
+  /* -------------------------------------------------------------
+     6. Collect information
+  -------------------------------------------------------------*/
+  update("collect", data.collect);
 });
