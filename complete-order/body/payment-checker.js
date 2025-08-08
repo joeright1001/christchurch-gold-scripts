@@ -5,7 +5,7 @@
  */
 
 // Define URLs
-const DEV_URL = "https://1lm50541-3000.aue.devtunnels.ms";
+const DEV_URL = "https://cuddly-space-waddle-4jgr5gxqj6wg3q6jr-3000.app.github.dev";
 const STAGING_FALLBACK_URL = "https://mware3-staging.up.railway.app";
 const PROD_URL = "https://mware3-production.up.railway.app";
 
