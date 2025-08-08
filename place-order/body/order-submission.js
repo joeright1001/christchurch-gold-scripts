@@ -71,18 +71,18 @@ document.addEventListener('DOMContentLoaded',async()=>{
     div.style.color='red';div.style.fontSize='12px';div.style.marginTop='10px';
     field.parentElement.appendChild(div);field.style.borderColor='red';
   }
-  
+
   function clearError(field){
     field.parentElement.querySelector('.error-message')?.remove();
     field.style.borderColor='';
   }
-  
+
   function showProcessingState(btn){
     const html=btn.innerHTML;
     btn.innerHTML='Processing<span class="spinner"></span>';
     btn.classList.add('button-processing');btn.disabled=true;return html;
   }
-  
+
   function restoreButtonState(btn,html){
     btn.innerHTML=html;btn.classList.remove('button-processing');btn.disabled=false;
   }
