@@ -48,6 +48,9 @@ document.addEventListener("DOMContentLoaded", () => {
   setPair("auto-supplier",     val("auto-supplier"));
   setPair("supplier-item-id",  val("supplier-item-id"));
 
+  /* collect data */
+  setPair("collect",           val("collect"));
+
   /* ------------------------------------------------------------------
      image & breadcrumb URLs
   ------------------------------------------------------------------ */

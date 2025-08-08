@@ -179,7 +179,10 @@ document.addEventListener('DOMContentLoaded',async()=>{
       supplier_name    :fd.get('market')||"",
       sku              :fd.get('sku')||"",
       auto_supplier    :fd.get('auto-supplier')||"",
-      supplier_item_id :fd.get('supplier-item-id')||""
+      supplier_item_id :fd.get('supplier-item-id')||"",
+
+      /* collect info */
+      collect          :document.getElementById('collect')?.textContent||""
     };
 
     const originalHTML=showProcessingState(orderBtn);
