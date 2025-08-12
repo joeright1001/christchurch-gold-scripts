@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const slug       = dataEl.getAttribute('data-slug');
     const stockStatus = dataEl.getAttribute('data-stock-status');
     const metalType   = (dataEl.getAttribute('data-metal') || "").toLowerCase();
+    const isPopular   = dataEl.getAttribute('data-popular');
 
     const stockIcon  = document.getElementById(`${slug}-stock-icon`);
     const panel      = document.getElementById(`${slug}-prod-panel`);
@@ -38,6 +39,14 @@ document.addEventListener('DOMContentLoaded', () => {
           console.warn(`Unknown stock status: ${stockStatus} for ${slug}`);
       }
       if (imgSrc) { stockIcon.src = imgSrc; stockIcon.alt = altText; }
+    }
+
+    /* ---- POPULAR ICON HANDLING ---- */
+    if (isPopular) {
+      const popularIcon = document.getElementById(`${slug}-popular`);
+      if (popularIcon) {
+        popularIcon.style.display = 'block';
+      }
     }
 
     /* ---- METAL-TYPE STYLING ---- */
