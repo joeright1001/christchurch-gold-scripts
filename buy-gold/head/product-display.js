@@ -5,7 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Stock-status icons
   const outOfStockImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/6833dfd9e5b4f43962a44755_Group%2090.png";
   const liveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/6833f6f1cbdf61f307806b20_Group%2092.png";
-  const inStockImage   = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68144f88ffb54e3575002b66_Group%2061%20(3).png";
+  const inStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68144f88ffb54e3575002b66_Group%2061%20(3).png";
+
+  // Popular combo-images
+  const popularOutOfStockImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/689aea323253ae0700606a3d_out-stock-pop-icon.webp";
+  const popularLiveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/689aea31c379b9dbe6de6c8e_direct-mint-pop-icon.webp";
+  const popularInStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/689aea313f2769c839d29f0f_in-stock-pop-icon.webp";
 
   // Metal colours
   const goldBackground  = "#fff7e0";
@@ -24,28 +29,35 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ---- STOCK ICON HANDLING ---- */
     if (stockIcon && stockStatus) {
       let imgSrc, altText;
+      const usePopularImages = !!isPopular; // Check if the popular flag is set
+
       switch (stockStatus) {
         case 'out-of-stock':
         case 'out-stock':
-          imgSrc = outOfStockImage;  altText = "Out of Stock";           break;
+          imgSrc = usePopularImages ? popularOutOfStockImage : outOfStockImage;
+          altText = "Out of Stock";
+          break;
         case 'live-at-the-mint':
         case 'live-at-mint':
-          imgSrc = liveAtMintImage;  altText = "Live at the Mint";       break;
+          imgSrc = usePopularImages ? popularLiveAtMintImage : liveAtMintImage;
+          altText = "Live at the Mint";
+          break;
         case 'in-stock':
         case 'low-stock':
-          imgSrc = inStockImage;     altText = stockStatus === 'in-stock' ? "In Stock" : "Low Stock";
+          imgSrc = usePopularImages ? popularInStockImage : inStockImage;
+          altText = stockStatus === 'in-stock' ? "In Stock" : "Low Stock";
           break;
         default:
           console.warn(`Unknown stock status: ${stockStatus} for ${slug}`);
       }
-      if (imgSrc) { stockIcon.src = imgSrc; stockIcon.alt = altText; }
-    }
 
-    /* ---- POPULAR ICON HANDLING ---- */
-    if (isPopular) {
-      const popularIcon = document.getElementById(`${slug}-popular`);
-      if (popularIcon) {
-        popularIcon.style.display = 'block';
+      if (usePopularImages) {
+        altText += " - Most Popular";
+      }
+
+      if (imgSrc) {
+        stockIcon.src = imgSrc;
+        stockIcon.alt = altText;
       }
     }
 
