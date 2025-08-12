@@ -4,7 +4,7 @@
   // ==================== DROPDOWN CONFIGURATION ====================
   const DROPDOWN_CONFIG = {
     elementId: 'custom-filter',
-    defaultText: 'Default',
+    defaultText: 'Sort...',
     defaultValue: 'default',
     retryDelay: 300,
     options: [

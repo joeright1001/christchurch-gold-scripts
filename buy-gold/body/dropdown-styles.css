@@ -17,7 +17,7 @@
   color: #222;                /* stronger text colour */
   background-color: #fff;
   border: 1px solid #797979;  /* outline stays the same */
-  border-radius: 30px;
+  border-radius: 6px;
   cursor: pointer;
   line-height: 1.2;
   width: 100%;
@@ -72,7 +72,7 @@
 }
 
 /* Lighter "Default" placeholder before the user picks something */
-#custom-filter[data-selected="default"] .selected-text { color:#666; }
+#custom-filter[data-selected="default"] .selected-text { color:#ccc; }
 
 /* Hide mobile-specific filter options on DESKTOP */
 @media (min-width: 1024px) {
