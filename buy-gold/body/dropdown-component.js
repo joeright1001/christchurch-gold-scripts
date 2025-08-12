@@ -8,7 +8,7 @@
     defaultValue: 'default',
     retryDelay: 300,
     options: [
-      { text: 'Default', value: 'default' },
+      { text: 'Default (Popular)', value: 'default' },
       { text: 'Easy Starter Options', value: 'getting-started-select' },
       { text: 'Popular', value: 'popular-select' },
       { text: 'Best Investment', value: 'investor-select' },
