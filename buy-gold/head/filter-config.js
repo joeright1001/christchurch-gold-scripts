@@ -3,11 +3,14 @@
 window.FILTER_CONFIG = {
   // Desktop checkbox IDs (all filters now use checkbox format)
   buttons: {
+    checkbox_1g: 'checkbox_1g',
+    checkbox_2_5g: 'checkbox_2.5g',
     checkbox_5g: 'checkbox_5g',
     checkbox_10g: 'checkbox_10g',
     checkbox_20g: 'checkbox_20g',
-    checkbox_1_10oz: 'checkbox_1-10oz',
+    checkbox_25g: 'checkbox_25g',
     checkbox_1_20oz: 'checkbox_1-20oz',
+    checkbox_1_10oz: 'checkbox_1-10oz',
     checkbox_1_4oz: 'checkbox_1-4oz',
     checkbox_1_2oz: 'checkbox_1-2oz',
     checkbox_1oz: 'checkbox_1oz',
@@ -15,12 +18,19 @@ window.FILTER_CONFIG = {
     checkbox_5oz: 'checkbox_5oz',
     checkbox_10oz: 'checkbox_10oz',
     checkbox_1kg: 'checkbox_1kg',
-    checkbox_canada: 'checkbox_canada',
-    checkbox_perth: 'checkbox_perth',
-    checkbox_royal: 'checkbox_royal',
+    checkbox_asahi: 'checkbox_asahi',
+    checkbox_austrian: 'checkbox_austrian',
+    checkbox_gsm: 'checkbox_gsm',
+    checkbox_investment: 'checkbox_investment',
+    checkbox_nzmint: 'checkbox_nzmint',
     checkbox_pamp: 'checkbox_pamp',
+    checkbox_canada: 'checkbox_canada',
     checkbox_african: 'checkbox_african',
     checkbox_highland: 'checkbox_highland',
+    checkbox_perth: 'checkbox_perth',
+    checkbox_royal: 'checkbox_royal',
+    checkbox_usa: 'checkbox_usa',
+    checkbox_valcambi: 'checkbox_valcambi',
     checkbox_investor: 'checkbox_investor',
     checkbox_collectables: 'checkbox_collectables',
     checkbox_gold: 'checkbox_gold',
@@ -40,6 +50,14 @@ window.FILTER_CONFIG = {
   
   // Filter rules - defines how each filter works
   rules: {
+    checkbox_1g: {
+      attribute: 'data-size',
+      values: ['1g']
+    },
+    checkbox_2_5g: {
+      attribute: 'data-size',
+      values: ['2.5g']
+    },
     checkbox_5g: {
       attribute: 'data-size',
       values: ['5g']
@@ -52,13 +70,17 @@ window.FILTER_CONFIG = {
       attribute: 'data-size',
       values: ['20g']
     },
-    checkbox_1_10oz: {
+    checkbox_25g: {
       attribute: 'data-size',
-      values: ['1-10oz']
+      values: ['25g']
     },
     checkbox_1_20oz: {
       attribute: 'data-size',
       values: ['1-20oz']
+    },
+    checkbox_1_10oz: {
+      attribute: 'data-size',
+      values: ['1-10oz']
     },
     checkbox_1_4oz: {
       attribute: 'data-size',
@@ -88,9 +110,41 @@ window.FILTER_CONFIG = {
       attribute: 'data-size',
       values: ['1kg']
     },
+    checkbox_asahi: {
+      attribute: 'data-mint',
+      values: ['Asahi Refinery']
+    },
+    checkbox_austrian: {
+      attribute: 'data-mint',
+      values: ['Austrian Mint']
+    },
+    checkbox_gsm: {
+      attribute: 'data-mint',
+      values: ['Golden State Mint']
+    },
+    checkbox_investment: {
+      attribute: 'data-mint',
+      values: ['Investment Selection']
+    },
+    checkbox_nzmint: {
+      attribute: 'data-mint',
+      values: ['NZ Mint']
+    },
+    checkbox_pamp: {
+      attribute: 'data-mint',
+      values: ['PAMP']
+    },
     checkbox_canada: {
       attribute: 'data-mint',
       values: ['The Royal Canadian Mint']
+    },
+    checkbox_african: {
+      attribute: 'data-mint',
+      values: ['South African Mint']
+    },
+    checkbox_highland: {
+      attribute: 'data-mint',
+      values: ['The Highland Mint']
     },
     checkbox_perth: {
       attribute: 'data-mint',
@@ -100,17 +154,13 @@ window.FILTER_CONFIG = {
       attribute: 'data-mint',
       values: ['The Royal Mint']
     },
-    checkbox_pamp: {
+    checkbox_usa: {
       attribute: 'data-mint',
-      values: ['PAMP Sussie']
+      values: ['United States Mint']
     },
-    checkbox_african: {
+    checkbox_valcambi: {
       attribute: 'data-mint',
-      values: ['South African Mint']
-    },
-    checkbox_highland: {
-      attribute: 'data-mint',
-      values: ['The Highland Mint']
+      values: ['Valcambi Suisse']
     },
     checkbox_investor: {
       attribute: 'data-product-type',
