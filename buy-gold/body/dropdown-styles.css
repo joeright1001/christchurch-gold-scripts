@@ -72,7 +72,7 @@
 }
 
 /* Lighter "Default" placeholder before the user picks something */
-#custom-filter[data-selected="default"] .selected-text { color:#ccc; }
+#custom-filter[data-selected="default"] .selected-text { color:#aaa; }
 
 /* Hide mobile-specific filter options on DESKTOP */
 @media (min-width: 1024px) {
