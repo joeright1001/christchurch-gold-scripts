@@ -3,9 +3,9 @@
 document.addEventListener('DOMContentLoaded', () => {
   /* ---------- CONSTANTS ---------- */
   // Stock-status icons
-  const outOfStockImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/6833dfd9e5b4f43962a44755_Group%2090.png";
-  const liveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/6833f6f1cbdf61f307806b20_Group%2092.png";
-  const inStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68144f88ffb54e3575002b66_Group%2061%20(3).png";
+  const outOfStockImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/689aea31baeaa4f3ba434845_out-stock-icon2.webp";
+  const liveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/689aea31633ba1f8a8efdc02_direct-mint-icon.webp";
+  const inStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/689aea318e7f856fd808d70d_in-stock-icon2.webp";
 
   // Popular combo-images
   const popularOutOfStockImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/689aea323253ae0700606a3d_out-stock-pop-icon.webp";
