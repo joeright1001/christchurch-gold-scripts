@@ -94,11 +94,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const autoSupplier = autoSupplierField ? autoSupplierField.textContent.trim() : ""; // Get auto supplier
       const supplierItemId = supplierItemIdField ? supplierItemIdField.textContent.trim() : ""; // Get supplier item ID
 
-      // Validation
-      if (!productName || !quantity || !totalPrice || !zohoId || !priceNZD) {
-        alert("Please ensure all fields are filled out before placing the order.");
-        return;
-      }
 
       // Construct the target URL with query parameters
       const targetUrl = `/quote?product-name-full=${encodeURIComponent(

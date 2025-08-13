@@ -62,11 +62,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const zohoId      = zohoIdField?.textContent.trim() || "";
       const priceNZD    = priceNZDField?.textContent.trim() || "";
 
-      // Required-field check (price_nzd included)
-      if (!productName || !quantity || !totalPrice || !zohoId || !priceNZD) {
-        alert("Please ensure all fields are filled out before placing the order.");
-        return;
-      }
 
       const qp = new URLSearchParams({
         "product-name-full" : productName,
