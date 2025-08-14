@@ -652,10 +652,21 @@ document.addEventListener('DOMContentLoaded', function() {
       groupFilters.forEach(filterName => {
         const button = this.buttons[filterName];
         if (button) {
-          if (activeFilterName && filterName !== activeFilterName) {
-            button.classList.add('filter-disabled');
-          } else {
-            button.classList.remove('filter-disabled');
+          const parentWrapper = button.closest('.checkbox_buy, .checkbox_buy_pop, .checkbox_buy_pop2, .checkbox_buy-copy');
+          if (parentWrapper) {
+            if (activeFilterName) {
+              if (filterName === activeFilterName) {
+                parentWrapper.classList.add('filter-selected');
+                parentWrapper.classList.remove('filter-disabled');
+              } else {
+                parentWrapper.classList.add('filter-disabled');
+                parentWrapper.classList.remove('filter-selected');
+              }
+            } else {
+              // No active filter, so remove all special classes
+              parentWrapper.classList.remove('filter-selected');
+              parentWrapper.classList.remove('filter-disabled');
+            }
           }
         }
       });
