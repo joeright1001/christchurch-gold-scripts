@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
     else {
       return {
         fontSize: '2rem',
-        bottomPosition: '40%',
+        bottomPosition: '10%',
         paddingTop: '10px',
         paddingBottom: '10px',
         paddingLeft: '20px',
