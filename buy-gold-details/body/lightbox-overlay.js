@@ -75,10 +75,14 @@ document.addEventListener('DOMContentLoaded', function() {
         containerDiv.style.zIndex = '9999';
         containerDiv.style.pointerEvents = 'none'; // Make container transparent to mouse/touch events
         
+        // Get product name from the DOM
+        const productNameEl = document.getElementById('product-name');
+        const productName = productNameEl ? productNameEl.textContent : 'Product Name';
+        
         // Create the text overlay element
         const textOverlay = document.createElement('div');
         textOverlay.className = 'lightbox-custom-text';
-        textOverlay.textContent = '1 Oz Silver Krugerrand 2025';
+        textOverlay.textContent = productName;
         
         // Style the text overlay
         textOverlay.style.display = 'inline-block';
