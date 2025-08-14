@@ -173,6 +173,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
     toggleFilter(filterName) {
       const newState = !this.filterStates[filterName];
+
+      // If activating a filter, handle exclusive group logic first
+      if (newState) {
+        const group = Object.keys(this.config.exclusiveGroups).find(groupName =>
+          this.config.exclusiveGroups[groupName].includes(filterName)
+        );
+
+        if (group) {
+          this.config.exclusiveGroups[group].forEach(otherFilterName => {
+            if (otherFilterName !== filterName && this.filterStates[otherFilterName]) {
+              // Directly update state and style to avoid multiple filter runs
+              this.filterStates[otherFilterName] = false;
+              this.updateButtonStyles(otherFilterName, false);
+              console.log(`🚀 EXCLUSIVE: Deactivated ${otherFilterName} in group ${group}`);
+            }
+          });
+        }
+      }
+
+      // Now, apply the primary filter change which will trigger the main update
       this.applyFilter(filterName, newState);
     }
 
