@@ -173,27 +173,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
     toggleFilter(filterName) {
       const newState = !this.filterStates[filterName];
+      const group = Object.keys(this.config.exclusiveGroups).find(groupName =>
+        this.config.exclusiveGroups[groupName].includes(filterName)
+      );
 
-      // If activating a filter, handle exclusive group logic first
-      if (newState) {
-        const group = Object.keys(this.config.exclusiveGroups).find(groupName =>
-          this.config.exclusiveGroups[groupName].includes(filterName)
-        );
-
-        if (group) {
-          this.config.exclusiveGroups[group].forEach(otherFilterName => {
-            if (otherFilterName !== filterName && this.filterStates[otherFilterName]) {
-              // Directly update state and style to avoid multiple filter runs
-              this.filterStates[otherFilterName] = false;
-              this.updateButtonStyles(otherFilterName, false);
-              console.log(`🚀 EXCLUSIVE: Deactivated ${otherFilterName} in group ${group}`);
-            }
-          });
-        }
+      // If activating a filter in an exclusive group, deactivate others first
+      if (newState && group) {
+        this.config.exclusiveGroups[group].forEach(otherFilterName => {
+          if (otherFilterName !== filterName && this.filterStates[otherFilterName]) {
+            this.filterStates[otherFilterName] = false;
+            this.updateButtonStyles(otherFilterName, false);
+          }
+        });
       }
 
-      // Now, apply the primary filter change which will trigger the main update
       this.applyFilter(filterName, newState);
+
+      // Update visual styles for the group
+      if (group) {
+        this.updateGroupStyles(group, newState ? filterName : null);
+      }
     }
 
     applyFilter(filterName, isActive) {
@@ -617,6 +616,11 @@ document.addEventListener('DOMContentLoaded', function() {
       if (window.searchManager && window.searchManager.clearSearch) {
         window.searchManager.clearSearch();
       }
+
+      // Reset all group styles
+      Object.keys(this.config.exclusiveGroups).forEach(groupName => {
+        this.updateGroupStyles(groupName, null);
+      });
       
       // Reset regular filters without checking search
       Object.keys(this.filterStates).forEach(filterName => {
@@ -639,6 +643,22 @@ document.addEventListener('DOMContentLoaded', function() {
       this.needsOrderRestoration = false;
       
       console.log('🚀 PERFORMANCE: All filters and search cleared');
+    }
+
+    updateGroupStyles(groupName, activeFilterName) {
+      const groupFilters = this.config.exclusiveGroups[groupName];
+      if (!groupFilters) return;
+
+      groupFilters.forEach(filterName => {
+        const button = this.buttons[filterName];
+        if (button) {
+          if (activeFilterName && filterName !== activeFilterName) {
+            button.classList.add('filter-disabled');
+          } else {
+            button.classList.remove('filter-disabled');
+          }
+        }
+      });
     }
 
     resetFiltersOnly() {
