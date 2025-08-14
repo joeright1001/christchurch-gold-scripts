@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
       /* --------- redirect --------- */
-      window.location.href = `/contact-us?${qp.toString()}`;
+      window.location.href = `/connect-dealer?${qp.toString()}`;
     });
   });
 });
