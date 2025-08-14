@@ -198,13 +198,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
     scrollToPriceTicker() {
       const priceTicker = document.getElementById('price-ticker');
-      if (priceTicker) {
-        priceTicker.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-        console.log('🚀 SCROLL: Smoothly scrolled to price-ticker');
-      }
+      if (!priceTicker) return;
+
+      const targetPosition = priceTicker.getBoundingClientRect().top + window.pageYOffset;
+      const startPosition = window.pageYOffset;
+      const distance = targetPosition - startPosition;
+      const duration = 800; // Scroll duration in milliseconds
+      let startTime = null;
+
+      // Easing function for smooth in-and-out effect
+      const easeInOutQuad = (t, b, c, d) => {
+        t /= d / 2;
+        if (t < 1) return c / 2 * t * t + b;
+        t--;
+        return -c / 2 * (t * (t - 2) - 1) + b;
+      };
+
+      const animation = (currentTime) => {
+        if (startTime === null) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const run = easeInOutQuad(timeElapsed, startPosition, distance, duration);
+        window.scrollTo(0, run);
+        if (timeElapsed < duration) {
+          requestAnimationFrame(animation);
+        }
+      };
+
+      requestAnimationFrame(animation);
+      console.log('🚀 SCROLL: Initiated custom smooth scroll to price-ticker');
     }
 
     // 🚀 PERFORMANCE OPTIMIZED: CSS-based filtering instead of DOM cloning
