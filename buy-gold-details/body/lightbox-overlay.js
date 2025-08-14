@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (width < 480) {
       return {
         fontSize: '1rem',
-        bottomPosition: '45%',
+        bottomPosition: '20%',
         paddingTop: '5px',
         paddingBottom: '5px',
         paddingLeft: '10px',
@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     else if (width >= 480 && width < 768) {
       return {
         fontSize: '1.125rem',
-        bottomPosition: '45%',
+        bottomPosition: '20%',
         paddingTop: '5px',
         paddingBottom: '5px',
         paddingLeft: '10px',
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
     else if (width >= 768 && width < 992) {
       return {
         fontSize: '1.5rem',
-        bottomPosition: '45%',
+        bottomPosition: '20%',
         paddingTop: '8px',
         paddingBottom: '8px',
         paddingLeft: '15px',
