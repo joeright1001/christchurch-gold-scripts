@@ -13,6 +13,15 @@ document.addEventListener('DOMContentLoaded', function() {
       this.gridContainer = null;
       this.originalOrder = []; // Store original DOM order
       this.needsOrderRestoration = false; // Flag to track if order needs restoration
+      this.scrollTriggerFilters = [
+        'checkbox_coin', 'checkbox_minted_bar', 'checkbox_cast_bar', // Type
+        'checkbox_1g', 'checkbox_2_5g', 'checkbox_5g', 'checkbox_10g', 'checkbox_20g', 'checkbox_25g',
+        'checkbox_1_20oz', 'checkbox_1_10oz', 'checkbox_1_4oz', 'checkbox_1_2oz', 'checkbox_1oz',
+        'checkbox_2oz', 'checkbox_5oz', 'checkbox_10oz', 'checkbox_1kg', // Weight
+        'checkbox_asahi', 'checkbox_austrian', 'checkbox_gsm', 'checkbox_investment', 'checkbox_nzmint',
+        'checkbox_pamp', 'checkbox_canada', 'checkbox_african', 'checkbox_highland', 'checkbox_perth',
+        'checkbox_royal', 'checkbox_usa', 'checkbox_valcambi' // Mint
+      ];
       
       // Cache special div elements for new filters
       this.specialDivs = {
@@ -170,6 +179,11 @@ document.addEventListener('DOMContentLoaded', function() {
     applyFilter(filterName, isActive) {
       this.filterStates[filterName] = isActive;
       this.updateButtonStyles(filterName, isActive);
+
+      // If a trigger filter is activated, scroll to the price ticker
+      if (isActive && this.scrollTriggerFilters.includes(filterName)) {
+        this.scrollToPriceTicker();
+      }
       
       // Reduced logging - only log key filter changes
       if ((filterName.includes('checkbox_starter') || filterName.includes('checkbox_popular') || filterName.includes('checkbox_in_stock')) && 
@@ -180,6 +194,17 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // 🚀 PERFORMANCE: Use optimized CSS-based filtering
       this.applyAllFiltersOptimized();
+    }
+
+    scrollToPriceTicker() {
+      const priceTicker = document.getElementById('price-ticker');
+      if (priceTicker) {
+        priceTicker.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+        console.log('🚀 SCROLL: Smoothly scrolled to price-ticker');
+      }
     }
 
     // 🚀 PERFORMANCE OPTIMIZED: CSS-based filtering instead of DOM cloning
