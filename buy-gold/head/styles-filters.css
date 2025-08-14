@@ -25,17 +25,15 @@
 }
 
 /* ==================== DISABLED FILTER STYLING ==================== */
-.checkbox_div {
-  transition: opacity 0.3s ease; /* Smooth transition for enabling/disabling */
+.checkbox_buy, .checkbox_buy_pop, .checkbox_buy_pop2, .checkbox_buy-copy {
+  transition: opacity 0.3s ease;
 }
 
-.checkbox_div.filter-disabled {
-  position: relative;
+.filter-disabled {
   pointer-events: none;
-  opacity: 0.5; /* Fade the entire element slightly */
 }
 
-.checkbox_div.filter-disabled::before {
+.filter-disabled .checkbox_div::before {
   content: '';
   position: absolute;
   top: 3px;
@@ -44,5 +42,22 @@
   bottom: 3px;
   background-color: #f0f0f0; /* Light grey fill */
   border-radius: 2px;
-  z-index: 1; /* Ensure it's above the background but below content */
+  z-index: 1;
+}
+
+.filter-disabled .title_filter,
+.filter-disabled .title_filter-pop,
+.filter-disabled .title_filter-pop-start {
+  opacity: 0.5;
+}
+
+/* ==================== SELECTED FILTER STYLING ==================== */
+.filter-selected .checkbox_div {
+  border-width: 2px;
+}
+
+.filter-selected .title_filter,
+.filter-selected .title_filter-pop,
+.filter-selected .title_filter-pop-start {
+  font-weight: bold;
 }
