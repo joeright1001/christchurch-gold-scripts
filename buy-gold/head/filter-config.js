@@ -226,6 +226,7 @@ window.FILTER_CONFIG = {
     ],
     metal: ['checkbox_gold', 'checkbox_silver'],
     stock: ['checkbox_in_stock', 'checkbox_live_mint'],
-    product_type: ['checkbox_investor', 'checkbox_collectables']
+    product_type: ['checkbox_investor', 'checkbox_collectables'],
+    most_popular: ['checkbox_popular', 'checkbox_starter', 'checkbox_investor', 'checkbox_dealer', 'checkbox_collectables']
   }
 };
