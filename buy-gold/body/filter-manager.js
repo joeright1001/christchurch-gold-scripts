@@ -650,12 +650,20 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!groupFilters) return;
 
       groupFilters.forEach(filterName => {
-        const button = this.buttons[filterName];
-        if (button) {
-          if (activeFilterName && filterName !== activeFilterName) {
-            button.classList.add('filter-disabled');
+        const parentWrapper = document.querySelector(`[data-filter-parent-for="${filterName}"]`);
+        if (parentWrapper) {
+          if (activeFilterName) {
+            if (filterName === activeFilterName) {
+              parentWrapper.classList.add('filter-selected');
+              parentWrapper.classList.remove('filter-disabled');
+            } else {
+              parentWrapper.classList.add('filter-disabled');
+              parentWrapper.classList.remove('filter-selected');
+            }
           } else {
-            button.classList.remove('filter-disabled');
+            // No active filter, so remove all special classes
+            parentWrapper.classList.remove('filter-selected');
+            parentWrapper.classList.remove('filter-disabled');
           }
         }
       });
