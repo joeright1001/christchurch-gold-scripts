@@ -172,11 +172,11 @@ window.FILTER_CONFIG = {
     },
     checkbox_gold: {
       attribute: 'data-metal',
-      values: ['gold']
+      values: ['gold', 'all']
     },
     checkbox_silver: {
       attribute: 'data-metal',
-      values: ['silver']
+      values: ['silver', 'all']
     },
     checkbox_in_stock: {
       attribute: 'data-stock-status',
