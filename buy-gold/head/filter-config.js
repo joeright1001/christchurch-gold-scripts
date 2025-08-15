@@ -120,7 +120,7 @@ window.FILTER_CONFIG = {
     },
     checkbox_gsm: {
       attribute: 'data-mint',
-      values: ['Golden State Mint']
+      values: ['GSM']
     },
     checkbox_investment: {
       attribute: 'data-mint',
