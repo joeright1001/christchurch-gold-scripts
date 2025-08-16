@@ -140,6 +140,14 @@ document.addEventListener('DOMContentLoaded', function() {
     applySortRuleOptimized(sortType) {
       const rule = this.config.rules[sortType];
       
+      // If search is active, re-apply it first to ensure we're sorting the correct subset
+      if (window.searchManager && window.searchManager.isActive()) {
+        const searchTerm = window.searchManager.getCurrentTerm();
+        if (searchTerm) {
+          window.searchManager.filterProductsWithCSS(searchTerm);
+        }
+      }
+      
       if (!this.gridContainer) {
         console.error('Grid container not found');
         return;
@@ -214,6 +222,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     restoreOriginalOrder() {
       // Reset filters first to get all items back
+      
+      // If search is active, re-apply it to restore the search results in default order
+      if (window.searchManager && window.searchManager.isActive()) {
+        const searchTerm = window.searchManager.getCurrentTerm();
+        if (searchTerm) {
+          window.searchManager.filterProductsWithCSS(searchTerm);
+        }
+      }
       
       // 🚀 PERFORMANCE FIX: Actually restore DOM elements to original order
       if (this.gridContainer && this.originalOrder.length > 0) {

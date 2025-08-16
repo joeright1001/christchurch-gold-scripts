@@ -642,6 +642,11 @@ document.addEventListener('DOMContentLoaded', function() {
       // Reset order restoration flag
       this.needsOrderRestoration = false;
       
+      // Also reset the dropdown to its default state
+      if (window.customDropdown && window.customDropdown.reset) {
+        window.customDropdown.reset();
+      }
+      
       console.log('🚀 PERFORMANCE: All filters and search cleared');
     }
 
