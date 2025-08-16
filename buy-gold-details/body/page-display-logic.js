@@ -68,6 +68,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const onlineOrder = document.getElementById('online-order')?.textContent.trim().toLowerCase();
     const metal = document.getElementById('metal')?.textContent.trim().toLowerCase();
 
+    if (market === 'dg-closed') {
+      const tag1 = document.getElementById('tag1');
+      if (tag1) tag1.style.display = 'none';
+    }
+
     // Override: online-order = false
     if (onlineOrder === 'false') {
       showElement('broker');
