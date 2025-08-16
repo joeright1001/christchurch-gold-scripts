@@ -9,7 +9,7 @@
     retryDelay: 300,
     options: [
       { text: 'Default (Popular)', value: 'default' },
-      { text: 'Easy Starter Options', value: 'getting-started-select' },
+      { text: 'Getting Started Options', value: 'getting-started-select' },
       { text: 'Investment Options', value: 'investor-select' },
       { text: 'All Gold', value: 'all-gold-select' },
       { text: 'All Silver', value: 'all-silver-select' },
