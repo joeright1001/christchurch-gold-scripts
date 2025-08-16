@@ -125,19 +125,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     resetFilters() {
-      // SIMPLIFIED: Always clear search and filters when returning to default
       // This provides a clean "reset to default state" experience
       
-      // Clear search input and state completely
-      if (window.searchManager && window.searchManager.clearSearch) {
-        window.searchManager.clearSearch();
-        console.log('🚀 PERFORMANCE: Search cleared for Default option');
-      }
-      
-      // Clear all filters
-      if (window.filterControls && window.filterControls.resetAllFilters) {
-        window.filterControls.resetAllFilters();
-        console.log('🚀 PERFORMANCE: Filters reset by sort operation');
+      // Clear filters only, preserving search input
+      if (window.filterControls && window.filterControls.resetFiltersOnly) {
+        window.filterControls.resetFiltersOnly();
+        console.log('🚀 PERFORMANCE: Filters reset by sort operation (search preserved)');
       }
     }
 

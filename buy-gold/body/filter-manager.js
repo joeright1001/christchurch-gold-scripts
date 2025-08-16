@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const { operation, resetFirst } = event.detail;
         
         if (resetFirst) {
-          this.resetAllFilters();
+          this.resetFiltersOnly();
         }
         
         if (this.config.rules[operation]) {
