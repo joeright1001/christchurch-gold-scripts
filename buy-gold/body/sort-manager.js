@@ -140,6 +140,11 @@ document.addEventListener('DOMContentLoaded', function() {
     applySortRuleOptimized(sortType) {
       const rule = this.config.rules[sortType];
       
+      // Clear any "no results" message before sorting
+      if (window.searchManager && window.searchManager.clearNoResultsMessage) {
+        window.searchManager.clearNoResultsMessage();
+      }
+      
       // If search is active, re-apply it first to ensure we're sorting the correct subset
       if (window.searchManager && window.searchManager.isActive()) {
         const searchTerm = window.searchManager.getCurrentTerm();
@@ -222,6 +227,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     restoreOriginalOrder() {
       // Reset filters first to get all items back
+      
+      // Clear any "no results" message before restoring order
+      if (window.searchManager && window.searchManager.clearNoResultsMessage) {
+        window.searchManager.clearNoResultsMessage();
+      }
       
       // If search is active, re-apply it to restore the search results in default order
       if (window.searchManager && window.searchManager.isActive()) {

@@ -285,10 +285,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!this.gridContainer) return;
       
       // Remove any existing no results message
-      const existingMessage = this.gridContainer.querySelector('.no-results-message');
-      if (existingMessage) {
-        existingMessage.remove();
-      }
+      this.clearNoResultsMessage();
       
       const noResultsDiv = document.createElement('div');
       noResultsDiv.style.width = '100%';
@@ -300,6 +297,18 @@ document.addEventListener('DOMContentLoaded', function() {
       noResultsDiv.className = 'no-results-message';
       
       this.gridContainer.appendChild(noResultsDiv);
+    }
+
+    /**
+     * Clear the "no results" message from the DOM
+     */
+    clearNoResultsMessage() {
+      if (this.gridContainer) {
+        const existingMessage = this.gridContainer.querySelector('.no-results-message');
+        if (existingMessage) {
+          existingMessage.remove();
+        }
+      }
     }
 
     /**
@@ -316,12 +325,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       // Remove any no results message
-      if (this.gridContainer) {
-        const existingMessage = this.gridContainer.querySelector('.no-results-message');
-        if (existingMessage) {
-          existingMessage.remove();
-        }
-      }
+      this.clearNoResultsMessage();
 
       // 🚀 PERFORMANCE FIX: Explicitly remove filter-hidden class from search
       this.showAllItemsCSS();
@@ -355,12 +359,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       
       // Remove any no results message
-      if (this.gridContainer) {
-        const existingMessage = this.gridContainer.querySelector('.no-results-message');
-        if (existingMessage) {
-          existingMessage.remove();
-        }
-      }
+      this.clearNoResultsMessage();
       
       // 🚀 PERFORMANCE FIX: Explicitly remove filter-hidden class from search
       this.showAllItemsCSS();
@@ -396,6 +395,8 @@ document.addEventListener('DOMContentLoaded', function() {
       window.searchManager.getCurrentTerm = () => this.getCurrentSearchTerm();
       // NEW: Expose the filter method for coordination with filter manager
       window.searchManager.filterProductsWithCSS = (searchTerm) => this.filterProductsWithCSS(searchTerm);
+      // NEW: Expose the clear no results message function
+      window.searchManager.clearNoResultsMessage = () => this.clearNoResultsMessage();
     }
   }
 

@@ -251,6 +251,11 @@ document.addEventListener('DOMContentLoaded', function() {
     applyAllFiltersOptimized() {
       if (!this.gridContainer) return;
       
+      // Clear any "no results" message before filtering
+      if (window.searchManager && window.searchManager.clearNoResultsMessage) {
+        window.searchManager.clearNoResultsMessage();
+      }
+      
       let visibleCount = 0;
       const processedSlugs = new Set();
       
