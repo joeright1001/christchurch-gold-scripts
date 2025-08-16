@@ -221,7 +221,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     restoreOriginalOrder() {
       // Reset filters first to get all items back
-      this.resetFilters();
       
       // 🚀 PERFORMANCE FIX: Actually restore DOM elements to original order
       if (this.gridContainer && this.originalOrder.length > 0) {
