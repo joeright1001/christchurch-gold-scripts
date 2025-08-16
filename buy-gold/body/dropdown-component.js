@@ -10,7 +10,6 @@
     options: [
       { text: 'Default (Popular)', value: 'default' },
       { text: 'Easy Starter Options', value: 'getting-started-select' },
-      { text: 'Popular', value: 'popular-select' },
       { text: 'Best Investment', value: 'investor-select' },
       { text: 'All Gold', value: 'all-gold-select' },
       { text: 'All Silver', value: 'all-silver-select' },
