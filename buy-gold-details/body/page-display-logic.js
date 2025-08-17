@@ -13,7 +13,7 @@
     #place-order,#get-quote,#button-closed,#button-247,
     #market-button-text-nz-closed,#market-button-text-dg-closed,
     #market-button-text-closed,#investor-1-oz-gold,#investor-1-oz-silver,
-    #offline-order-text,#broker-text{display:none;}
+    #offline-order-text,#broker-text,#out-stock-broker-text{display:none;}
   `;
   const styleTag = document.createElement('style');
   styleTag.textContent = hideCSS;
@@ -82,6 +82,15 @@ document.addEventListener('DOMContentLoaded', () => {
       return; // Exit early, don't process other combinations
     }
 
+    // Override: out-of-stock for online orders
+    if (stock === 'out-stock') {
+      showElement('state-out-stock', 'flex');
+      showElement('icon-out-stock');
+      showElement('state-market-out-stock', 'block');
+      showElement('out-stock-broker-text');
+      return; // Exit early, no other logic needed
+    }
+
     // Only process if we have both stock and market values
     if (stock && market) {
       // Handle specific combinations only
@@ -102,22 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showElement('icon-34-weeks');
         showElement('state-market-dg-open', 'flex');
         showElement('state-34-weeks', 'flex');
-      }
-      else if (market === 'dg-closed' && stock === 'out-stock') {
-       
-        showElement('broker');
-        showElement('offline-order-text');
-        showElement('state-market-out-stock', 'block'); // Correctly block
-        showInvestorButtons(metal);
-        showElement('icon-out-stock');
-      }
-      else if (market === 'dg-open' && stock === 'out-stock') {
-       
-        showElement('broker');
-        showElement('offline-order-text');
-        showElement('state-market-out-stock', 'block'); // Correctly block
-        showInvestorButtons(metal);
-        showElement('icon-out-stock');
       }
       else if (market === '247-open' && stock === 'in-stock') {
         showElement('place-order', 'inline-block');
