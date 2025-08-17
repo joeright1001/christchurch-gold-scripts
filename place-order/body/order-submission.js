@@ -107,6 +107,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
     });
 
     /* supplier checkbox rule (unchanged) */
+    /* Checkbox consent rule commented out as per request
     const prodType=document.getElementById('product-type');
     const supplierCb=document.getElementById('checkbox-supplier')||
                       form.querySelector('[name="checkbox-supplier"]');
@@ -118,6 +119,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
         ok=false;supplierErr=true;
       }
     }
+    */
 
     /* special product selection */
     if(!fd.get('product-name-full')){
