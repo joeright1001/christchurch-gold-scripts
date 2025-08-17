@@ -3,7 +3,7 @@
 
   // ==================== SVG ICON ====================
   const STAR_SVG_ICON = `
-    <svg width="16" height="16" viewBox="0 0 801 801" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right: 2px; position: relative; top: -4px;">
+    <svg width="16" height="16" viewBox="0 0 801 801" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right: 2px; position: relative; top: -6px;">
       <path d="M400 0.597656L533.325 300.598L800.022 333.934L599.987 500.599L666.65 800.604L400 633.924L133.331 800.604L199.999 500.599L-0.00292969 333.934L266.666 300.598L400 0.597656Z" fill="#F39C12"/>
       <path d="M400 1V434.333L533.333 301L400 1Z" fill="#F1C40F"/>
       <path d="M400 434.332L800 334.332L600 500.999L400 434.332Z" fill="#F1C40F"/>
