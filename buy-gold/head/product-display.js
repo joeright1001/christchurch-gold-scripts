@@ -5,12 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Stock-status icons
   const outOfStockImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a181380123c0be15d520b7_out-stock-notify.webp";
   const liveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a181384ec6ceb822714a2c_in-stock-weeks.webp";
-  const inStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a181380582c4021ed539a6_in-stock-today.webp";
+  const inStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a1922a1c649958c68f32a0_in-stock3.webp";
 
   // Popular combo-images
   const popularOutOfStockImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a181380123c0be15d520b7_out-stock-notify.webp";
   const popularLiveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a184632bddc5018d8d3abe_in-stock-weeks2.webp";
-  const popularInStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a18463c99ec56a47c1edee_in-stock-pop2.webp";
+  const popularInStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a1922a0d4f36d61064dea6_in-stock-pop3.webp";
 
   // Metal colours
   const goldBackground  = "#fff7e0";
