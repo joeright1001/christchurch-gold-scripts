@@ -27,7 +27,8 @@ document.addEventListener('DOMContentLoaded', function() {
       this.specialDivs = {
         speakToDealer: null,
         personalDealerEndBlock: null,
-        gettingStartedBlock: null
+        gettingStartedBlock: null,
+        investmentBlock: null
       };
       this.originalDivStates = {}; // Store original visibility states
       
@@ -62,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
       this.specialDivs.speakToDealer = document.getElementById('speak-to-dealer');
       this.specialDivs.personalDealerEndBlock = document.getElementById('personal-dealer-end-block');
       this.specialDivs.gettingStartedBlock = document.getElementById('getting-started-block');
+      this.specialDivs.investmentBlock = document.getElementById('investment-block');
 
       // Store original visibility states
       Object.entries(this.specialDivs).forEach(([key, element]) => {
@@ -446,6 +448,17 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
           if (this.specialDivs.gettingStartedBlock) {
             this.specialDivs.gettingStartedBlock.style.display = 'none';
+          }
+        }
+
+        // Handle investor filter
+        if (this.filterStates.checkbox_investor) {
+          if (this.specialDivs.investmentBlock) {
+            this.specialDivs.investmentBlock.style.display = 'block';
+          }
+        } else {
+          if (this.specialDivs.investmentBlock) {
+            this.specialDivs.investmentBlock.style.display = 'none';
           }
         }
       }
