@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const slug = val("website-url");
   if (slug) {
-    const fullURL = new URL(slug, window.location.origin).href;
+    const fullURL = new URL(`/buy-gold-details/${slug}`, window.location.origin).href;
     ["product-url-return","breadcrumb-url","breadcrumb-url2"].forEach(id => {
       const a = document.getElementById(id);
       if (a) a.href = fullURL;
