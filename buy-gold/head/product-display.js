@@ -3,7 +3,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   /* ---------- CONSTANTS ---------- */
   // Stock-status icons
-  const outOfStockImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/689aea31baeaa4f3ba434845_out-stock-icon2.webp";
+  const outOfStockImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a12b37b3d116c208f2e54f_Group%20146%20(1)%20(1).webp";
   const liveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/689aea31633ba1f8a8efdc02_direct-mint-icon.webp";
   const inStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/689aea318e7f856fd808d70d_in-stock-icon2.webp";
 
