@@ -1,5 +1,23 @@
 (function() {
   'use strict';
+
+  // ==================== SVG ICON ====================
+  const STAR_SVG_ICON = `
+    <svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right: 8px;">
+      <g transform="translate(0 -1028.4)">
+        <path d="m9.533-0.63623 2.79 6.2779 5.581 0.6976-4.186 3.4877 1.395 6.278-5.58-3.488-5.5804 3.488 1.3951-6.278-4.1853-3.4877 5.5804-0.6976z" transform="matrix(1.4336 0 0 1.4336 -1.6665 1029.3)" fill="#f39c12"/>
+        <g fill="#f1c40f">
+          <g>
+            <path d="m12 0v13l4-4z" transform="translate(0 1028.4)"/>
+            <path d="m12 13 12-3-6 5z" transform="translate(0 1028.4)"/>
+            <path d="m12 13 8 11-8-5z" transform="translate(0 1028.4)"/>
+            <path d="m12 13-8 11 2-9z" transform="translate(0 1028.4)"/>
+          </g>
+          <path d="m12 13-12-3 8-1z" transform="translate(0 1028.4)"/>
+        </g>
+      </g>
+    </svg>
+  `;
   
   // ==================== DROPDOWN CONFIGURATION ====================
   const DROPDOWN_CONFIG = {
@@ -11,7 +29,7 @@
       { text: 'Default (Popular)', value: 'default' },
     //  { text: 'Started Options', value: 'getting-started-select' },
     //  { text: 'Investment Options', value: 'investor-select' },
-      { text: 'In-Stock to Collect Today', value: 'in-stock-select' },
+      { text: `${STAR_SVG_ICON} Collect it Today!`, value: 'in-stock-select' },
       { text: 'Latest / 2025', value: 'latest' },
       { text: 'Price: Best per Oz', value: 'value' },
       { text: 'Price: Low to High', value: 'lowest-price' },
@@ -95,7 +113,8 @@
 
     buildOptions() {
       this.config.options.forEach(option => {
-        const optionElement = this.createElement('div', 'filter-option', option.text);
+        const optionElement = this.createElement('div', 'filter-option');
+        optionElement.innerHTML = option.text; // Use innerHTML to render SVG
         optionElement.setAttribute('data-value', option.value);
         this.optionsElement.appendChild(optionElement);
       });
@@ -122,9 +141,11 @@
     }
 
     handleOptionClick(e) {
-      if (!e.target.classList.contains('filter-option')) return;
-      const value = e.target.getAttribute('data-value');
-      const text = e.target.textContent;
+      const optionElement = e.target.closest('.filter-option');
+      if (!optionElement) return;
+      
+      const value = optionElement.getAttribute('data-value');
+      const text = optionElement.textContent.trim(); // Use textContent to get clean text without SVG
       this.selectOption(value, text);
     }
 
