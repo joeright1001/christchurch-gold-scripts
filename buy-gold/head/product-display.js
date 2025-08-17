@@ -3,14 +3,14 @@
 document.addEventListener('DOMContentLoaded', () => {
   /* ---------- CONSTANTS ---------- */
   // Stock-status icons
-  const outOfStockImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a12b37b3d116c208f2e54f_Group%20146%20(1)%20(1).webp";
-  const liveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/689aea318e7f856fd808d70d_in-stock-icon2.webp";
-  const inStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/689aea318e7f856fd808d70d_in-stock-icon2.webp";
+  const outOfStockImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a181380123c0be15d520b7_out-stock-notify.webp";
+  const liveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a181384ec6ceb822714a2c_in-stock-weeks.webp";
+  const inStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a181380582c4021ed539a6_in-stock-today.webp";
 
   // Popular combo-images
-  const popularOutOfStockImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/689aea323253ae0700606a3d_out-stock-pop-icon.webp";
-  const popularLiveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/689aea313f2769c839d29f0f_in-stock-pop-icon.webp";
-  const popularInStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/689aea313f2769c839d29f0f_in-stock-pop-icon.webp";
+  const popularOutOfStockImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a181381a82e0deeadec2b4_out-stock-pop.webp";
+  const popularLiveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a181380388eab7d0dfd813_in-stock-weeks-pop.webp";
+  const popularInStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a18138f047eb9c3888bc85_in-stock-pop.webp";
 
   // Metal colours
   const goldBackground  = "#fff7e0";
