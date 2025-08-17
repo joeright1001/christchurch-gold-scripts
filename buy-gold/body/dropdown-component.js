@@ -3,19 +3,13 @@
 
   // ==================== SVG ICON ====================
   const STAR_SVG_ICON = `
-    <svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right: 8px;">
-      <g transform="translate(0 -1028.4)">
-        <path d="m9.533-0.63623 2.79 6.2779 5.581 0.6976-4.186 3.4877 1.395 6.278-5.58-3.488-5.5804 3.488 1.3951-6.278-4.1853-3.4877 5.5804-0.6976z" transform="matrix(1.4336 0 0 1.4336 -1.6665 1029.3)" fill="#f39c12"/>
-        <g fill="#f1c40f">
-          <g>
-            <path d="m12 0v13l4-4z" transform="translate(0 1028.4)"/>
-            <path d="m12 13 12-3-6 5z" transform="translate(0 1028.4)"/>
-            <path d="m12 13 8 11-8-5z" transform="translate(0 1028.4)"/>
-            <path d="m12 13-8 11 2-9z" transform="translate(0 1028.4)"/>
-          </g>
-          <path d="m12 13-12-3 8-1z" transform="translate(0 1028.4)"/>
-        </g>
-      </g>
+    <svg width="16" height="16" viewBox="0 0 801 801" fill="none" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right: 8px;">
+      <path d="M400 0.597656L533.325 300.598L800.022 333.934L599.987 500.599L666.65 800.604L400 633.924L133.331 800.604L199.999 500.599L-0.00292969 333.934L266.666 300.598L400 0.597656Z" fill="#F39C12"/>
+      <path d="M400 1V434.333L533.333 301L400 1Z" fill="#F1C40F"/>
+      <path d="M400 434.332L800 334.332L600 500.999L400 434.332Z" fill="#F1C40F"/>
+      <path d="M400 434.332L666.667 800.999L400 634.332V434.332Z" fill="#F1C40F"/>
+      <path d="M400 434.332L133.333 800.999L200 500.999L400 434.332Z" fill="#F1C40F"/>
+      <path d="M400 434.333L0 334.333L266.667 301L400 434.333Z" fill="#F1C40F"/>
     </svg>
   `;
   
@@ -29,7 +23,7 @@
       { text: 'Default (Popular)', value: 'default' },
     //  { text: 'Started Options', value: 'getting-started-select' },
     //  { text: 'Investment Options', value: 'investor-select' },
-      { text: `${STAR_SVG_ICON} Same Day Collect`, value: 'in-stock-select' },
+      { text: `${STAR_SVG_ICON}Same Day Collect`, value: 'in-stock-select' },
       { text: 'Latest / 2025', value: 'latest' },
       { text: 'Price: Best per Oz', value: 'value' },
       { text: 'Price: Low to High', value: 'lowest-price' },
