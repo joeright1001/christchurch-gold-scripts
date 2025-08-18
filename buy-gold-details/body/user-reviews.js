@@ -1,35 +1,6 @@
 function initUserReviews() {
     console.log("User reviews script started.");
 
-    // --- Feature 1: Smooth Scrolling for User Reviews Link ---
-    const userReviewsLink = document.getElementById('user-reviews-link');
-    const userReviewHeading = document.getElementById('user-review-heading'); // Corrected target for the accordion header
-
-    if (userReviewsLink && userReviewHeading) {
-        userReviewsLink.style.cursor = 'pointer';
-        userReviewsLink.addEventListener('click', function (event) {
-            event.preventDefault();
-
-            // Dispatch a more robust click event to trigger Webflow's interaction engine
-            const clickEvent = new MouseEvent('click', {
-                view: window,
-                bubbles: true,
-                cancelable: true
-            });
-            userReviewHeading.dispatchEvent(clickEvent);
-
-            // Use jQuery for smooth scrolling to the header, matching other site links
-            const headerOffset = 100;
-            const elementPosition = userReviewHeading.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-            $('html, body').animate({
-                scrollTop: offsetPosition
-            }, 1200, 'swing');
-        });
-    } else {
-        console.log("Scroll elements (user-reviews-link or user-review-heading) not found.");
-    }
 
     // --- Feature 2: Dynamic Star Ratings for Each Review ---
     const reviewBlocks = document.querySelectorAll('.user-review-block');
