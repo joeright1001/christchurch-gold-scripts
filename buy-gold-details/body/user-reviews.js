@@ -3,19 +3,19 @@ function initUserReviews() {
 
     // --- Feature 1: Smooth Scrolling for User Reviews Link ---
     const userReviewsLink = document.getElementById('user-reviews-link');
-    const userReviewsSection = document.getElementById('user-reviews');
+    const userReviewHeading = document.getElementById('user-review-heading'); // Corrected target for the accordion header
 
-    if (userReviewsLink && userReviewsSection) {
+    if (userReviewsLink && userReviewHeading) {
         userReviewsLink.style.cursor = 'pointer';
         userReviewsLink.addEventListener('click', function (event) {
             event.preventDefault();
 
-            // Programmatically click the target section to ensure it opens (if it's an accordion)
-            userReviewsSection.click();
+            // Programmatically click the accordion header to ensure it opens
+            userReviewHeading.click();
 
-            // Use jQuery for smooth scrolling to match other site links
+            // Use jQuery for smooth scrolling to the header, matching other site links
             const headerOffset = 100;
-            const elementPosition = userReviewsSection.getBoundingClientRect().top;
+            const elementPosition = userReviewHeading.getBoundingClientRect().top;
             const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
             $('html, body').animate({
@@ -23,7 +23,7 @@ function initUserReviews() {
             }, 1200, 'swing');
         });
     } else {
-        console.log("Scroll elements not found.");
+        console.log("Scroll elements (user-reviews-link or user-review-heading) not found.");
     }
 
     // --- Feature 2: Dynamic Star Ratings for Each Review ---
