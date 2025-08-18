@@ -10,8 +10,13 @@ function initUserReviews() {
         userReviewsLink.addEventListener('click', function (event) {
             event.preventDefault();
 
-            // Programmatically click the accordion header to ensure it opens
-            userReviewHeading.click();
+            // Dispatch a more robust click event to trigger Webflow's interaction engine
+            const clickEvent = new MouseEvent('click', {
+                view: window,
+                bubbles: true,
+                cancelable: true
+            });
+            userReviewHeading.dispatchEvent(clickEvent);
 
             // Use jQuery for smooth scrolling to the header, matching other site links
             const headerOffset = 100;
