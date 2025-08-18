@@ -6,12 +6,21 @@ function initUserReviews() {
     const userReviewsSection = document.getElementById('user-reviews');
 
     if (userReviewsLink && userReviewsSection) {
+        userReviewsLink.style.cursor = 'pointer';
         userReviewsLink.addEventListener('click', function (event) {
             event.preventDefault();
-            userReviewsSection.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
+
+            // Programmatically click the target section to ensure it opens (if it's an accordion)
+            userReviewsSection.click();
+
+            // Use jQuery for smooth scrolling to match other site links
+            const headerOffset = 100;
+            const elementPosition = userReviewsSection.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+            $('html, body').animate({
+                scrollTop: offsetPosition
+            }, 1200, 'swing');
         });
     } else {
         console.log("Scroll elements not found.");
