@@ -1,3 +1,20 @@
+// Function to load Flatpickr CSS and JS
+function loadFlatpickr() {
+  // Load Flatpickr CSS
+  const flatpickrCss = document.createElement('link');
+  flatpickrCss.rel = 'stylesheet';
+  flatpickrCss.href = 'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css';
+  document.head.appendChild(flatpickrCss);
+
+  // Load Flatpickr JS
+  const flatpickrScript = document.createElement('script');
+  flatpickrScript.src = 'https://cdn.jsdelivr.net/npm/flatpickr';
+  document.head.appendChild(flatpickrScript);
+}
+
+// Load Flatpickr when the DOM is ready
+document.addEventListener('DOMContentLoaded', loadFlatpickr);
+
 /**
  * Date Picker Initialization
  * Initializes Flatpickr with business day restrictions
