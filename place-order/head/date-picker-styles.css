@@ -17,7 +17,7 @@
   background-color: rgba(0, 0, 0, 0.1); /* Immediate color change on hover */
 }
 
-#date-picker-jewe:focus {
+#date-picker:focus {
   background-color: rgba(0, 0, 0, 0.1); /* Immediate color change on focus */
   border-color: #797979; /* Keep consistent border color on focus */
   outline: none; /* Remove the blue outline */
