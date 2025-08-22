@@ -5,7 +5,7 @@
  */
 
 document.addEventListener("DOMContentLoaded", function () {
-  let submitButton = document.getElementById("submit-order");
+  let submitButton = document.getElementById("submit-quote");
   let productName = document.getElementById("product-name-full");
   let noProductMessage = document.getElementById("no-product-selected");
 
