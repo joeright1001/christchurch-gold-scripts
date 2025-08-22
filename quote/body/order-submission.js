@@ -57,8 +57,8 @@ document.addEventListener('DOMContentLoaded',async()=>{
   const API_BASE_URL=await getApiBaseUrl();
   console.log('Using API base URL:',API_BASE_URL);
 
-  const orderBtn=document.querySelector('#place-order-submit');
-  const form    =document.querySelector('#wf-form-bullion-order');
+  const orderBtn=document.querySelector('#place-quote-submit');
+  const form    =document.querySelector('#wf-form-bullion-quote');
   if(!orderBtn||!form){console.error('Required elements not found');return;}
 
   /* ==========================================================
@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
         document.getElementById('trade-order')        ?.setAttribute('value',out.trade_order);
         document.getElementById('trade-order-display')?.setAttribute('value',out.trade_order);
 
-        (document.getElementById('submit-order')||form).click();
+        (document.getElementById('submit-quote')||form).click();
       }else{
         throw new Error('Invalid response from server');
       }
