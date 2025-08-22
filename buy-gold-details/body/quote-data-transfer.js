@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
       /* redirect to place-order page */
-      window.location.href = `/quote2?${qp.toString()}`;
+      window.location.href = `/quote?${qp.toString()}`;
     });
   });
 });
