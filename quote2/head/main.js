@@ -1,1 +1,0 @@
-(()=>{const e=new URLSearchParams(window.location.search).get("metal")?.toLowerCase();if(!e)return;const t=document.documentElement;"gold"===e?(t.style.setProperty("--gold_silver","#fff8e3"),t.style.setProperty("--gold_silver_background","#fffff5")):"silver"===e&&(t.style.setProperty("--gold_silver","#e6e6e6"),t.style.setProperty("--gold_silver_background","#f6f9ff"))})();
