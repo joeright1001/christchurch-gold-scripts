@@ -48,6 +48,10 @@ document.addEventListener("DOMContentLoaded", () => {
   setPair("sku",               val("sku"));
   setPair("auto-supplier",     val("auto-supplier"));
   setPair("supplier-item-id",  val("supplier-item-id"));
+  setPair("stock-status",      val("stock-status"));
+
+  /* collection display field */
+  setPair("collect2",          val("collect"));
 
   /* ------------------------------------------------------------------
      image & breadcrumb URLs
