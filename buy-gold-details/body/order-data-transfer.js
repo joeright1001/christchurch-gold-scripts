@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const skuField                = $("sku");
   const autoSupplierField       = $("auto-supplier");
   const supplierItemIdField     = $("supplier-item-id");
+  const stockStatusField        = $("stock-status");
 
   const placeOrderButton        = $("place-order");
 
@@ -80,7 +81,8 @@ document.addEventListener("DOMContentLoaded", function () {
         market                   : marketField?.textContent.trim() || "",
         sku                      : skuField?.textContent.trim() || "",
         "auto-supplier"          : autoSupplierField?.textContent.trim() || "",
-        "supplier-item-id"       : supplierItemIdField?.textContent.trim() || ""
+        "supplier-item-id"       : supplierItemIdField?.textContent.trim() || "",
+        "stock-status"           : stockStatusField?.textContent.trim() || ""
       });
 
       /* redirect to place-order page */
