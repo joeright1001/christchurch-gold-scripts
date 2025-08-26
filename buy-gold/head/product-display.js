@@ -4,13 +4,13 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---------- CONSTANTS ---------- */
   // Stock-status icons
   const outOfStockImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a181380123c0be15d520b7_out-stock-notify.webp";
-  const liveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a181384ec6ceb822714a2c_in-stock-weeks.webp";
+  const liveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68adf02dc8e19135fcdb5540_in-stock-2-3weeks.webp";
   const inStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a1922a1c649958c68f32a0_in-stock3.webp";
 
   // Popular combo-images
   const popularOutOfStockImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a181380123c0be15d520b7_out-stock-notify.webp";
-  const popularLiveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a184632bddc5018d8d3abe_in-stock-weeks2.webp";
-  const popularInStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a1922a0d4f36d61064dea6_in-stock-pop3.webp";
+  const popularLiveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68adf02d75e64e26618fb3c6_best-seller-2-3weeks.webp";
+  const popularInStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68adf02d176754b3b0f0bb72_best-seller-sameday.webp";
 
   // Metal colours
   const goldBackground  = "#fff7e0";
