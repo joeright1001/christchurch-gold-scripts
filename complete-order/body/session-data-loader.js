@@ -83,9 +83,10 @@ document.addEventListener("DOMContentLoaded", () => {
   update("total-unit-price-nzd", data.total_unit_price_nzd);
 
   /* -------------------------------------------------------------
-     5. Shipping fee (display only, no math)
+     5. Shipping display (display only, no math)
   -------------------------------------------------------------*/
-  update("shippingfee", data.shippingfee);
+  update("shippingfee", data.shippingfee);  // keep for backwards compatibility
+  update("shipping", data.shipping);        // new display field
 
   /* -------------------------------------------------------------
      6. Collect information
