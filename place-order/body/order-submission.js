@@ -180,6 +180,9 @@ document.addEventListener('DOMContentLoaded',async()=>{
       unit_price_nzd       :fd.get('unit-price-nzd')||"",
       total_unit_price_nzd :fd.get('total-unit-price-nzd')||"",
 
+      /* environment */
+      environment      :fd.get('environment')||"",
+      
       /* supplier meta */
       supplier_status  :fd.get('market-status')||"",
       supplier_name    :fd.get('market')||"",
