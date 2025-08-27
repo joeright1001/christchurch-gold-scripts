@@ -547,6 +547,11 @@ document.addEventListener('DOMContentLoaded', function() {
       if (filterName === 'checkbox_starter' && this.makeItEasyButton) {
         this.updateMakeItEasyButton(isActive);
       }
+      
+      // Handle SVG icon switching for getting started checkbox
+      if (filterName === 'checkbox_starter') {
+        this.updateStarterSVGIcons(isActive);
+      }
     }
 
     updateCheckboxStyles(filterName, isActive) {
@@ -594,6 +599,79 @@ document.addEventListener('DOMContentLoaded', function() {
         this.makeItEasyButton.classList.remove('active');
         console.log('🚀 MAKE IT EASY: Button deactivated - colors restored');
       }
+    }
+
+    updateStarterSVGIcons(isActive) {
+      // Get the SVG icons for getting started checkbox
+      const loadingIcon = document.getElementById('svg-start-icon-buy-page-loading');
+      const playIcon = document.getElementById('svg-start-icon-buy-page-play');
+      
+      if (!loadingIcon && !playIcon) {
+        // If icons don't exist, create them dynamically
+        this.createStarterSVGIcons();
+        return this.updateStarterSVGIcons(isActive);
+      }
+      
+      if (isActive) {
+        // Show play icon, hide loading icon
+        if (loadingIcon) loadingIcon.style.display = 'none';
+        if (playIcon) playIcon.style.display = 'block';
+        console.log('🚀 STARTER SVG: Switched to play icon (checkbox active)');
+      } else {
+        // Show loading icon, hide play icon
+        if (loadingIcon) loadingIcon.style.display = 'block';
+        if (playIcon) playIcon.style.display = 'none';
+        console.log('🚀 STARTER SVG: Switched to loading icon (checkbox inactive)');
+      }
+    }
+
+    createStarterSVGIcons() {
+      // Find the getting started checkbox container to place SVG icons
+      const starterCheckbox = this.buttons.checkbox_starter;
+      if (!starterCheckbox) {
+        console.warn('🚀 STARTER SVG: Getting started checkbox not found');
+        return;
+      }
+      
+      // Find a suitable container (parent or nearby element)
+      let container = starterCheckbox.parentElement;
+      if (!container) {
+        console.warn('🚀 STARTER SVG: No suitable container found for SVG icons');
+        return;
+      }
+      
+      // Create loading icon (default visible)
+      const loadingIcon = document.createElement('div');
+      loadingIcon.id = 'svg-start-icon-buy-page-loading';
+      loadingIcon.innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="10" stroke="#ccc" stroke-width="2"/>
+          <path d="M12 2a10 10 0 0 1 10 10" stroke="#666" stroke-width="2" stroke-linecap="round">
+            <animateTransform attributeName="transform" attributeType="XML" type="rotate" 
+                            from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/>
+          </path>
+        </svg>
+      `;
+      loadingIcon.style.display = 'block';
+      loadingIcon.style.marginLeft = '8px';
+      
+      // Create play icon (default hidden)
+      const playIcon = document.createElement('div');
+      playIcon.id = 'svg-start-icon-buy-page-play';
+      playIcon.innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="12" cy="12" r="10" fill="#28a745" stroke="#28a745" stroke-width="2"/>
+          <polygon points="10,8 16,12 10,16" fill="white"/>
+        </svg>
+      `;
+      playIcon.style.display = 'none';
+      playIcon.style.marginLeft = '8px';
+      
+      // Add icons to container
+      container.appendChild(loadingIcon);
+      container.appendChild(playIcon);
+      
+      console.log('🚀 STARTER SVG: Created SVG icons dynamically');
     }
 
     resetAllFilters() {
