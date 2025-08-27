@@ -14,9 +14,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const checkboxOrder        = $("checkbox-order");
   const payInPersonInput     = $("pay-in-person");
   const datePicker           = $("date-picker-order");
+  const timePicker           = $("time-picker");
+  const collectCheckbox      = $("checkbox-collect-live-low-stock");
+  const postCollectInput     = $("post-collect");
   const deliveryInput        = $("delivery");
   const addressInput         = $("address");
-  const shippingInput        = $("shipping");        // "true"/"false"
+  const shippingInput        = $("shipping");        // display value for shipping cost
   const existingOrderCheck   = $("existing-order");
 
   const totalPriceField      = $("total-price");
@@ -25,12 +28,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const totalAmountField1    = $("total-amount");
   const totalAmountField2    = $("total-amount2");   // optional twin
 
-  /* ------------ update total‑amount ------------ */
+  /* ------------ update shipping display and total‑amount ------------ */
   function updateTotalAmount() {
     const base = parseFloat(totalPriceField?.value || totalPriceField?.textContent) || 0;
-    const fee  = parseFloat(shippingFeeField?.value) || 0;
-    const useFee = shippingInput && shippingInput.value === "true";
-    const tot = useFee ? base + fee : base;
+    const fee = parseFloat(shippingFeeField?.value) || 0;
+    
+    // Update shipping display based on delivery method
+    const isShipping = deliveryInput?.value === "Shipping";
+    const shippingDisplay = isShipping ? fee : 0;
+    
+    if (shippingInput) {
+      if ("value" in shippingInput) shippingInput.value = shippingDisplay.toFixed(2);
+      shippingInput.textContent = shippingDisplay.toFixed(2);
+    }
+    
+    // Calculate total amount
+    const tot = isShipping ? base + fee : base;
 
     [totalAmountField1, totalAmountField2].forEach(el => {
       if (el) {
@@ -86,6 +99,31 @@ document.addEventListener("DOMContentLoaded", () => {
     updateTotalAmount();           // collect removes shipping fee
   }
 
+  /* ------------ time picker change ------------ */
+  function handleTimePickerUpdate() {
+    if (timePicker?.value && deliveryInput && !(existingOrderCheck?.checked)) {
+      deliveryInput.value = "Collect";
+    }
+    checkForConflicts();
+    updateTotalAmount();           // collect removes shipping fee
+  }
+
+  /* ------------ collection checkbox ------------ */
+  function handleCollectCheckboxUpdate() {
+    if (collectCheckbox?.checked && deliveryInput && !(existingOrderCheck?.checked)) {
+      deliveryInput.value = "Collect";
+    }
+    updateTotalAmount();           // collect removes shipping fee
+  }
+
+  /* ------------ post-collect dropdown ------------ */
+  function handlePostCollectUpdate() {
+    if (postCollectInput?.value.trim() && deliveryInput && !(existingOrderCheck?.checked)) {
+      deliveryInput.value = "Shipping";
+    }
+    updateTotalAmount();
+  }
+
   /* ------------ pay‑in‑person checkbox ------------ */
   function handlePayInPersonUpdate() {
     if (checkboxOrder && payInPersonInput) {
@@ -97,6 +135,9 @@ document.addEventListener("DOMContentLoaded", () => {
   addressInput?.addEventListener("blur", handleAddressUpdate);
   addressInput?.addEventListener("change", handleAddressUpdate);  // dropdown fires change
   datePicker?.addEventListener("blur", handleDatePickerUpdate);
+  timePicker?.addEventListener("change", handleTimePickerUpdate);
+  collectCheckbox?.addEventListener("change", handleCollectCheckboxUpdate);
+  postCollectInput?.addEventListener("change", handlePostCollectUpdate);
   checkboxOrder?.addEventListener("change", handlePayInPersonUpdate);
   existingOrderCheck?.addEventListener("change", () => {
     handleExistingOrderUpdate();
@@ -113,7 +154,10 @@ document.addEventListener("DOMContentLoaded", () => {
   } else {
     if (addressInput?.value.trim()) handleAddressUpdate();
     if (datePicker?.value)          handleDatePickerUpdate();
+    if (timePicker?.value)          handleTimePickerUpdate();
+    if (collectCheckbox?.checked)   handleCollectCheckboxUpdate();
+    if (postCollectInput?.value.trim()) handlePostCollectUpdate();
   }
   handlePayInPersonUpdate();
-  updateTotalAmount();              // base value with no shipping
+  updateTotalAmount();              // set initial shipping display and total
 });

@@ -140,8 +140,10 @@ document.addEventListener('DOMContentLoaded',async()=>{
 
     /* --- collect values (no shipping arithmetic) --- */
     let shippingFee = document.querySelector('#shippingfee')?.value.trim() || "";
-    if (fd.get('delivery') !== 'true') {
+    let shippingDisplay = document.querySelector('#shipping')?.value.trim() || "0";
+    if (fd.get('delivery') !== 'Shipping') {
       shippingFee = "0";
+      shippingDisplay = "0";
     }
     const jsonData={
       /* customer */
@@ -170,6 +172,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
       total_price      :fd.get('total-price')||"",
       total_amount     :fd.get('total-amount')||"",
       shippingfee      :shippingFee,
+      shipping         :shippingDisplay,
 
       /* GST + unit prices */
       unit_gst             :fd.get('unit-gst')||"",
