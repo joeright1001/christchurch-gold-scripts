@@ -31,10 +31,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // --- Logic to update page from the now-visible CMS panel ---
 
-        // 1. Update Breadcrumb URL to point back to the product page
+        // 1. Update return links to point back to the product page
+        const returnUrl = `/buy-gold-details/${productSlug}`;
+        
         const breadcrumbLink = document.getElementById('breadcrumb-url');
         if (breadcrumbLink) {
-          breadcrumbLink.href = `/buy-gold-details/${productSlug}`;
+          breadcrumbLink.href = returnUrl;
+        }
+
+        const returnLink = document.getElementById('product-url-return');
+        if (returnLink) {
+          returnLink.href = returnUrl;
         }
 
         // 2. Dynamically populate all inputs from CMS data
