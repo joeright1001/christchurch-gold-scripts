@@ -69,6 +69,20 @@ document.addEventListener("DOMContentLoaded", () => {
             productImage.src = imageUrl;
           }
         }
+
+        // 4. Set metal colors based on CMS data
+        const metalElement = targetItem.querySelector('.cms-product-metal');
+        if (metalElement) {
+          const metal = metalElement.textContent.toLowerCase();
+          const root = document.documentElement;
+          if (metal === "gold") {
+            root.style.setProperty("--gold_silver", "#fff8e3");
+            root.style.setProperty("--gold_silver_background", "#fffff5");
+          } else if (metal === "silver") {
+            root.style.setProperty("--gold_silver", "#e6e6e6");
+            root.style.setProperty("--gold_silver_background", "#f6f9ff");
+          }
+        }
       }
     }
   }
