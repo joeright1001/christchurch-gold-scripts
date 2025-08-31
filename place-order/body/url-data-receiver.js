@@ -1,8 +1,9 @@
 /**
- * Place-Order URL Data Receiver (Corrected for Webflow Routing)
+ * Place-Order URL Data Receiver (Combined)
  *
- * Handles both filtering the CMS collection based on a 'slug' query parameter
- * and populating form fields from other URL query parameters.
+ * Handles filtering the CMS collection based on a 'slug' query parameter,
+ * populating form fields from other URL query parameters, and updating
+ * page elements (like the product image) from the visible CMS item.
  */
 document.addEventListener("DOMContentLoaded", () => {
   // Get all query parameters from the URL
@@ -10,30 +11,46 @@ document.addEventListener("DOMContentLoaded", () => {
   const val = key => qs.get(key) || "";
 
   /* ------------------------------------------------------------------
-     Part 1: Filter CMS Collection based on 'slug' in Query String
+     Part 1: Filter CMS Collection and Update from its Content
   ------------------------------------------------------------------ */
   
-  // 1. Get the slug from the 'slug' query parameter
   const productSlug = val('slug');
 
-  // 2. If a slug is present, filter the CMS list
   if (productSlug) {
-    // 3. Get all the CMS items on the page.
     const allItems = document.querySelectorAll('.w-dyn-item');
-
-    // 4. Loop through every item and hide it by default.
     allItems.forEach(item => {
       item.style.display = 'none';
     });
 
-    // 5. Find the one specific product panel that matches the slug's ID.
     const targetProductPanel = document.getElementById(productSlug);
-
-    // 6. If that product panel exists, find its parent CMS item and make it visible.
     if (targetProductPanel) {
       const targetItem = targetProductPanel.closest('.w-dyn-item');
       if (targetItem) {
+        // Make the correct CMS item visible
         targetItem.style.display = 'block';
+
+        // --- Logic from update-from-cms.js is now here ---
+        // Now that the correct item is visible, update the page from its content.
+        
+        // 1. Update Product Image
+        const imageUrlElement = targetItem.querySelector('.cms-product-image-url');
+        if (imageUrlElement) {
+          const imageUrl = imageUrlElement.textContent.trim();
+          const productImage = document.getElementById('product-image');
+          if (productImage && imageUrl) {
+            productImage.src = imageUrl;
+          }
+        }
+
+        // 2. Update Stock Status Input
+        const stockStatusElement = targetItem.querySelector('.cms-product-stock-status');
+        if (stockStatusElement) {
+          const stockStatusValue = stockStatusElement.textContent.trim();
+          const stockLevelInput = document.getElementById('stock-level');
+          if (stockLevelInput) {
+            stockLevelInput.value = stockStatusValue;
+          }
+        }
       }
     }
   }
@@ -42,7 +59,6 @@ document.addEventListener("DOMContentLoaded", () => {
      Part 2: Populate Form Fields from URL Query Parameters
   ------------------------------------------------------------------ */
 
-  // Helper to write a value to an element and its duplicate (e.g., #id and #id2)
   function setPair(idBase, value) {
     if (!value) return;
     ["", "2"].forEach(suffix => {
@@ -54,34 +70,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // List of fields to populate from the URL
   const paramIds = [
-    "quantity",
-    "unit-price-nzd",
-    "unit-total-price-nzd",
-    "unit-gst",
-    "unit-total-gst",
-    "gst-total",
-    "sub-total",
-    "total-price",
-    "price_nzd",
-    "price-signed",
-    "product-name-full",
+    "quantity", "unit-price-nzd", "unit-total-price-nzd", "unit-gst",
+    "unit-total-gst", "gst-total", "sub-total", "total-price",
+    "price_nzd", "price-signed", "product-name-full",
   ];
 
-  // Populate each field
   paramIds.forEach(id => {
     setPair(id, val(id));
   });
   
-  // Also handle gst-total alias and total-amount
   setPair("gst-total", val("gst-total"));
   setPair("total-amount", val("total-price"));
 
   /* ------------------------------------------------------------------
      Part 3: Clean the URL
   ------------------------------------------------------------------ */
-  // Remove the query string from the URL bar after processing
   if (window.location.search) {
     window.history.replaceState({}, "", window.location.pathname);
   }
