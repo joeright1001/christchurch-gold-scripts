@@ -29,26 +29,37 @@ document.addEventListener("DOMContentLoaded", () => {
         // Make the correct CMS item visible
         targetItem.style.display = 'block';
 
-        // --- Logic from update-from-cms.js is now here ---
-        // Now that the correct item is visible, update the page from its content.
-        
-        // 1. Update Product Image
+        // --- Logic to update page from the now-visible CMS panel ---
+
+        // 1. Update Breadcrumb URL to point back to the product page
+        const breadcrumbLink = document.getElementById('breadcrumb-url');
+        if (breadcrumbLink) {
+          breadcrumbLink.href = `/buy-gold-details/${productSlug}`;
+        }
+
+        // 2. Dynamically populate all inputs from CMS data
+        const cmsDataElements = targetItem.querySelectorAll('div[class^="cms-product-"]');
+        cmsDataElements.forEach(element => {
+          const classParts = element.className.split('-');
+          if (classParts.length >= 3) {
+            // Create target ID from class, e.g., "cms-product-stock-level" -> "stock-level"
+            const targetId = classParts.slice(2).join('-');
+            const value = element.textContent.trim();
+            const targetInput = document.getElementById(targetId);
+
+            if (targetInput) {
+              targetInput.value = value;
+            }
+          }
+        });
+
+        // 3. Manually update the main product image (as it's not an input)
         const imageUrlElement = targetItem.querySelector('.cms-product-image-url');
         if (imageUrlElement) {
           const imageUrl = imageUrlElement.textContent.trim();
           const productImage = document.getElementById('product-image');
           if (productImage && imageUrl) {
             productImage.src = imageUrl;
-          }
-        }
-
-        // 2. Update Stock Status Input
-        const stockStatusElement = targetItem.querySelector('.cms-product-stock-status');
-        if (stockStatusElement) {
-          const stockStatusValue = stockStatusElement.textContent.trim();
-          const stockLevelInput = document.getElementById('stock-level');
-          if (stockLevelInput) {
-            stockLevelInput.value = stockStatusValue;
           }
         }
       }
