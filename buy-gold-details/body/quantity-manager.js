@@ -11,10 +11,14 @@
   const priceNZDEl   = document.getElementById("price_nzd");       // optional
   const totalPriceEl = document.getElementById("total-price");     // optional
 
-  const unitPriceEl  = document.getElementById("unit-price-nzd");
-  const unitGstEl    = document.getElementById("unit-gst");
-  const totalUnitEl  = document.getElementById("total-unit-price-nzd");
-  const totalGstEl   = document.getElementById("total-gst");
+  const unitPriceEl      = document.getElementById("unit-price-nzd");
+  const unitGstEl        = document.getElementById("unit-gst");
+
+  // Calculated fields for tax records
+  const unitTotalPriceEl = document.getElementById("unit-total-price-nzd");
+  const unitTotalGstEl   = document.getElementById("unit-total-gst");
+  const gstTotalEl       = document.getElementById("gst-total");
+  const subTotalEl       = document.getElementById("sub-total");
 
   /* ------------------------------------------------------------------
      Helpers
@@ -26,16 +30,23 @@
   ------------------------------------------------------------------ */
   function recalcTotals() {
     const qty = parseInt(qtyInput?.value, 10) || 1;
+    const unitPrice = num(unitPriceEl.textContent);
+    const unitGst = num(unitGstEl.textContent);
 
+    // Perform all calculations
+    const unitTotalPrice = unitPrice * qty;
+    const unitTotalGst = unitGst * qty;
+
+    // Update the user-visible total price (original logic)
     if (priceNZDEl && totalPriceEl) {
       totalPriceEl.textContent = (num(priceNZDEl.textContent) * qty).toFixed(2);
     }
-    if (unitPriceEl && totalUnitEl) {
-      totalUnitEl.textContent = (num(unitPriceEl.textContent) * qty).toFixed(2);
-    }
-    if (unitGstEl && totalGstEl) {
-      totalGstEl.textContent  = (num(unitGstEl.textContent) * qty).toFixed(2);
-    }
+
+    // Update all hidden fields for tax records
+    if (unitTotalPriceEl) unitTotalPriceEl.textContent = unitTotalPrice.toFixed(2);
+    if (unitTotalGstEl) unitTotalGstEl.textContent = unitTotalGst.toFixed(2);
+    if (gstTotalEl) gstTotalEl.textContent = unitTotalGst.toFixed(2);
+    if (subTotalEl) subTotalEl.textContent = unitTotalPrice.toFixed(2);
   }
 
   /* ------------------------------------------------------------------
