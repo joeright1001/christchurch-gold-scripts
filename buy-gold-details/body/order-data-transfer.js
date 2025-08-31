@@ -11,8 +11,10 @@ document.addEventListener("DOMContentLoaded", function () {
   /* ---------- Element Handles ---------- */
   const slugField = $("slug");
   const placeOrderButton = $("place-order");
-  const productNameField = $("product-name-full"); // For CMS wait check
-  const totalPriceField = $("total-price"); // For CMS wait check
+  const productNameField = $("product-name-full");
+  const totalPriceField = $("total-price");
+  const unitTotalPriceField = $("unit-total-price-nzd");
+  const gstTotalField = $("gst-total");
 
   // List of element IDs to be included as URL parameters
   const paramIds = [
@@ -30,17 +32,21 @@ document.addEventListener("DOMContentLoaded", function () {
   ];
 
   /* ---------- CMS Wait Helper ---------- */
+  // Waits for key data (including calculated fields) to be loaded before allowing the redirect
   function waitForCMSData(callback, retries = 10) {
     const slugReady = slugField?.textContent.trim();
     const nameReady = productNameField?.textContent.trim();
     const priceReady = totalPriceField?.textContent.trim();
+    // Also check that calculated fields have valid numbers
+    const unitTotalReady = !isNaN(parseFloat(unitTotalPriceField?.textContent));
+    const gstTotalReady = !isNaN(parseFloat(gstTotalField?.textContent));
 
-    if (slugReady && nameReady && priceReady) {
+    if (slugReady && nameReady && priceReady && unitTotalReady && gstTotalReady) {
       callback();
     } else if (retries > 0) {
       setTimeout(() => waitForCMSData(callback, retries - 1), 200);
     } else {
-      alert("Failed to load product details. Please refresh and try again.");
+      alert("Pricing details did not load correctly. Please refresh and try again.");
     }
   }
 
