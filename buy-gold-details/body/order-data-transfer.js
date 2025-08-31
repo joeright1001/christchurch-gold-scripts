@@ -11,10 +11,8 @@ document.addEventListener("DOMContentLoaded", function () {
   /* ---------- Element Handles ---------- */
   const slugField = $("slug");
   const placeOrderButton = $("place-order");
-  const productNameField = $("product-name-full");
-  const totalPriceField = $("total-price");
-  const unitTotalPriceField = $("unit-total-price-nzd");
-  const gstTotalField = $("gst-total");
+  const productNameField = $("product-name-full"); // For CMS wait check
+  const totalPriceField = $("total-price"); // For CMS wait check
 
   // List of element IDs to be included as URL parameters
   const paramIds = [
@@ -32,27 +30,26 @@ document.addEventListener("DOMContentLoaded", function () {
   ];
 
   /* ---------- CMS Wait Helper ---------- */
-  // Waits for key data (including calculated fields) to be loaded before allowing the redirect
   function waitForCMSData(callback, retries = 10) {
     const slugReady = slugField?.textContent.trim();
     const nameReady = productNameField?.textContent.trim();
     const priceReady = totalPriceField?.textContent.trim();
-    // Also check that calculated fields have valid numbers
-    const unitTotalReady = !isNaN(parseFloat(unitTotalPriceField?.textContent));
-    const gstTotalReady = !isNaN(parseFloat(gstTotalField?.textContent));
 
-    if (slugReady && nameReady && priceReady && unitTotalReady && gstTotalReady) {
+    if (slugReady && nameReady && priceReady) {
       callback();
     } else if (retries > 0) {
       setTimeout(() => waitForCMSData(callback, retries - 1), 200);
     } else {
-      alert("Pricing details did not load correctly. Please refresh and try again.");
+      alert("Failed to load product details. Please refresh and try again.");
     }
   }
 
   /* ---------- Click Handler ---------- */
   placeOrderButton.addEventListener("click", function (event) {
     event.preventDefault();
+    
+    // Helper to safely convert text to a number, defaulting to 0
+    const toNumber = (t) => parseFloat(String(t).replace(/[^0-9.-]+/g, "")) || 0;
 
     waitForCMSData(() => {
       const slug = slugField.textContent.trim();
@@ -65,14 +62,23 @@ document.addEventListener("DOMContentLoaded", function () {
       // Add the slug as the first parameter
       params.set("slug", slug);
 
-      // Add all other data parameters
+      // Add all other data parameters, cleaning them as we go
       paramIds.forEach((id) => {
         const element = $(id);
-        let value = "";
+        let value;
         if (element) {
-          value = "value" in element ? element.value : element.textContent;
+          // Handle specific field types
+          if (id === "product-name-full" || id === "price-signed") {
+            value = element.textContent.trim(); // These are strings
+          } else if (id === "quantity") {
+            value = parseInt(element.value, 10) || 1; // This is an integer
+          } else {
+            value = toNumber(element.textContent); // All others are numbers
+          }
+        } else {
+          value = (id === "product-name-full" || id === "price-signed") ? "" : 0;
         }
-        params.set(id, value.trim());
+        params.set(id, value);
       });
 
       // Construct the new URL: /place-order?[parameters]
