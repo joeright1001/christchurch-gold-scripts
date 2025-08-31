@@ -1,20 +1,23 @@
 /**
- * Place-Order URL Data Receiver
+ * Place-Order URL Data Receiver (Corrected for Webflow Routing)
  *
- * Handles both filtering the CMS collection based on a slug in the URL path
- * and populating form fields from URL query parameters.
+ * Handles both filtering the CMS collection based on a 'slug' query parameter
+ * and populating form fields from other URL query parameters.
  */
 document.addEventListener("DOMContentLoaded", () => {
+  // Get all query parameters from the URL
+  const qs = new URLSearchParams(window.location.search);
+  const val = key => qs.get(key) || "";
+
   /* ------------------------------------------------------------------
-     Part 1: Filter CMS Collection based on Slug in URL Path
+     Part 1: Filter CMS Collection based on 'slug' in Query String
   ------------------------------------------------------------------ */
   
-  // 1. Get the slug from the URL path (e.g., /place-order/your-slug)
-  const pathParts = window.location.pathname.split('/').filter(part => part);
-  const productSlug = pathParts[pathParts.length - 1];
+  // 1. Get the slug from the 'slug' query parameter
+  const productSlug = val('slug');
 
   // 2. If a slug is present, filter the CMS list
-  if (productSlug && productSlug !== 'place-order') {
+  if (productSlug) {
     // 3. Get all the CMS items on the page.
     const allItems = document.querySelectorAll('.w-dyn-item');
 
@@ -51,10 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Get query parameters
-  const qs = new URLSearchParams(window.location.search);
-  const val = key => qs.get(key) || "";
-
   // List of fields to populate from the URL
   const paramIds = [
     "quantity",
@@ -78,7 +77,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // Also handle gst-total alias and total-amount
   setPair("gst-total", val("gst-total"));
   setPair("total-amount", val("total-price"));
-
 
   /* ------------------------------------------------------------------
      Part 3: Clean the URL
