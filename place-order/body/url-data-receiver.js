@@ -1,14 +1,45 @@
 /**
  * Place-Order URL Data Receiver
- * Handles incoming URL parameters and populates form fields
- * Extracted from code-recieve-data-viaURL.txt
+ *
+ * Handles both filtering the CMS collection based on a slug in the URL path
+ * and populating form fields from URL query parameters.
  */
-
 document.addEventListener("DOMContentLoaded", () => {
+  /* ------------------------------------------------------------------
+     Part 1: Filter CMS Collection based on Slug in URL Path
+  ------------------------------------------------------------------ */
+  
+  // 1. Get the slug from the URL path (e.g., /place-order/your-slug)
+  const pathParts = window.location.pathname.split('/').filter(part => part);
+  const productSlug = pathParts[pathParts.length - 1];
+
+  // 2. If a slug is present, filter the CMS list
+  if (productSlug && productSlug !== 'place-order') {
+    // 3. Get all the CMS items on the page.
+    const allItems = document.querySelectorAll('.w-dyn-item');
+
+    // 4. Loop through every item and hide it by default.
+    allItems.forEach(item => {
+      item.style.display = 'none';
+    });
+
+    // 5. Find the one specific product panel that matches the slug's ID.
+    const targetProductPanel = document.getElementById(productSlug);
+
+    // 6. If that product panel exists, find its parent CMS item and make it visible.
+    if (targetProductPanel) {
+      const targetItem = targetProductPanel.closest('.w-dyn-item');
+      if (targetItem) {
+        targetItem.style.display = 'block';
+      }
+    }
+  }
 
   /* ------------------------------------------------------------------
-     helper: write to #id and #id2
+     Part 2: Populate Form Fields from URL Query Parameters
   ------------------------------------------------------------------ */
+
+  // Helper to write a value to an element and its duplicate (e.g., #id and #id2)
   function setPair(idBase, value) {
     if (!value) return;
     ["", "2"].forEach(suffix => {
@@ -20,77 +51,40 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* ------------------------------------------------------------------
-     get query parameters
-  ------------------------------------------------------------------ */
+  // Get query parameters
   const qs = new URLSearchParams(window.location.search);
   const val = key => qs.get(key) || "";
 
-  /* standard fields */
-  setPair("product-name-full", val("product-name-full"));
-  setPair("quantity",          val("quantity"));
-  setPair("total-price",       val("total-price"));
-  setPair("zoho-id",           val("zoho-id"));
-  setPair("collect",           val("collect"));
-  setPair("price_nzd",         val("price-nzd"));
+  // List of fields to populate from the URL
+  const paramIds = [
+    "quantity",
+    "unit-price-nzd",
+    "unit-total-price-nzd",
+    "unit-gst",
+    "unit-total-gst",
+    "gst-total",
+    "sub-total",
+    "total-price",
+    "price_nzd",
+    "price-signed",
+    "product-name-full",
+  ];
 
-  /* GST / unit price fields */
-  setPair("unit-gst",              val("unit-gst"));
-  setPair("total-gst",             val("total-gst"));
-  setPair("gst-total",             val("total-gst"));          // populates #gst-total & #gst-total2
-  setPair("unit-price-nzd",        val("unit-price-nzd"));
-  setPair("total-unit-price-nzd",  val("total-unit-price-nzd"));
-
-  /* supplier extras */
-  setPair("shippingfee",       val("shippingfee"));
-  setPair("market-status",     val("market-status"));
-  setPair("market",            val("market"));
-  setPair("sku",               val("sku"));
-  setPair("auto-supplier",     val("auto-supplier"));
-  setPair("supplier-item-id",  val("supplier-item-id"));
-  setPair("stock-status",      val("stock-status"));
-
-  /* collection display field */
-  setPair("collect2",          val("collect"));
-
-  /* ------------------------------------------------------------------
-     image & breadcrumb URLs
-  ------------------------------------------------------------------ */
-  const imgUrl = val("image-url");
-  if (imgUrl) {
-    const img = document.getElementById("product-image");
-    if (img) img.src = imgUrl;
-  }
-
-  const slug = val("website-url");
-  if (slug) {
-    const fullURL = new URL(`/buy-gold-details/${slug}`, window.location.origin).href;
-    ["product-url-return","breadcrumb-url","breadcrumb-url2"].forEach(id => {
-      const a = document.getElementById(id);
-      if (a) a.href = fullURL;
-    });
-  }
-  setPair("breadcrumb-text", val("product-name"));
-
-  /* ------------------------------------------------------------------
-     business logic based on product-type
-  ------------------------------------------------------------------ */
-  const pType = val("product-type").toLowerCase();
-  if (pType === "supplier") {
-    document.getElementById("in-stock-place-order-text")?.style.setProperty("display","none");
-  }
-  if (pType === "investor") {
-    document.getElementById("live-at-mint-order-text")?.style.setProperty("display","none");
-    document.getElementById("checkbox-supplier-block")?.style.setProperty("display","none");
-  }
-
-  /* ------------------------------------------------------------------
-     total-amount = total-price  (NO shipping added here)
-  ------------------------------------------------------------------ */
+  // Populate each field
+  paramIds.forEach(id => {
+    setPair(id, val(id));
+  });
+  
+  // Also handle gst-total alias and total-amount
+  setPair("gst-total", val("gst-total"));
   setPair("total-amount", val("total-price"));
 
+
   /* ------------------------------------------------------------------
-     clean URL
+     Part 3: Clean the URL
   ------------------------------------------------------------------ */
-  window.history.replaceState({}, "", window.location.pathname);
+  // Remove the query string from the URL bar after processing
+  if (window.location.search) {
+    window.history.replaceState({}, "", window.location.pathname);
+  }
 });
