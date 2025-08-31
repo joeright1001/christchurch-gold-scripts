@@ -1,8 +1,8 @@
 /**
- * Order Data Transfer Script
+ * Order Data Transfer Script (Corrected for Webflow Routing)
  *
- * Constructs a URL with the product slug in the path and essential order data
- * in the query string, then redirects to the place-order page.
+ * Constructs a URL with all data, including the slug, in the query string.
+ * This is required to work with Webflow's static routing.
  */
 document.addEventListener("DOMContentLoaded", function () {
   /* ---------- Helper to get element by ID ---------- */
@@ -30,7 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
   ];
 
   /* ---------- CMS Wait Helper ---------- */
-  // Waits for key data to be loaded before allowing the redirect
   function waitForCMSData(callback, retries = 10) {
     const slugReady = slugField?.textContent.trim();
     const nameReady = productNameField?.textContent.trim();
@@ -57,18 +56,21 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       const params = new URLSearchParams();
+      // Add the slug as the first parameter
+      params.set("slug", slug);
+
+      // Add all other data parameters
       paramIds.forEach((id) => {
         const element = $(id);
         let value = "";
         if (element) {
-          // Input elements have 'value', other elements have 'textContent'
           value = "value" in element ? element.value : element.textContent;
         }
         params.set(id, value.trim());
       });
 
-      // Construct the new URL: /place-order/[slug]?[parameters]
-      const newUrl = `/place-order/${slug}?${params.toString()}`;
+      // Construct the new URL: /place-order?[parameters]
+      const newUrl = `/place-order?${params.toString()}`;
 
       // Redirect to the place-order page
       window.location.href = newUrl;
