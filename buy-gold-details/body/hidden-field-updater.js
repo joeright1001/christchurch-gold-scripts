@@ -12,16 +12,18 @@ document.addEventListener("DOMContentLoaded", function () {
   const gstTotalEl = document.getElementById("gst-total");
   const subTotalEl = document.getElementById("sub-total");
 
+  // Critical fields that MUST exist for the script to run
   if (
     !qtyInput ||
     !unitPriceEl ||
     !unitGstEl ||
     !unitTotalPriceEl ||
     !unitTotalGstEl ||
-    !gstTotalEl ||
-    !subTotalEl
-  )
+    !gstTotalEl
+  ) {
+    console.error("A critical pricing element is missing from the page.");
     return;
+  }
 
   function calcTotals() {
     const qty = parseInt(qtyInput.value, 10) || 1;
@@ -32,9 +34,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const unitTotalGst = unitGst * qty;
 
     unitTotalPriceEl.textContent = unitTotalPrice.toFixed(2);
-    subTotalEl.textContent = unitTotalPrice.toFixed(2);
     unitTotalGstEl.textContent = unitTotalGst.toFixed(2);
     gstTotalEl.textContent = unitTotalGst.toFixed(2);
+    
+    // Only update the sub-total field if it exists on the page
+    if (subTotalEl) {
+      subTotalEl.textContent = unitTotalPrice.toFixed(2);
+    }
   }
 
   qtyInput.addEventListener("input", calcTotals); // run whenever qty changes
