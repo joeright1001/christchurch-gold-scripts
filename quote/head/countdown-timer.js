@@ -6,7 +6,7 @@
  * - Prevents browser tab suspension from affecting the countdown.
  * - Uses timestamps (`Date.now()`) stored in `localStorage` to track time reliably.
  * - Ensures tabs refresh when time expires, even if inactive.
- * - Forces all "quote" tabs to refresh when any reaches 00:02.
+ * - Forces all "place-bullion-order" tabs to refresh when any reaches 00:02.
  */
 
 function startLocalTimer() {
@@ -81,7 +81,7 @@ function startLocalTimer() {
 
 // Start the timer only if on the correct page
 document.addEventListener("DOMContentLoaded", function () {
-  if (window.location.pathname.includes("quote")) {
+  if (window.location.pathname.includes("place-order")) {
     startLocalTimer();
   }
 });
