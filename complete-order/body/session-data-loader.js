@@ -46,50 +46,50 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   /* -------------------------------------------------------------
-     3. Standard order fields
+     3. Get product data from nested structure
   -------------------------------------------------------------*/
+  const product = (data.products && data.products[0]) || {};
+  console.log("Product data:", product);
+
+  /* -------------------------------------------------------------
+     4. Populate page with data
+  -------------------------------------------------------------*/
+  // --- Customer and general order details
   update("First_Name_Order" , data.first_name_order);
   update("Last_Name_Order"  , data.last_name_order);
   update("Email_Order"      , data.email_order);
-  update("token"            , getSessionDataWithExpiry("token"));
   update("Phone_Order"      , data.phone_order);
-  update("product-name-full", data.product_name_full);
-  update("total-price"      , data.total_price);
-  update("quantity"         , data.quantity);
-  update("price_nzd"        , data.price_nzd);
-  update("zoho-id"          , data.zoho_id);
   update("delivery"         , data.delivery);
   update("pay-in-person"    , data.pay_in_person);
   update("checkbox-order"   , data.checkbox_order);
   update("address"          , data.address);
   update("message-order"    , data.message);
-  update("poli_pay"         , data.poli_pay);
   update("date-picker-order", data.date_picker_order);
   update("time-picker-order", data.time_picker_order);
+  update("collect"          , data.collect);
+
+  // --- Trade order and time
   update("trade-order"      , tradeOrder);
   update("order_creation_time", orderCreationTime);
+  update("token"            , getSessionDataWithExpiry("token"));
+
+  // --- Product details
+  update("product-name-full", product.name);
+  update("quantity"         , product.quantity);
+  update("zoho-id"          , product.zoho_id);
+  update("unit-price-nzd"   , product.unit_price_nzd);
+  update("unit-gst"         , product.unit_gst);
+  update("unit-total-price-nzd", product.unit_total_price_nzd);
+  update("total-price"      , product.total_price);
+
+  // --- Totals and financials
+  update("total-amount"     , data.total_amount);
+  update("gst-total"        , data.gst_total);
+  update("shipping"         , data.shipping);
+  update("sub-total"        , data.sub_total);
+
+  // --- Duplicate fields for other sections
   update("First_Name_Order2", data.first_name_order);
   update("Last_Name_Order2" , data.last_name_order);
-  update("total-price2"     , data.total_price);
-  update("total-amount"     , data.total_amount);
-
-  /* -------------------------------------------------------------
-     4. NEW GST & unit‑price fields
-  -------------------------------------------------------------*/
-  update("unit-gst"            , data.unit_gst);
-  update("total-gst"           , data.total_gst);
-  update("gst-total"           , data.total_gst);              // visible GST line
-  update("unit-price-nzd"      , data.unit_price_nzd);
-  update("total-unit-price-nzd", data.total_unit_price_nzd);
-
-  /* -------------------------------------------------------------
-     5. Shipping display (display only, no math)
-  -------------------------------------------------------------*/
-  update("shippingfee", data.shippingfee);  // keep for backwards compatibility
-  update("shipping", data.shipping);        // new display field
-
-  /* -------------------------------------------------------------
-     6. Collect information
-  -------------------------------------------------------------*/
-  update("collect", data.collect);
+  update("total-price2"     , product.total_price);
 });
