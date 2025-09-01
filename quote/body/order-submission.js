@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
   console.log('Using API base URL:',API_BASE_URL);
 
   const orderBtn=document.querySelector('#place-order-submit');
-  const form    =document.querySelector('#wf-form-quote');
+  const form    =document.querySelector('#wf-form-bullion-order');
   if(!orderBtn||!form){console.error('Required elements not found');return;}
 
   /* ==========================================================
