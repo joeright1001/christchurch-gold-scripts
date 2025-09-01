@@ -112,6 +112,16 @@ document.addEventListener('DOMContentLoaded', () => {
         showElement('state-market-dg-open', 'flex');
         showElement('state-34-weeks', 'flex');
       }
+      else if (market === 'dg-open' && stock === 'in-stock') {
+        showElement('place-order', 'inline-block');
+        showElement('get-quote', 'inline-block');
+        showElement('broker-text');
+        showElement('broker');
+        showElement('state-today', 'flex');
+        showElement('state-market-247', 'flex');
+        showElement('icon-in-stock');
+        showElement('icon-247');
+      }
       else if (market === '247-open' && stock === 'in-stock') {
         showElement('place-order', 'inline-block');
         showElement('get-quote', 'inline-block');
