@@ -5,7 +5,7 @@
  */
 
 // Define URLs
-const DEV_URL = "https://mware3-staging.up.railway.app";
+const DEV_URL = "https://cuddly-space-waddle-4jgr5gxqj6wg3q6jr-3000.app.github.dev";
 const STAGING_FALLBACK_URL = "https://mware3-staging.up.railway.app";
 const PROD_URL = "https://mware3-production.up.railway.app";
 
@@ -16,7 +16,7 @@ const MAX_ATTEMPTS = 5;
 async function isCodespaceAvailable() {
     try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 1000); // 3 second timeout
+        const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
         
         const response = await fetch(DEV_URL + '/health', {
             method: 'GET',
