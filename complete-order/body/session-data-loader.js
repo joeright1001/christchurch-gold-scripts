@@ -37,9 +37,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const update = (id, val) => {
     const el = document.getElementById(id);
     if (el) {
-      if ("value" in el) el.value = val || "";
-      el.textContent = val || "";
-      console.log(`Updated ${id} with ${val}`);
+      const displayVal = (val !== null && val !== undefined) ? val : "";
+      if ("value" in el) el.value = displayVal;
+      el.textContent = displayVal;
+      console.log(`Updated ${id} with ${displayVal}`);
     } else {
       console.log(`Could not find div: ${id}`);
     }
