@@ -7,13 +7,13 @@
 /* ================================================================
    API host selection constants / helpers
    ================================================================*/
-const DEV_URL              = "https://mware3-staging.up.railway.app";
+const DEV_URL              = "https://cuddly-space-waddle-4jgr5gxqj6wg3q6jr-3000.app.github.dev";
 const STAGING_FALLBACK_URL = "https://mware3-staging.up.railway.app";
 const PROD_URL             = "https://mware3-production.up.railway.app";
 
 async function isCodespaceAvailable(){
   try{
-    const c=new AbortController();const t=setTimeout(()=>c.abort(),1000);
+    const c=new AbortController();const t=setTimeout(()=>c.abort(),3000);
     const ok=(await fetch(DEV_URL+'/health',{signal:c.signal})).ok;
     clearTimeout(t);return ok;
   }catch{return false}
@@ -139,56 +139,57 @@ document.addEventListener('DOMContentLoaded',async()=>{
     if(!validateForm(fd))return;
 
     /* --- collect values (no shipping arithmetic) --- */
-    let shippingFee = document.querySelector('#shippingfee')?.value.trim() || "";
     let shippingDisplay = document.querySelector('#shipping')?.value.trim() || "0";
     if (fd.get('delivery') !== 'Shipping') {
-      shippingFee = "0";
       shippingDisplay = "0";
     }
+
     const jsonData={
-      /* customer */
-      first_name_order :fd.get('first-name'),
-      last_name_order  :fd.get('last-name')||"",
-      email_order      :fd.get('email'),
-      phone_order      :fd.get('mobile')||"",
-
-      /* product */
-      product_name_full:fd.get('product-name-full')||"",
-      quantity         :fd.get('quantity')||"",
-      price_nzd        :fd.get('price_nzd')||"",
-      zoho_id          :fd.get('zoho-id')||"",
-      collect          :fd.get('collect')||"",
-
-      /* delivery / payment */
-      delivery         :fd.get('delivery')||"",
-      pay_in_person    :fd.get('pay-in-person')||"",
-      checkbox_order   :fd.get('checkbox-order')||"",
-      address          :fd.get('address')||"",
-      message          :fd.get('message')||"",
-      date_picker_order:fd.get('date-picker')||"",
-      time_picker_order:fd.get('time-picker')||"",
-
-      /* totals (shippingfee untouched) */
-      total_price      :fd.get('total-price')||"",
-      total_amount     :fd.get('total-amount')||"",
-      shippingfee      :shippingFee,
-      shipping         :shippingDisplay,
-
-      /* GST + unit prices */
-      unit_gst             :fd.get('unit-gst')||"",
-      total_gst            :fd.get('total-gst')||"",
-      unit_price_nzd       :fd.get('unit-price-nzd')||"",
-      total_unit_price_nzd :fd.get('total-unit-price-nzd')||"",
-
-      /* environment */
-      environment      :fd.get('environment')||"",
-      
-      /* supplier meta */
-      supplier_status  :fd.get('market-status')||"",
-      supplier_name    :fd.get('market')||"",
-      sku              :fd.get('sku')||"",
-      auto_supplier    :fd.get('auto-supplier')||"",
-      supplier_item_id :fd.get('supplier-item-id')||""
+      first_name_order : fd.get('first-name'),
+      last_name_order  : fd.get('last-name')||"",
+      email_order      : fd.get('email'),
+      phone_order      : fd.get('mobile')||"",
+      delivery         : fd.get('delivery')||"",
+      pay_in_person    : fd.get('pay-in-person')||"",
+      checkbox_order   : fd.get('checkbox-order')||"",
+      address          : fd.get('address')||"",
+      message          : fd.get('message')||"",
+      date_picker_order: fd.get('date-picker')||"",
+      time_picker_order: document.getElementById('time-picker-24')?.value || fd.get('time-picker') ||"",
+      total_amount     : parseFloat(fd.get('total-amount'))||0,
+      gst_total        : parseFloat(fd.get('gst-total'))||0,
+      sub_total        : parseFloat(fd.get('sub-total'))||0,
+      shipping         : parseFloat(shippingDisplay)||0,
+      collect          : fd.get('collect')||"",
+      environment      : fd.get('environment')||"",
+      products         : [
+        {
+          cms_id             : fd.get('cms-id')||"",
+          name               : fd.get('product-name-full')||"",
+          quantity           : parseInt(fd.get('quantity'),10)||0,
+          unit_price_nzd     : parseFloat(fd.get('unit-price-nzd'))||0,
+          unit_gst           : parseFloat(fd.get('unit-gst'))||0,
+          unit_total_price_nzd: parseFloat(fd.get('unit-total-price-nzd'))||0,
+          unit_total_gst     : parseFloat(fd.get('unit-total-gst'))||0,
+          total_price        : parseFloat(fd.get('total-price'))||0,
+          price_signed       : fd.get('price-signed')||"",
+          market             : fd.get('market')||"",
+          market_status      : fd.get('market-status')||"",
+          sku                : fd.get('sku')||"",
+          auto_supplier      : (fd.get('auto-supplier')||"").toLowerCase()==='true',
+          supplier_item_id   : fd.get('supplier-item-id')||"",
+          zoho_id            : fd.get('zoho-id')||"",
+          stock_status       : fd.get('stock-status')||"",
+          product_type       : fd.get('product-type')||"",
+          supplier_availability: fd.get('supplier-availability')||"",
+          isactivesell       : (fd.get('supplier-isactivesell')||"").toLowerCase()==='true',
+          year               : fd.get('year')||"",
+          size               : fd.get('size')||"",
+          mint               : fd.get('mint')||"",
+          stock_level        : fd.get('stock-level')||"",
+          slug               : fd.get('slug')||""
+        }
+      ]
     };
 
     const originalHTML=showProcessingState(orderBtn);
