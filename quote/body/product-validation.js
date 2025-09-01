@@ -1,10 +1,11 @@
 /**
  * Product Selection Validation
  * Ensures product is selected before form submission
+ * Extracted from code-missing-product-error-message.txt
  */
 
 document.addEventListener("DOMContentLoaded", function () {
-  let submitButton = document.getElementById("submit-quote");
+  let submitButton = document.getElementById("submit-order");
   let productName = document.getElementById("product-name-full");
   let noProductMessage = document.getElementById("no-product-selected");
 

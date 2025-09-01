@@ -1,6 +1,7 @@
 /**
- * Quote Submission to Middleware
- * Handles form validation and API submission for quotes.
+ * Order Submission to Middleware
+ * Handles form validation and API submission
+ * Extracted from code-submit-to-middleware-current.txt
  */
 
 /* ================================================================
@@ -39,7 +40,7 @@ function getSessionDataWithExpiry(key){
 }
 
 /* ================================================================
-   DOMContentLoaded - Quote Submission Logic
+   DOMContentLoaded - Order Submission Logic
    ================================================================*/
 document.addEventListener('DOMContentLoaded',async()=>{
 
@@ -56,9 +57,9 @@ document.addEventListener('DOMContentLoaded',async()=>{
   const API_BASE_URL=await getApiBaseUrl();
   console.log('Using API base URL:',API_BASE_URL);
 
-  const quoteBtn=document.querySelector('#get-quote-submit');
-  const form    =document.querySelector('#wf-form-bullion-quote');
-  if(!quoteBtn||!form){console.error('Required elements not found');return;}
+  const orderBtn=document.querySelector('#place-order-submit');
+  const form    =document.querySelector('#wf-form-quote');
+  if(!orderBtn||!form){console.error('Required elements not found');return;}
 
   /* ==========================================================
      UX helpers
@@ -90,7 +91,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
      validateForm (original logic untouched)
   ==========================================================*/
   function validateForm(fd){
-    let ok=true;
+    let ok=true,scrollDate=false,supplierErr=false;
     const required={
       'first-name':'First name is required',
       'last-name' :'Last name is required',
@@ -105,6 +106,22 @@ document.addEventListener('DOMContentLoaded',async()=>{
       if(!fd.get(n)?.trim()){showError(f,msg);ok=false;}
     });
 
+    /* supplier checkbox rule (unchanged) */
+    /* Checkbox consent rule commented out as per request
+    const prodType=document.getElementById('product-type');
+    const supplierCb=document.getElementById('checkbox-supplier')||
+                      form.querySelector('[name="checkbox-supplier"]');
+    const cbBlock=document.getElementById('checkbox-supplier-block');
+    if(prodType&&supplierCb&&cbBlock){
+      clearError(cbBlock);
+      if(prodType.textContent.toLowerCase().trim()==='supplier'&&!supplierCb.checked){
+        showError(cbBlock,'Please agree to supply ID if required');
+        ok=false;supplierErr=true;
+      }
+    }
+    */
+
+    /* special product selection */
     if(!fd.get('product-name-full')){
       const msg=document.getElementById('no-product-selected');
       if(msg){msg.style.display='block';msg.scrollIntoView({behavior:'smooth',block:'center'});}
@@ -114,23 +131,36 @@ document.addEventListener('DOMContentLoaded',async()=>{
   }
 
   /* ==========================================================
-     quote button click handler
+     order button click handler
   ==========================================================*/
-  quoteBtn.addEventListener('click',async(evt)=>{
+  orderBtn.addEventListener('click',async(evt)=>{
     evt.preventDefault();
     const fd=new FormData(form);
     if(!validateForm(fd))return;
+
+    /* --- collect values (no shipping arithmetic) --- */
+    let shippingDisplay = document.querySelector('#shipping')?.value.trim() || "0";
+    if (fd.get('delivery') !== 'Shipping') {
+      shippingDisplay = "0";
+    }
 
     const jsonData={
       first_name_order : fd.get('first-name'),
       last_name_order  : fd.get('last-name')||"",
       email_order      : fd.get('email'),
       phone_order      : fd.get('mobile')||"",
+      delivery         : fd.get('delivery')||"",
       pay_in_person    : fd.get('pay-in-person')||"",
+      checkbox_order   : fd.get('checkbox-order')||"",
+      address          : fd.get('address')||"",
       message          : fd.get('message')||"",
+      date_picker_order: fd.get('date-picker')||"",
+      time_picker_order: document.getElementById('time-picker-24')?.value || fd.get('time-picker') ||"",
       total_amount     : parseFloat(fd.get('total-amount'))||0,
       gst_total        : parseFloat(fd.get('gst-total'))||0,
       sub_total        : parseFloat(fd.get('sub-total'))||0,
+      shipping         : parseFloat(shippingDisplay)||0,
+      collect          : fd.get('collect')||"",
       environment      : fd.get('environment')||"",
       products         : [
         {
@@ -162,31 +192,32 @@ document.addEventListener('DOMContentLoaded',async()=>{
       ]
     };
 
-    const originalHTML=showProcessingState(quoteBtn);
+    const originalHTML=showProcessingState(orderBtn);
 
     try{
-      const res=await fetch(`${API_BASE_URL}/create-quote`,{
+      const res=await fetch(`${API_BASE_URL}/create`,{
         method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify(jsonData)
       });
       const out=await res.json();
       if(out.token&&out.trade_order){
-        setSessionDataWithExpiry('quoteData',JSON.stringify(jsonData),30);
+        /* store everything incl. new fields */
+        setSessionDataWithExpiry('orderData',JSON.stringify(jsonData),30);
         setSessionDataWithExpiry('token',out.token,30);
         setSessionDataWithExpiry('trade_order',out.trade_order,30);
-        setSessionDataWithExpiry('quote_creation_time',out.order_creation_time,30);
+        setSessionDataWithExpiry('order_creation_time',out.order_creation_time,30);
 
         document.getElementById('trade-order')        ?.setAttribute('value',out.trade_order);
         document.getElementById('trade-order-display')?.setAttribute('value',out.trade_order);
 
-        (document.getElementById('submit-quote')||form).click();
+        (document.getElementById('submit-order')||form).click();
       }else{
         throw new Error('Invalid response from server');
       }
     }catch(err){
       console.error('Error:',err);
-      restoreButtonState(quoteBtn,originalHTML);
-      quoteBtn.textContent='Server-Error';
+      restoreButtonState(orderBtn,originalHTML);
+      orderBtn.textContent='Server-Error';
       const div=document.getElementById('server-error');
       if(div){div.style.display='block';div.scrollIntoView({behavior:'smooth',block:'center'});}
     }
