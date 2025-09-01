@@ -1,90 +1,91 @@
 /**
- * Order Data Transfer Script  – adds GST & unit-price params
- * (everything else unchanged)
+ * Order Data Transfer Script (Corrected for Webflow Routing)
+ *
+ * Constructs a URL with all data, including the slug, in the query string.
+ * This is required to work with Webflow's static routing.
  */
 document.addEventListener("DOMContentLoaded", function () {
-
-  /* ---------- field handles ---------- */
+  /* ---------- Helper to get element by ID ---------- */
   const $ = (id) => document.getElementById(id);
 
-  const productNameField        = $("product-name-full");
-  const quantityField           = $("quantity");
-  const totalPriceField         = $("total-price");
-  const zohoIdField             = $("zoho-id");
-  const collectField            = $("collect");
-  const priceNZDField           = $("price_nzd");
+  /* ---------- Element Handles ---------- */
+  const slugField = $("slug");
+  const getQuoteButton = $("get-quote");
+  const productNameField = $("product-name-full"); // For CMS wait check
+  const totalPriceField = $("total-price"); // For CMS wait check
 
-  /* NEW fields */
-  const unitGstField            = $("unit-gst");
-  const totalGstField           = $("total-gst");
-  const unitPriceNzdField       = $("unit-price-nzd");
-  const totalUnitPriceNzdField  = $("total-unit-price-nzd");
+  // List of element IDs to be included as URL parameters
+  const paramIds = [
+    "quantity",
+    "unit-price-nzd",
+    "unit-total-price-nzd",
+    "unit-gst",
+    "unit-total-gst",
+    "gst-total",
+    "sub-total",
+    "total-price",
+    "price_nzd",
+    "price-signed",
+    "product-name-full",
+  ];
 
-  /* existing extras */
-  const imageUrlField           = $("image-url");
-  const websiteUrlField         = $("website-url");
-  const productNameShortField   = $("product-name");
-  const metalField              = $("metal");
-  const productTypeField        = $("product-type");
+  /* ---------- CMS Wait Helper ---------- */
+  function waitForCMSData(callback, retries = 10) {
+    const slugReady = slugField?.textContent.trim();
+    const nameReady = productNameField?.textContent.trim();
+    const priceReady = totalPriceField?.textContent.trim();
 
-  /* supplier data */
-  const shippingFeeField        = $("shippingfee");
-  const marketStatusField       = $("market-status");
-  const marketField             = $("market");
-  const skuField                = $("sku");
-  const autoSupplierField       = $("auto-supplier");
-  const supplierItemIdField     = $("supplier-item-id");
-
-  const placeOrderButton        = $("get-quote");
-
-  /* ---------- CMS wait helper ---------- */
-  function waitForCMSData(cb, tries = 10) {
-    if (productNameField.textContent.trim() && totalPriceField.textContent.trim()) {
-      cb();
-    } else if (tries) {
-      setTimeout(() => waitForCMSData(cb, tries - 1), 200);
+    if (slugReady && nameReady && priceReady) {
+      callback();
+    } else if (retries > 0) {
+      setTimeout(() => waitForCMSData(callback, retries - 1), 200);
     } else {
-      alert("Failed to load product details. Please try again.");
+      alert("Failed to load product details. Please refresh and try again.");
     }
   }
 
-  /* ---------- click handler ---------- */
-  placeOrderButton.addEventListener("click", function (event) {
+  /* ---------- Click Handler ---------- */
+  getQuoteButton.addEventListener("click", function (event) {
     event.preventDefault();
+    
+    // Helper to safely convert text to a number, defaulting to 0
+    const toNumber = (t) => parseFloat(String(t).replace(/[^0-9.-]+/g, "")) || 0;
 
     waitForCMSData(() => {
-      const qp = new URLSearchParams({
-        "product-name-full"      : productNameField.textContent.trim(),
-        quantity                 : parseInt(quantityField.value, 10) || 1,
-        "total-price"            : totalPriceField.textContent.trim(),
-        "zoho-id"                : zohoIdField?.textContent.trim() || "",
-        collect                  : collectField?.textContent.trim() || "",
-        "price-nzd"              : priceNZDField?.textContent.trim() || "",
+      const slug = slugField.textContent.trim();
+      if (!slug) {
+        alert("Product slug is missing. Cannot proceed.");
+        return;
+      }
 
-        /* NEW params */
-        "unit-gst"               : unitGstField?.textContent.trim() || "",
-        "total-gst"              : totalGstField?.textContent.trim() || "",
-        "unit-price-nzd"         : unitPriceNzdField?.textContent.trim() || "",
-        "total-unit-price-nzd"   : totalUnitPriceNzdField?.textContent.trim() || "",
+      const params = new URLSearchParams();
+      // Add the slug as the first parameter
+      params.set("slug", slug);
 
-        /* extras */
-        "image-url"              : imageUrlField?.textContent.trim() || "",
-        "website-url"            : websiteUrlField?.textContent.trim() || "",
-        "product-name"           : productNameShortField?.textContent.trim() || "",
-        metal                    : metalField?.textContent.trim() || "",
-        "product-type"           : productTypeField?.textContent.trim() || "",
-
-        /* supplier */
-        shippingfee              : shippingFeeField?.textContent.trim() || "",
-        "market-status"          : marketStatusField?.textContent.trim() || "",
-        market                   : marketField?.textContent.trim() || "",
-        sku                      : skuField?.textContent.trim() || "",
-        "auto-supplier"          : autoSupplierField?.textContent.trim() || "",
-        "supplier-item-id"       : supplierItemIdField?.textContent.trim() || ""
+      // Add all other data parameters, cleaning them as we go
+      paramIds.forEach((id) => {
+        const element = $(id);
+        let value;
+        if (element) {
+          // Handle specific field types
+          if (id === "product-name-full" || id === "price-signed") {
+            value = element.textContent.trim(); // These are strings
+          } else if (id === "quantity") {
+            value = parseInt(element.value, 10) || 1; // This is an integer
+          } else {
+            value = toNumber(element.textContent); // All others are numbers
+          }
+        } else {
+          value = (id === "product-name-full" || id === "price-signed") ? "" : 0;
+        }
+        params.set(id, value);
       });
 
-      /* redirect to place-order page */
-      window.location.href = `/quote?${qp.toString()}`;
+      // Construct the new URL: /quote?[parameters]
+      const newUrl = `/quote?${params.toString()}`;
+
+      // Redirect to the place-order page
+      window.location.href = newUrl;
     });
   });
 });
