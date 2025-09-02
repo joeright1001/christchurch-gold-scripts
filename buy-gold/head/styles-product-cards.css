@@ -61,7 +61,7 @@
 
 /* Remove the panel movement effect */
 .product-panel-background {
-  border-radius: 8px;
+  border-radius: 2px;
   overflow: hidden;
   /* Removed the transform transition */
 }
