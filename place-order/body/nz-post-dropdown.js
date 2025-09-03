@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Find the post-collect input element
     const postCollectInput = document.getElementById('post-collect');
     // Find the address input element that we'll populate
-    const addressInput = document.getElementById('post-office-address');
+    const addressInput = document.getElementById('address');
     
     if (!postCollectInput) {
         console.error('Post-collect input element not found');
