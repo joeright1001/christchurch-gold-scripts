@@ -59,6 +59,33 @@ function initUserReviews() {
         if (halfStarEl) {
             halfStarEl.style.display = hasHalfStar ? 'block' : 'none';
         }
+
+        // --- Update Second Average Rating and Total Reviews ---
+        const averageEl2 = document.getElementById('2-stars-average');
+        const totalEl2 = document.getElementById('2-total-no-reviews');
+
+        if (averageEl2) averageEl2.textContent = averageRating.toFixed(1);
+        if (totalEl2) totalEl2.textContent = totalReviews;
+
+        // Update second average stars display
+        for (let i = 1; i <= 5; i++) {
+            const fullStarEl2 = document.getElementById('2-star-ave' + i);
+            if (fullStarEl2) {
+                fullStarEl2.style.display = 'none'; // Reset all first
+            }
+        }
+        
+        for (let i = 1; i <= fullStars; i++) {
+            const fullStarEl2 = document.getElementById('2-star-ave' + i);
+            if (fullStarEl2) {
+                 fullStarEl2.style.display = 'block';
+            }
+        }
+
+        const halfStarEl2 = document.getElementById('2-star-ave1-2'); // This is the half-star element
+        if (halfStarEl2) {
+            halfStarEl2.style.display = hasHalfStar ? 'block' : 'none';
+        }
         
     } else {
         console.log("First hidden data for average rating not found.");
