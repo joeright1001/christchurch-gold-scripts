@@ -11,6 +11,13 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ------------ handles ------------ */
   const $ = (id) => document.getElementById(id);
 
+  /* ------------ Set initial shipping value ------------ */
+  const shippingElement = $("shipping");
+  if (shippingElement) {
+    if ("value" in shippingElement) shippingElement.value = "0";
+    shippingElement.textContent = "0";
+  }
+
   const checkboxOrder        = $("checkbox-order");
   const payInPersonInput     = $("pay-in-person");
   const datePicker           = $("date-picker-order");
