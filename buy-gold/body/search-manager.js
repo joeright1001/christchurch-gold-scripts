@@ -128,8 +128,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const searchTerm = this.searchInput.value.trim();
         this.performSearchOptimized(searchTerm);
         
-        // Focus the input field for better UX
-        this.searchInput.focus();
+        // Hide mobile keyboard to show search results
+        this.searchInput.blur();
       }
     }
 
