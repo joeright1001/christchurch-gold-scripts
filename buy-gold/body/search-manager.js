@@ -211,17 +211,40 @@ document.addEventListener('DOMContentLoaded', function() {
     setupScrollRelease() {
       let scrollTimeout;
       let lastScrollY = window.pageYOffset;
+      let scrollStartTime = 0;
 
       const handleScroll = () => {
-        // Only track scrolling if input has been moved to top and not already released
-        if (!this.hasMovedToTop || this.scrollReleased || this.isPositioning) return;
-
         const currentScrollY = window.pageYOffset;
         const scrollDelta = Math.abs(currentScrollY - lastScrollY);
+        const currentTime = Date.now();
 
-        // If user scrolls more than 50px in any direction, release the positioning
-        if (scrollDelta > 50) {
-          this.releasePositioning();
+        // ENHANCED: Allow scroll release in ANY state - user scroll intent overrides everything
+        // Only skip if positioning was never attempted (hasMovedToTop is false AND no keyboard interaction)
+        if (!this.hasMovedToTop && !document.activeElement === this.searchInput) {
+          lastScrollY = currentScrollY;
+          return;
+        }
+
+        // ENHANCED: More sensitive scroll detection - lower threshold and immediate response
+        // If user scrolls more than 25px in any direction, release the positioning
+        if (scrollDelta > 25) {
+          // Track scroll start time for velocity detection
+          if (scrollStartTime === 0) {
+            scrollStartTime = currentTime;
+          }
+          
+          // IMMEDIATE: Release positioning on any meaningful scroll gesture
+          if (!this.scrollReleased) {
+            this.releasePositioning();
+            console.log('🚀 MOBILE: Scroll detected - immediately releasing pin-to-top');
+          }
+        }
+
+        // Reset scroll start time if no scrolling for 100ms
+        if (scrollDelta < 5) {
+          if (currentTime - scrollStartTime > 100) {
+            scrollStartTime = 0;
+          }
         }
 
         lastScrollY = currentScrollY;
@@ -230,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // Add scroll event listener with passive option for better performance
       window.addEventListener('scroll', handleScroll, { passive: true });
 
-      console.log('🚀 MOBILE: Scroll release functionality initialized');
+      console.log('🚀 MOBILE: Enhanced scroll release functionality initialized');
     }
 
     /**
