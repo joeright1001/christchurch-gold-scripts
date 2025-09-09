@@ -93,11 +93,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Enter key pressed - form submission prevented');
           }
         });
-
-        // Mobile positioning: scroll input to 8% from top when focused
-        this.searchInput.addEventListener('focus', () => {
-          this.positionSearchInputForMobile();
-        });
       }
 
       // Search icon click event
@@ -136,30 +131,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Hide mobile keyboard to show search results
         this.searchInput.blur();
       }
-    }
-
-    /**
-     * Position search input at 8% from top of viewport for mobile UX
-     * Called when user focuses on the search input
-     */
-    positionSearchInputForMobile() {
-      if (!this.searchInput) return;
-
-      // Small delay to ensure keyboard animation doesn't interfere
-      setTimeout(() => {
-        // Calculate 8% from top of viewport
-        const targetPosition = window.innerHeight * 0.08;
-        const inputRect = this.searchInput.getBoundingClientRect();
-        const scrollTarget = window.pageYOffset + inputRect.top - targetPosition;
-
-        // Smooth scroll to position input at 8% from top
-        window.scrollTo({
-          top: scrollTarget,
-          behavior: 'smooth'
-        });
-
-        console.log('🚀 MOBILE: Search input positioned at 8% from top');
-      }, 100);
     }
 
     /**
