@@ -37,6 +37,11 @@ document.addEventListener('DOMContentLoaded', function() {
       this.scrollReleased = false;
       this.isPositioning = false;
       
+      // Keyboard interaction tracking
+      this.keyboardVisible = false;
+      this.userScrolledWhileKeyboardUp = false;
+      this.keyboardHeight = 0;
+      
       this.init();
     }
 
@@ -142,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     /**
      * Setup VirtualKeyboard API to prevent automatic viewport adjustments
-     * Keeps search input in exact same position when keyboard appears
+     * Enhanced with keyboard state tracking to prevent sticky positioning
      */
     setupVirtualKeyboard() {
       // Modern VirtualKeyboard API - prevents browser from moving content
@@ -155,13 +160,26 @@ document.addEventListener('DOMContentLoaded', function() {
           // Listen for keyboard geometry changes and manually position input
           navigator.virtualKeyboard.addEventListener('geometrychange', () => {
             const keyboardHeight = navigator.virtualKeyboard.boundingRect.height;
+            this.keyboardHeight = keyboardHeight;
             
             if (keyboardHeight > 0) {
-              // Keyboard appeared - move input to top
-              this.moveInputToTop();
-              console.log('🚀 MOBILE: Keyboard appeared - moving input to top');
+              // Keyboard appeared
+              this.keyboardVisible = true;
+              this.userScrolledWhileKeyboardUp = false; // Reset scroll tracking
+              
+              // Only move to top if user hasn't scrolled while keyboard was up
+              if (!this.userScrolledWhileKeyboardUp) {
+                this.moveInputToTop();
+                console.log('🚀 MOBILE: Keyboard appeared - moving input to top');
+              } else {
+                console.log('🚀 MOBILE: Keyboard appeared but user scrolled - skipping positioning');
+              }
+            } else {
+              // Keyboard disappeared
+              this.keyboardVisible = false;
+              this.userScrolledWhileKeyboardUp = false; // Reset for next keyboard appearance
+              console.log('🚀 MOBILE: Keyboard disappeared');
             }
-            // Note: Input stays at top when keyboard disappears (per requirement)
           });
         } catch (error) {
           console.log('VirtualKeyboard API failed to initialize:', error);
@@ -173,15 +191,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
     /**
      * Move search input to 12% from top of viewport
-     * Input stays at this position permanently once moved
+     * Enhanced with user scroll state checking to prevent fighting user scroll intent
      */
     moveInputToTop() {
-      if (!this.searchInput || this.isPositioning) return;
+      // Don't position if user has already scrolled while keyboard was up
+      if (!this.searchInput || this.isPositioning || this.userScrolledWhileKeyboardUp) {
+        if (this.userScrolledWhileKeyboardUp) {
+          console.log('🚀 MOBILE: Skipping moveInputToTop - user has scrolled');
+        }
+        return;
+      }
 
       this.isPositioning = true;
 
       // Small delay to ensure keyboard animation doesn't interfere
       setTimeout(() => {
+        // Double-check user hasn't scrolled during the delay
+        if (this.userScrolledWhileKeyboardUp) {
+          this.isPositioning = false;
+          console.log('🚀 MOBILE: Aborting moveInputToTop - user scrolled during delay');
+          return;
+        }
+
         // Calculate 12% from top of viewport
         const targetPosition = window.innerHeight * 0.12;
         const inputRect = this.searchInput.getBoundingClientRect();
@@ -205,45 +236,37 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /**
-     * Setup scroll release functionality to allow users to scroll away from top position
-     * when they manually scroll to browse search results
+     * Enhanced scroll release functionality with immediate keyboard-aware detection
+     * Prevents sticky positioning when keyboard is up and user tries to scroll
      */
     setupScrollRelease() {
       let scrollTimeout;
       let lastScrollY = window.pageYOffset;
-      let scrollStartTime = 0;
 
       const handleScroll = () => {
         const currentScrollY = window.pageYOffset;
         const scrollDelta = Math.abs(currentScrollY - lastScrollY);
-        const currentTime = Date.now();
 
-        // ENHANCED: Allow scroll release in ANY state - user scroll intent overrides everything
-        // Only skip if positioning was never attempted (hasMovedToTop is false AND no keyboard interaction)
-        if (!this.hasMovedToTop && !document.activeElement === this.searchInput) {
-          lastScrollY = currentScrollY;
-          return;
-        }
-
-        // ENHANCED: More sensitive scroll detection - lower threshold and immediate response
-        // If user scrolls more than 25px in any direction, release the positioning
-        if (scrollDelta > 25) {
-          // Track scroll start time for velocity detection
-          if (scrollStartTime === 0) {
-            scrollStartTime = currentTime;
+        // CRITICAL: Immediate keyboard scroll detection with very low threshold
+        if (this.keyboardVisible && scrollDelta > 10) {
+          // User is scrolling while keyboard is up - mark this immediately
+          if (!this.userScrolledWhileKeyboardUp) {
+            this.userScrolledWhileKeyboardUp = true;
+            console.log('🚀 MOBILE: User scroll detected while keyboard up - disabling auto-positioning');
           }
           
-          // IMMEDIATE: Release positioning on any meaningful scroll gesture
-          if (!this.scrollReleased) {
-            this.releasePositioning();
-            console.log('🚀 MOBILE: Scroll detected - immediately releasing pin-to-top');
+          // If positioning is in progress, abort it immediately
+          if (this.isPositioning) {
+            this.isPositioning = false;
+            console.log('🚀 MOBILE: Aborting active positioning due to user scroll');
           }
         }
 
-        // Reset scroll start time if no scrolling for 100ms
-        if (scrollDelta < 5) {
-          if (currentTime - scrollStartTime > 100) {
-            scrollStartTime = 0;
+        // Standard scroll release logic - now with lower threshold for better responsiveness
+        if (this.hasMovedToTop && !this.scrollReleased && !this.isPositioning) {
+          // Lower threshold for more responsive release (25px instead of 50px)
+          if (scrollDelta > 25) {
+            this.releasePositioning();
           }
         }
 
@@ -253,7 +276,33 @@ document.addEventListener('DOMContentLoaded', function() {
       // Add scroll event listener with passive option for better performance
       window.addEventListener('scroll', handleScroll, { passive: true });
 
-      console.log('🚀 MOBILE: Enhanced scroll release functionality initialized');
+      // Also add touch event listeners for immediate response on mobile
+      const handleTouchStart = () => {
+        // User started touching - if keyboard is up, prepare to detect scroll intent
+        if (this.keyboardVisible) {
+          console.log('🚀 MOBILE: Touch started while keyboard visible');
+        }
+      };
+
+      const handleTouchMove = (e) => {
+        // Touch movement while keyboard is up - mark as user scroll immediately
+        if (this.keyboardVisible && !this.userScrolledWhileKeyboardUp) {
+          this.userScrolledWhileKeyboardUp = true;
+          console.log('🚀 MOBILE: Touch scroll detected while keyboard up - disabling auto-positioning');
+          
+          // Stop any active positioning
+          if (this.isPositioning) {
+            this.isPositioning = false;
+            console.log('🚀 MOBILE: Aborting positioning due to touch scroll');
+          }
+        }
+      };
+
+      // Add touch event listeners for immediate mobile response
+      window.addEventListener('touchstart', handleTouchStart, { passive: true });
+      window.addEventListener('touchmove', handleTouchMove, { passive: true });
+
+      console.log('🚀 MOBILE: Enhanced keyboard-aware scroll release functionality initialized');
     }
 
     /**
