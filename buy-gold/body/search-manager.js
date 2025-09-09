@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /**
-     * Move search input to 8% from top of viewport
+     * Move search input to 12% from top of viewport
      * Input stays at this position permanently once moved
      */
     moveInputToTop() {
@@ -174,18 +174,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // Small delay to ensure keyboard animation doesn't interfere
       setTimeout(() => {
-        // Calculate 8% from top of viewport
-        const targetPosition = window.innerHeight * 0.08;
+        // Calculate 12% from top of viewport
+        const targetPosition = window.innerHeight * 0.12;
         const inputRect = this.searchInput.getBoundingClientRect();
         const scrollTarget = window.pageYOffset + inputRect.top - targetPosition;
 
-        // Smooth scroll to position input at 8% from top
+        // Smooth scroll to position input at 12% from top
         window.scrollTo({
           top: scrollTarget,
           behavior: 'smooth'
         });
 
-        console.log('🚀 MOBILE: Search input positioned at 8% from top');
+        console.log('🚀 MOBILE: Search input positioned at 12% from top');
       }, 100);
     }
 
