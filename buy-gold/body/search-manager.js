@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', function() {
       'data-metal',          // Metal type (e.g., "gold", "silver")
       'data-size',           // Size (e.g., "1oz", "10g")
       'data-year',           // Year (e.g., "2025", "Various")
-      'data-product-id'      // Product ID (e.g., "1 oz Silver")
+      'data-product-id',     // Product ID (e.g., "1 oz Silver")
+      'data-type'            // Product type (e.g., "coin", "minted-bar", "cast-bar")
     ]
   };
 
