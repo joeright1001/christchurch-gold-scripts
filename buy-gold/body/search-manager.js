@@ -32,6 +32,11 @@ document.addEventListener('DOMContentLoaded', function() {
       this.originalProducts = [];
       this.gridContainer = null;
       
+      // Mobile positioning state
+      this.hasMovedToTop = false;
+      this.scrollReleased = false;
+      this.isPositioning = false;
+      
       this.init();
     }
 
@@ -40,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
       this.cacheOriginalProducts();
       this.bindEvents();
       this.setupVirtualKeyboard();
+      this.setupScrollRelease();
       this.setupGlobalAccess();
       
       console.log('🚀 PERFORMANCE OPTIMIZED Search Manager initialized');
@@ -170,7 +176,9 @@ document.addEventListener('DOMContentLoaded', function() {
      * Input stays at this position permanently once moved
      */
     moveInputToTop() {
-      if (!this.searchInput) return;
+      if (!this.searchInput || this.isPositioning) return;
+
+      this.isPositioning = true;
 
       // Small delay to ensure keyboard animation doesn't interfere
       setTimeout(() => {
@@ -185,8 +193,64 @@ document.addEventListener('DOMContentLoaded', function() {
           behavior: 'smooth'
         });
 
-        console.log('🚀 MOBILE: Search input positioned at 12% from top');
+        // Set positioning state flags
+        setTimeout(() => {
+          this.hasMovedToTop = true;
+          this.scrollReleased = false;
+          this.isPositioning = false;
+          console.log('🚀 MOBILE: Search input positioned at 12% from top');
+        }, 500); // Wait for smooth scroll to complete
+
       }, 100);
+    }
+
+    /**
+     * Setup scroll release functionality to allow users to scroll away from top position
+     * when they manually scroll to browse search results
+     */
+    setupScrollRelease() {
+      let scrollTimeout;
+      let lastScrollY = window.pageYOffset;
+
+      const handleScroll = () => {
+        // Only track scrolling if input has been moved to top and not already released
+        if (!this.hasMovedToTop || this.scrollReleased || this.isPositioning) return;
+
+        const currentScrollY = window.pageYOffset;
+        const scrollDelta = Math.abs(currentScrollY - lastScrollY);
+
+        // If user scrolls more than 50px in any direction, release the positioning
+        if (scrollDelta > 50) {
+          this.releasePositioning();
+        }
+
+        lastScrollY = currentScrollY;
+      };
+
+      // Add scroll event listener with passive option for better performance
+      window.addEventListener('scroll', handleScroll, { passive: true });
+
+      console.log('🚀 MOBILE: Scroll release functionality initialized');
+    }
+
+    /**
+     * Release the positioning constraint and allow normal scrolling
+     */
+    releasePositioning() {
+      if (this.scrollReleased) return;
+
+      this.scrollReleased = true;
+      console.log('🚀 MOBILE: Positioning released - user can now scroll freely');
+
+      // Optional: Add visual feedback that positioning is released
+      if (this.searchInput) {
+        this.searchInput.classList.add('positioning-released');
+        
+        // Remove the class after a short time
+        setTimeout(() => {
+          this.searchInput.classList.remove('positioning-released');
+        }, 2000);
+      }
     }
 
     /**
