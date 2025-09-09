@@ -146,10 +146,16 @@ document.addEventListener('DOMContentLoaded', function() {
           navigator.virtualKeyboard.overlaysContent = true;
           console.log('🚀 MOBILE: VirtualKeyboard API enabled - search input position locked');
           
-          // Optional: Listen for keyboard geometry changes if needed
+          // Listen for keyboard geometry changes and manually position input
           navigator.virtualKeyboard.addEventListener('geometrychange', () => {
-            // Keyboard appeared/disappeared but input stays in same position
-            console.log('🚀 MOBILE: Virtual keyboard geometry changed - position maintained');
+            const keyboardHeight = navigator.virtualKeyboard.boundingRect.height;
+            
+            if (keyboardHeight > 0) {
+              // Keyboard appeared - move input to top
+              this.moveInputToTop();
+              console.log('🚀 MOBILE: Keyboard appeared - moving input to top');
+            }
+            // Note: Input stays at top when keyboard disappears (per requirement)
           });
         } catch (error) {
           console.log('VirtualKeyboard API failed to initialize:', error);
@@ -157,6 +163,30 @@ document.addEventListener('DOMContentLoaded', function() {
       } else {
         console.log('VirtualKeyboard API not supported - using browser default behavior');
       }
+    }
+
+    /**
+     * Move search input to 8% from top of viewport
+     * Input stays at this position permanently once moved
+     */
+    moveInputToTop() {
+      if (!this.searchInput) return;
+
+      // Small delay to ensure keyboard animation doesn't interfere
+      setTimeout(() => {
+        // Calculate 8% from top of viewport
+        const targetPosition = window.innerHeight * 0.08;
+        const inputRect = this.searchInput.getBoundingClientRect();
+        const scrollTarget = window.pageYOffset + inputRect.top - targetPosition;
+
+        // Smooth scroll to position input at 8% from top
+        window.scrollTo({
+          top: scrollTarget,
+          behavior: 'smooth'
+        });
+
+        console.log('🚀 MOBILE: Search input positioned at 8% from top');
+      }, 100);
     }
 
     /**
