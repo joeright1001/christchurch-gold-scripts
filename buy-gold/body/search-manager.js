@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
       this.cacheElements();
       this.cacheOriginalProducts();
       this.bindEvents();
+      this.setupVirtualKeyboard();
       this.setupGlobalAccess();
       
       console.log('🚀 PERFORMANCE OPTIMIZED Search Manager initialized');
@@ -130,6 +131,31 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Hide mobile keyboard to show search results
         this.searchInput.blur();
+      }
+    }
+
+    /**
+     * Setup VirtualKeyboard API to prevent automatic viewport adjustments
+     * Keeps search input in exact same position when keyboard appears
+     */
+    setupVirtualKeyboard() {
+      // Modern VirtualKeyboard API - prevents browser from moving content
+      if ('virtualKeyboard' in navigator) {
+        try {
+          // Prevent browser from automatically adjusting viewport for keyboard
+          navigator.virtualKeyboard.overlaysContent = true;
+          console.log('🚀 MOBILE: VirtualKeyboard API enabled - search input position locked');
+          
+          // Optional: Listen for keyboard geometry changes if needed
+          navigator.virtualKeyboard.addEventListener('geometrychange', () => {
+            // Keyboard appeared/disappeared but input stays in same position
+            console.log('🚀 MOBILE: Virtual keyboard geometry changed - position maintained');
+          });
+        } catch (error) {
+          console.log('VirtualKeyboard API failed to initialize:', error);
+        }
+      } else {
+        console.log('VirtualKeyboard API not supported - using browser default behavior');
       }
     }
 
