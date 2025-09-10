@@ -281,12 +281,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /**
-     * INITIALIZE BACK TO TOP BUTTON FOR SMOOTH TRANSITIONS
+     * CHECK IF DEVICE IS MOBILE (TABLET/PHONE)
+     */
+    isMobileDevice() {
+      // Check viewport width for mobile breakpoint (991px and below)
+      return window.innerWidth <= 991;
+    }
+
+    /**
+     * INITIALIZE BACK TO TOP BUTTON FOR SMOOTH TRANSITIONS (MOBILE ONLY)
      */
     initializeBackToTopButton() {
       if (!this.backToTopButton) return;
       
-      // Set up CSS transitions for smooth fade in/out
+      // DESKTOP: Keep button completely hidden
+      if (!this.isMobileDevice()) {
+        this.backToTopButton.style.display = 'none';
+        console.log('🖥️ DESKTOP: Back to top button disabled - desktop users don\'t need it');
+        return;
+      }
+      
+      // MOBILE: Set up CSS transitions for smooth fade in/out
       this.backToTopButton.style.transition = 'opacity 0.3s ease-in-out';
       this.backToTopButton.style.opacity = '0';
       this.backToTopButton.style.pointerEvents = 'none';
@@ -296,31 +311,41 @@ document.addEventListener('DOMContentLoaded', function() {
         this.backToTopButton.style.display = 'block';
       }
       
-      console.log('✅ BACK TO TOP: Button initialized with fade transitions');
+      console.log('📱 MOBILE: Back to top button initialized with fade transitions');
     }
 
     /**
-     * FADE IN BACK TO TOP BUTTON
+     * FADE IN BACK TO TOP BUTTON (MOBILE ONLY)
      */
     showBackToTopButton() {
       if (!this.backToTopButton) return;
       
+      // Only show on mobile devices
+      if (!this.isMobileDevice()) {
+        return;
+      }
+      
       this.backToTopButton.style.opacity = '1';
       this.backToTopButton.style.pointerEvents = 'auto';
       this.isBackToTopVisible = true;
-      console.log('✅ BACK TO TOP: Button faded in');
+      console.log('✅ MOBILE: Back to top button faded in');
     }
 
     /**
-     * FADE OUT BACK TO TOP BUTTON
+     * FADE OUT BACK TO TOP BUTTON (MOBILE ONLY)
      */
     hideBackToTopButton() {
       if (!this.backToTopButton) return;
       
+      // Only hide on mobile devices (desktop is already display:none)
+      if (!this.isMobileDevice()) {
+        return;
+      }
+      
       this.backToTopButton.style.opacity = '0';
       this.backToTopButton.style.pointerEvents = 'none';
       this.isBackToTopVisible = false;
-      console.log('🔽 BACK TO TOP: Button faded out');
+      console.log('🔽 MOBILE: Back to top button faded out');
     }
 
 
