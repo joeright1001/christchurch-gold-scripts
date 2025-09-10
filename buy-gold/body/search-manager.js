@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
       this.originalProducts = [];
       this.gridContainer = null;
       
+      // No permanent flags - use distance-based repositioning
       
       this.init();
     }
@@ -76,10 +77,13 @@ document.addEventListener('DOMContentLoaded', function() {
     bindEvents() {
       // Input field events
       if (this.searchInput) {
-        // Always reposition on focus - simple and reliable
+        // Distance-based repositioning - allows multiple positioning when needed
         this.searchInput.addEventListener('focus', () => {
-          this.scrollToTopOnce();
-          console.log('🚀 MOBILE: Search focused - positioned to 12%');
+          if (this.shouldRepositionInput()) {
+            this.scrollToTopOnce();
+            console.log('🚀 MOBILE: Repositioning input at 12% from top');
+          }
+          // No repositioning needed if input is already properly positioned
         });
 
         // Search as user types (with debouncing)
@@ -162,24 +166,40 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /**
-     * Position search input at 12% from top of viewport
-     * Runs every time user focuses the search input
+     * Check if input should be repositioned based on current position
+     * @returns {boolean} True if repositioning is needed
+     */
+    shouldRepositionInput() {
+      if (!this.searchInput) return false;
+
+      const targetPosition = window.innerHeight * 0.12; // 12% from top
+      const inputRect = this.searchInput.getBoundingClientRect();
+      const currentPosition = inputRect.top;
+      
+      // Allow repositioning if input is more than 50px away from target position
+      const distanceFromTarget = Math.abs(currentPosition - targetPosition);
+      return distanceFromTarget > 50;
+    }
+
+    /**
+     * Smart scroll to position input at 12% from top when needed
+     * Uses distance-based logic to avoid unnecessary repositioning
      */
     scrollToTopOnce() {
       if (!this.searchInput) return;
 
       // Calculate 12% from top of viewport
-      const targetPosition = window.innerHeight * 0.20;
+      const targetPosition = window.innerHeight * 0.12;
       const inputRect = this.searchInput.getBoundingClientRect();
       const scrollTarget = window.pageYOffset + inputRect.top - targetPosition;
 
-      // Simple smooth scroll
+      // Simple smooth scroll - no complex state management
       window.scrollTo({
         top: scrollTarget,
         behavior: 'smooth'
       });
 
-      console.log('🚀 MOBILE: Search positioned to 12% from top');
+      console.log('🚀 MOBILE: Smart scroll complete - user has full control');
     }
 
 
