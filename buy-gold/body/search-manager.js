@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
       this.gridContainer = null;
       
       // Back to top scroll control
-      this.scrollThreshold = 60; // rem
+      this.scrollThreshold = 40; // rem
       this.scrollThresholdPixels = 0;
       this.isBackToTopVisible = false;
       this.scrollThrottle = null;
