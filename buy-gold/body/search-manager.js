@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
       this.config = config;
       this.searchInput = null;
       this.searchIcon = null;
+      this.backToTopButton = null;
       this.searchTimeout = null;
       this.isSearchActive = false;
       this.originalProducts = [];
@@ -51,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
     cacheElements() {
       this.searchInput = document.getElementById(this.config.inputId);
       this.searchIcon = document.getElementById(this.config.iconId);
+      this.backToTopButton = document.getElementById('back-to-top-m');
       this.gridContainer = document.querySelector('.w-dyn-items.w-row');
       
       if (!this.searchInput) {
@@ -58,6 +60,9 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       if (!this.searchIcon) {
         console.error(`Search icon with ID '${this.config.iconId}' not found`);
+      }
+      if (!this.backToTopButton) {
+        console.error(`Back to top button with ID 'back-to-top-m' not found`);
       }
     }
 
@@ -75,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
     bindEvents() {
       // Input field events
       if (this.searchInput) {
-        // SCROLL TO 12% ON EVERY FOCUS - SIMPLE AND RELIABLE
+        // SCROLL TO 20% ON EVERY FOCUS - SIMPLE AND RELIABLE
         this.searchInput.addEventListener('focus', () => {
           this.scrollToPosition();
         });
@@ -111,6 +116,15 @@ document.addEventListener('DOMContentLoaded', function() {
         this.searchIcon.style.cursor = 'pointer';
         this.searchIcon.addEventListener('click', () => {
           this.handleIconClick();
+        });
+      }
+
+      // BACK TO TOP BUTTON - SCROLL TO SEARCH INPUT AT 20% FROM TOP
+      if (this.backToTopButton) {
+        this.backToTopButton.style.cursor = 'pointer';
+        this.backToTopButton.addEventListener('click', () => {
+          this.scrollToPosition();
+          console.log('🚀 BACK TO TOP: Clicked - scrolling to search input');
         });
       }
     }
@@ -165,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /**
-     * SIMPLE SCROLL TO POSITION INPUT AT 12% FROM TOP
+     * SIMPLE SCROLL TO POSITION INPUT AT 20% FROM TOP
      * WORKS EVERY TIME - NO LIMITATIONS
      */
     scrollToPosition() {
@@ -175,9 +189,9 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       try {
-        // Calculate 12% from top of viewport
+        // Calculate 20% from top of viewport
         const viewportHeight = window.innerHeight;
-        const targetFromTop = viewportHeight * 0.12;
+        const targetFromTop = viewportHeight * 0.20;
         
         // Get current input position
         const inputRect = this.searchInput.getBoundingClientRect();
@@ -192,7 +206,7 @@ document.addEventListener('DOMContentLoaded', function() {
           behavior: 'smooth'
         });
         
-        console.log('✅ SCROLLED: Input positioned at 12% from top');
+        console.log('✅ SCROLLED: Input positioned at 20% from top');
         
       } catch (error) {
         console.error('❌ Scroll error:', error);
