@@ -221,8 +221,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /**
-     * SETUP BACK TO TOP SCROLL CONTROL - 30REM THRESHOLD
-     * SHOW/HIDE BUTTON BASED ON SCROLL POSITION
+     * SETUP BACK TO TOP SCROLL CONTROL - 40REM THRESHOLD
+     * FADE IN/OUT BUTTON BASED ON SCROLL POSITION
      */
     setupBackToTopScroll() {
       if (!this.backToTopButton) {
@@ -231,11 +231,14 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       try {
-        // Convert 30rem to pixels
+        // Convert 40rem to pixels
         const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
         this.scrollThresholdPixels = this.scrollThreshold * rootFontSize;
         
         console.log(`🚀 SCROLL: Threshold set to ${this.scrollThreshold}rem (${this.scrollThresholdPixels}px)`);
+        
+        // Initialize button for smooth transitions
+        this.initializeBackToTopButton();
         
         // Add throttled scroll event listener
         window.addEventListener('scroll', () => {
@@ -278,25 +281,46 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /**
-     * SHOW BACK TO TOP BUTTON
+     * INITIALIZE BACK TO TOP BUTTON FOR SMOOTH TRANSITIONS
+     */
+    initializeBackToTopButton() {
+      if (!this.backToTopButton) return;
+      
+      // Set up CSS transitions for smooth fade in/out
+      this.backToTopButton.style.transition = 'opacity 0.3s ease-in-out';
+      this.backToTopButton.style.opacity = '0';
+      this.backToTopButton.style.pointerEvents = 'none';
+      
+      // Ensure button is positioned but invisible initially
+      if (getComputedStyle(this.backToTopButton).display === 'none') {
+        this.backToTopButton.style.display = 'block';
+      }
+      
+      console.log('✅ BACK TO TOP: Button initialized with fade transitions');
+    }
+
+    /**
+     * FADE IN BACK TO TOP BUTTON
      */
     showBackToTopButton() {
       if (!this.backToTopButton) return;
       
-      this.backToTopButton.style.display = 'block';
+      this.backToTopButton.style.opacity = '1';
+      this.backToTopButton.style.pointerEvents = 'auto';
       this.isBackToTopVisible = true;
-      console.log('✅ BACK TO TOP: Button shown');
+      console.log('✅ BACK TO TOP: Button faded in');
     }
 
     /**
-     * HIDE BACK TO TOP BUTTON
+     * FADE OUT BACK TO TOP BUTTON
      */
     hideBackToTopButton() {
       if (!this.backToTopButton) return;
       
-      this.backToTopButton.style.display = 'none';
+      this.backToTopButton.style.opacity = '0';
+      this.backToTopButton.style.pointerEvents = 'none';
       this.isBackToTopVisible = false;
-      console.log('🔽 BACK TO TOP: Button hidden');
+      console.log('🔽 BACK TO TOP: Button faded out');
     }
 
 
