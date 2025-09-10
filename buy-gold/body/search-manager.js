@@ -614,6 +614,8 @@ document.addEventListener('DOMContentLoaded', function() {
       window.searchManager.filterProductsWithCSS = (searchTerm) => this.filterProductsWithCSS(searchTerm);
       // NEW: Expose the clear no results message function
       window.searchManager.clearNoResultsMessage = () => this.clearNoResultsMessage();
+      // NEW: Expose scroll to position for URL filter handler
+      window.searchManager.scrollToPosition = () => this.scrollToPosition();
     }
   }
 

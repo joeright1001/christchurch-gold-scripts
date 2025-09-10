@@ -197,7 +197,12 @@
   }
 
   function initializeDropdown() {
-    window.customDropdown = new CustomDropdown(DROPDOWN_CONFIG);
+    window.DROPDOWN_CONFIG = DROPDOWN_CONFIG;
+    const dropdownInstance = new CustomDropdown(DROPDOWN_CONFIG);
+    window.customDropdown = dropdownInstance;
+    window.customDropdown.selectOption = (value, text) => {
+        dropdownInstance.selectOption(value, text);
+    };
   }
 
   if (document.readyState === 'loading') {

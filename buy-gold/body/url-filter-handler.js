@@ -19,12 +19,29 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       if (checkboxId) {
-        // Get the checkbox element
-        const checkbox = document.getElementById(checkboxId);
-        
-        if (checkbox) {
-          // Click the checkbox to apply the filter
-          checkbox.click();
+        const isMobile = window.innerWidth <= 991;
+
+        if (isMobile) {
+          // Mobile-specific behavior
+          if (window.searchManager && window.searchManager.scrollToPosition) {
+            window.searchManager.scrollToPosition();
+          }
+          if (window.filterControls && window.filterControls.applyFilter) {
+            window.filterControls.applyFilter(checkboxId, true);
+          }
+          if (window.customDropdown && window.customDropdown.selectOption) {
+            // Find the option text and value from the dropdown config
+            const option = window.DROPDOWN_CONFIG.options.find(opt => opt.value === 'in-stock-select');
+            if(option) {
+                window.customDropdown.selectOption(option.value, option.text.replace(/<[^>]*>/g, ''));
+            }
+          }
+        } else {
+          // Desktop behavior (existing functionality)
+          const checkbox = document.getElementById(checkboxId);
+          if (checkbox) {
+            checkbox.click();
+          }
         }
       }
     }
