@@ -32,8 +32,6 @@ document.addEventListener('DOMContentLoaded', function() {
       this.originalProducts = [];
       this.gridContainer = null;
       
-      // No permanent flags - use distance-based repositioning
-      
       this.init();
     }
 
@@ -77,13 +75,10 @@ document.addEventListener('DOMContentLoaded', function() {
     bindEvents() {
       // Input field events
       if (this.searchInput) {
-        // Distance-based repositioning - allows multiple positioning when needed
+        // Scroll positioning on every focus
         this.searchInput.addEventListener('focus', () => {
-          if (this.shouldRepositionInput()) {
-            this.scrollToTopOnce();
-            console.log('🚀 MOBILE: Repositioning input at 12% from top');
-          }
-          // No repositioning needed if input is already properly positioned
+          this.scrollToTopOnce();
+          console.log('🚀 MOBILE: Search input focused - positioning at 12% from top');
         });
 
         // Search as user types (with debouncing)
@@ -166,24 +161,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /**
-     * Check if input should be repositioned based on current position
-     * @returns {boolean} True if repositioning is needed
-     */
-    shouldRepositionInput() {
-      if (!this.searchInput) return false;
-
-      const targetPosition = window.innerHeight * 0.12; // 12% from top
-      const inputRect = this.searchInput.getBoundingClientRect();
-      const currentPosition = inputRect.top;
-      
-      // Allow repositioning if input is more than 50px away from target position
-      const distanceFromTarget = Math.abs(currentPosition - targetPosition);
-      return distanceFromTarget > 50;
-    }
-
-    /**
-     * Smart scroll to position input at 12% from top when needed
-     * Uses distance-based logic to avoid unnecessary repositioning
+     * Scroll to position input at 12% from top of viewport
+     * Called on every focus to ensure consistent positioning
      */
     scrollToTopOnce() {
       if (!this.searchInput) return;
@@ -199,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
         behavior: 'smooth'
       });
 
-      console.log('🚀 MOBILE: Smart scroll complete - user has full control');
+      console.log('🚀 MOBILE: One-time scroll complete - user has full control');
     }
 
 
