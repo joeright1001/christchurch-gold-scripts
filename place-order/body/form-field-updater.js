@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const totalAmountField1    = $("total-amount");
   const totalAmountField2    = $("total-amount2");   // optional twin
+  const totalAmountField3    = $("total-amount3");   // optional twin
 
   /* ------------ update shipping display and total‑amount ------------ */
   function updateTotalAmount() {
@@ -52,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Calculate total amount
     const tot = isShipping ? base + fee : base;
 
-    [totalAmountField1, totalAmountField2].forEach(el => {
+    [totalAmountField1, totalAmountField2, totalAmountField3].forEach(el => {
       if (el) {
         if ("value" in el) el.value = tot.toFixed(2);
         el.textContent = tot.toFixed(2);

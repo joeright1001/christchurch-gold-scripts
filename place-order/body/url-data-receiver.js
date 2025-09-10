@@ -43,6 +43,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (returnLink) {
           returnLink.href = returnUrl;
         }
+        const returnLink2 = document.getElementById('product-url-return2');
+        if (returnLink2) {
+            returnLink2.href = returnUrl;
+        }
 
         // 2. Dynamically populate all inputs from CMS data
         const cmsDataElements = targetItem.querySelectorAll('div[class^="cms-product-"]');
@@ -67,6 +71,10 @@ document.addEventListener("DOMContentLoaded", () => {
           const productImage = document.getElementById('product-image');
           if (productImage && imageUrl) {
             productImage.src = imageUrl;
+          }
+          const productImage2 = document.getElementById('product-image2');
+          if (productImage2 && imageUrl) {
+            productImage2.src = imageUrl;
           }
         }
 
@@ -93,7 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function setPair(idBase, value) {
     if (!value) return;
-    ["", "2"].forEach(suffix => {
+    ["", "2", "3"].forEach(suffix => {
       const el = document.getElementById(idBase + suffix);
       if (el) {
         if ("value" in el) el.value = value;
