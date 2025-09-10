@@ -75,10 +75,14 @@ document.addEventListener('DOMContentLoaded', function() {
     bindEvents() {
       // Input field events
       if (this.searchInput) {
-        // Scroll positioning on every focus
+        // SCROLL TO 12% ON EVERY FOCUS - SIMPLE AND RELIABLE
         this.searchInput.addEventListener('focus', () => {
-          this.scrollToTopOnce();
-          console.log('🚀 MOBILE: Search input focused - positioning at 12% from top');
+          this.scrollToPosition();
+        });
+        
+        // ALSO SCROLL ON CLICK - DOUBLE COVERAGE
+        this.searchInput.addEventListener('click', () => {
+          this.scrollToPosition();
         });
 
         // Search as user types (with debouncing)
@@ -161,24 +165,38 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /**
-     * Scroll to position input at 12% from top of viewport
-     * Called on every focus to ensure consistent positioning
+     * SIMPLE SCROLL TO POSITION INPUT AT 12% FROM TOP
+     * WORKS EVERY TIME - NO LIMITATIONS
      */
-    scrollToTopOnce() {
-      if (!this.searchInput) return;
+    scrollToPosition() {
+      if (!this.searchInput) {
+        console.error('❌ Search input not found');
+        return;
+      }
 
-      // Calculate 12% from top of viewport
-      const targetPosition = window.innerHeight * 0.12;
-      const inputRect = this.searchInput.getBoundingClientRect();
-      const scrollTarget = window.pageYOffset + inputRect.top - targetPosition;
-
-      // Simple smooth scroll - no complex state management
-      window.scrollTo({
-        top: scrollTarget,
-        behavior: 'smooth'
-      });
-
-      console.log('🚀 MOBILE: One-time scroll complete - user has full control');
+      try {
+        // Calculate 12% from top of viewport
+        const viewportHeight = window.innerHeight;
+        const targetFromTop = viewportHeight * 0.12;
+        
+        // Get current input position
+        const inputRect = this.searchInput.getBoundingClientRect();
+        const currentInputTop = inputRect.top;
+        
+        // Calculate how much to scroll
+        const scrollAmount = window.pageYOffset + currentInputTop - targetFromTop;
+        
+        // Scroll to position
+        window.scrollTo({
+          top: Math.max(0, scrollAmount), // Prevent negative scroll
+          behavior: 'smooth'
+        });
+        
+        console.log('✅ SCROLLED: Input positioned at 12% from top');
+        
+      } catch (error) {
+        console.error('❌ Scroll error:', error);
+      }
     }
 
 
