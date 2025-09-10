@@ -32,11 +32,6 @@ document.addEventListener('DOMContentLoaded', function() {
       this.originalProducts = [];
       this.gridContainer = null;
       
-      // Enhanced positioning tracking for multiple repositioning
-      this.hasScrolledOnFirstFocus = false;
-      this.targetScrollPosition = null; // Store where we positioned the input
-      this.scrollMonitoringActive = false; // Only monitor after first positioning
-      this.scrollCheckTimeout = null; // For debounced scroll checking
       
       this.init();
     }
@@ -81,15 +76,10 @@ document.addEventListener('DOMContentLoaded', function() {
     bindEvents() {
       // Input field events
       if (this.searchInput) {
-        // Enhanced positioning - allows repositioning when user scrolls away
+        // Always reposition on focus - simple and reliable
         this.searchInput.addEventListener('focus', () => {
-          if (!this.hasScrolledOnFirstFocus) {
-            this.scrollToTopOnce();
-            this.hasScrolledOnFirstFocus = true;
-            this.startScrollMonitoring();
-            console.log('🚀 MOBILE: Search focused - positioned at 12% and monitoring scroll');
-          }
-          // If user scrolled away significantly, they can reposition again
+          this.scrollToTopOnce();
+          console.log('🚀 MOBILE: Search focused - positioned to 12%');
         });
 
         // Search as user types (with debouncing)
@@ -172,8 +162,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     /**
-     * Simple one-time scroll to position input at 12% from top
-     * No state tracking, no retention - just scroll once and done
+     * Position search input at 12% from top of viewport
+     * Runs every time user focuses the search input
      */
     scrollToTopOnce() {
       if (!this.searchInput) return;
@@ -183,65 +173,13 @@ document.addEventListener('DOMContentLoaded', function() {
       const inputRect = this.searchInput.getBoundingClientRect();
       const scrollTarget = window.pageYOffset + inputRect.top - targetPosition;
 
-      // Simple smooth scroll - no complex state management
+      // Simple smooth scroll
       window.scrollTo({
         top: scrollTarget,
         behavior: 'smooth'
       });
 
-      console.log('🚀 MOBILE: One-time scroll complete - user has full control');
-    }
-
-    /**
-     * Start monitoring scroll to detect when user scrolls away from positioned location
-     * This allows repositioning to happen again when they refocus the search input
-     */
-    startScrollMonitoring() {
-      // Store the target scroll position after positioning
-      this.targetScrollPosition = window.pageYOffset;
-      this.scrollMonitoringActive = true;
-
-      // Create bound method for proper event listener cleanup
-      this.boundScrollCheck = () => {
-        if (this.scrollCheckTimeout) {
-          clearTimeout(this.scrollCheckTimeout);
-        }
-        this.scrollCheckTimeout = setTimeout(() => {
-          this.checkIfScrolledAway();
-        }, 150); // Check 150ms after scroll stops
-      };
-
-      // Add scroll listener with proper binding
-      window.addEventListener('scroll', this.boundScrollCheck, { passive: true });
-      
-      console.log('🚀 MOBILE: Scroll monitoring started - will reset positioning if user scrolls away');
-    }
-
-    /**
-     * Check if user has scrolled significantly away from the target position
-     * If they have, allow repositioning on next focus
-     */
-    checkIfScrolledAway() {
-      if (!this.scrollMonitoringActive || this.targetScrollPosition === null) return;
-
-      const currentScroll = window.pageYOffset;
-      const scrollDistance = Math.abs(currentScroll - this.targetScrollPosition);
-
-      // If scrolled more than 200px away from positioned location
-      if (scrollDistance > 200) {
-        // Reset positioning flag - allow repositioning on next focus
-        this.hasScrolledOnFirstFocus = false;
-        this.scrollMonitoringActive = false;
-        this.targetScrollPosition = null;
-
-        // Remove scroll listener with proper reference
-        if (this.boundScrollCheck) {
-          window.removeEventListener('scroll', this.boundScrollCheck);
-          this.boundScrollCheck = null;
-        }
-        
-        console.log('🚀 MOBILE: User scrolled away - repositioning enabled for next search focus');
-      }
+      console.log('🚀 MOBILE: Search positioned to 12% from top');
     }
 
 
