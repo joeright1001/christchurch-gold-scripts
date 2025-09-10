@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!this.searchInput) return;
 
       // Calculate 12% from top of viewport
-      const targetPosition = window.innerHeight * 0.12;
+      const targetPosition = window.innerHeight * 0.20;
       const inputRect = this.searchInput.getBoundingClientRect();
       const scrollTarget = window.pageYOffset + inputRect.top - targetPosition;
 
