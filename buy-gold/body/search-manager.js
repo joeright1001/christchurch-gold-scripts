@@ -33,6 +33,12 @@ document.addEventListener('DOMContentLoaded', function() {
       this.originalProducts = [];
       this.gridContainer = null;
       
+      // Back to top scroll control
+      this.scrollThreshold = 30; // rem
+      this.scrollThresholdPixels = 0;
+      this.isBackToTopVisible = false;
+      this.scrollThrottle = null;
+      
       this.init();
     }
 
@@ -41,6 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
       this.cacheOriginalProducts();
       this.bindEvents();
       this.setupVirtualKeyboard();
+      this.setupBackToTopScroll();
       this.setupGlobalAccess();
       
       console.log('🚀 PERFORMANCE OPTIMIZED Search Manager initialized');
@@ -211,6 +218,85 @@ document.addEventListener('DOMContentLoaded', function() {
       } catch (error) {
         console.error('❌ Scroll error:', error);
       }
+    }
+
+    /**
+     * SETUP BACK TO TOP SCROLL CONTROL - 30REM THRESHOLD
+     * SHOW/HIDE BUTTON BASED ON SCROLL POSITION
+     */
+    setupBackToTopScroll() {
+      if (!this.backToTopButton) {
+        console.warn('Back to top button not found - scroll control disabled');
+        return;
+      }
+
+      try {
+        // Convert 30rem to pixels
+        const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+        this.scrollThresholdPixels = this.scrollThreshold * rootFontSize;
+        
+        console.log(`🚀 SCROLL: Threshold set to ${this.scrollThreshold}rem (${this.scrollThresholdPixels}px)`);
+        
+        // Add throttled scroll event listener
+        window.addEventListener('scroll', () => {
+          this.handleScrollThrottled();
+        }, { passive: true });
+
+        // Initial check on page load
+        this.handleScroll();
+        
+      } catch (error) {
+        console.error('❌ Back to top scroll setup failed:', error);
+      }
+    }
+
+    /**
+     * THROTTLED SCROLL HANDLER FOR PERFORMANCE
+     */
+    handleScrollThrottled() {
+      if (this.scrollThrottle) {
+        clearTimeout(this.scrollThrottle);
+      }
+      
+      this.scrollThrottle = setTimeout(() => {
+        this.handleScroll();
+      }, 100); // 100ms throttle
+    }
+
+    /**
+     * CHECK SCROLL POSITION AND SHOW/HIDE BACK TO TOP BUTTON
+     */
+    handleScroll() {
+      const currentScroll = window.pageYOffset;
+      const shouldShowButton = currentScroll >= this.scrollThresholdPixels;
+      
+      if (shouldShowButton && !this.isBackToTopVisible) {
+        this.showBackToTopButton();
+      } else if (!shouldShowButton && this.isBackToTopVisible) {
+        this.hideBackToTopButton();
+      }
+    }
+
+    /**
+     * SHOW BACK TO TOP BUTTON
+     */
+    showBackToTopButton() {
+      if (!this.backToTopButton) return;
+      
+      this.backToTopButton.style.display = 'block';
+      this.isBackToTopVisible = true;
+      console.log('✅ BACK TO TOP: Button shown');
+    }
+
+    /**
+     * HIDE BACK TO TOP BUTTON
+     */
+    hideBackToTopButton() {
+      if (!this.backToTopButton) return;
+      
+      this.backToTopButton.style.display = 'none';
+      this.isBackToTopVisible = false;
+      console.log('🔽 BACK TO TOP: Button hidden');
     }
 
 
