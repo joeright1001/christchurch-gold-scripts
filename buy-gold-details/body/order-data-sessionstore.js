@@ -1,0 +1,87 @@
+/**
+ * Order Data Session Storage Script
+ *
+ * Collects all product data from hidden divs, stores it in sessionStorage,
+ * and redirects to the place-order page.
+ */
+document.addEventListener("DOMContentLoaded", function () {
+  /* ---------- Helper to get element text content by ID ---------- */
+  const getText = (id) => document.getElementById(id)?.textContent.trim() || "";
+  const getValue = (id) => document.getElementById(id)?.value.trim() || "";
+
+  /* ---------- Element Handles ---------- */
+  const placeOrderButton = document.getElementById("place-order");
+  const slugField = document.getElementById("slug");
+  const productNameField = document.getElementById("product-name-full");
+  const totalPriceField = document.getElementById("total-price");
+
+  /* ---------- CMS Wait Helper ---------- */
+  function waitForCMSData(callback, retries = 10) {
+    const slugReady = slugField?.textContent.trim();
+    const nameReady = productNameField?.textContent.trim();
+    const priceReady = totalPriceField?.textContent.trim();
+
+    if (slugReady && nameReady && priceReady) {
+      callback();
+    } else if (retries > 0) {
+      setTimeout(() => waitForCMSData(callback, retries - 1), 200);
+    } else {
+      alert("Failed to load product details. Please refresh and try again.");
+    }
+  }
+
+  /* ---------- Click Handler ---------- */
+  placeOrderButton.addEventListener("click", function (event) {
+    event.preventDefault();
+
+    waitForCMSData(() => {
+      const productData = {
+        // Product Info
+        productNameFull: getText("product-name-full"),
+        productName: getText("product-name"),
+        slug: getText("slug"),
+        websiteUrl: getText("website-url"),
+        imageUrl: getText("image-url"),
+        metal: getText("metal"),
+        collect: getText("collect"),
+        cmsId: getText("cms-id"),
+        year: getText("year"),
+        zohoId: getText("zoho-id"),
+
+        // Stock & Status
+        stockLevelText: getText("1-oz-gold-stock-level"),
+        marketStatus: getText("market-status"),
+        stockStatus: getText("stock-status"),
+        productType: getText("product-type"),
+        onlineOrder: getText("online-order"),
+
+        // Supplier Data
+        shippingFee: getText("shippingfee"),
+        market: getText("market"),
+        sku: getText("sku"),
+        autoSupplier: getText("auto-supplier"),
+        supplierItemId: getText("supplier-item-id"),
+        supplierAvailability: getText("supplier-availability"),
+        supplierIsActiveSell: getText("supplier-isactivesell"),
+
+        // Pricing Data
+        quantity: getValue("quantity"),
+        unitPriceNzd: getText("unit-price-nzd"),
+        unitTotalPriceNzd: getText("unit-total-price-nzd"),
+        unitGst: getText("unit-gst"),
+        unitTotalGst: getText("unit-total-gst"),
+        gstTotal: getText("gst-total"),
+        subTotal: getText("sub-total"),
+        totalPrice: getText("total-price"),
+        priceNzd: getText("price_nzd"),
+        priceSigned: getText("price-signed"),
+      };
+
+      // Store the data in sessionStorage
+      sessionStorage.setItem("productData", JSON.stringify(productData));
+
+      // Redirect to the place-order page
+      window.location.href = "/place-order";
+    });
+  });
+});
