@@ -46,6 +46,8 @@ document.addEventListener("DOMContentLoaded", function () {
         collect: getText("collect"),
         cmsId: getText("cms-id"),
         year: getText("year"),
+        mint: getText("mint"),
+        size: getText("size"),
         zohoId: getText("zoho-id"),
 
         // Stock & Status
