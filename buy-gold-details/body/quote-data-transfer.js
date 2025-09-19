@@ -1,14 +1,16 @@
-/**
+/*
  * Order Data Transfer Script (Corrected for Webflow Routing)
  *
  * Constructs a URL with all data, including the slug, in the query string.
  * This is required to work with Webflow's static routing.
- */
+ *
+ * DISABLED - Replaced by order-data-sessionstore.js
+ *
 document.addEventListener("DOMContentLoaded", function () {
-  /* ---------- Helper to get element by ID ---------- */
+  /* ---------- Helper to get element by ID ---------- * /
   const $ = (id) => document.getElementById(id);
 
-  /* ---------- Element Handles ---------- */
+  /* ---------- Element Handles ---------- * /
   const slugField = $("slug");
   const getQuoteButton = $("get-quote");
   const productNameField = $("product-name-full"); // For CMS wait check
@@ -29,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
     "product-name-full",
   ];
 
-  /* ---------- CMS Wait Helper ---------- */
+  /* ---------- CMS Wait Helper ---------- * /
   function waitForCMSData(callback, retries = 10) {
     const slugReady = slugField?.textContent.trim();
     const nameReady = productNameField?.textContent.trim();
@@ -44,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  /* ---------- Click Handler ---------- */
+  /* ---------- Click Handler ---------- * /
   getQuoteButton.addEventListener("click", function (event) {
     event.preventDefault();
     
@@ -89,3 +91,4 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+*/

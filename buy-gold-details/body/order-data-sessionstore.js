@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ---------- Element Handles ---------- */
   const placeOrderButton = document.getElementById("place-order");
+  const getQuoteButton = document.getElementById("get-quote");
   const slugField = document.getElementById("slug");
   const productNameField = document.getElementById("product-name-full");
   const totalPriceField = document.getElementById("total-price");
@@ -30,10 +31,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  /* ---------- Click Handler ---------- */
-  placeOrderButton.addEventListener("click", function (event) {
-    event.preventDefault();
-
+  /* ---------- Core Logic to Save Data and Redirect ---------- */
+  function saveDataAndRedirect(redirectUrl) {
     waitForCMSData(() => {
       const productData = {
         // Product Info
@@ -82,8 +81,23 @@ document.addEventListener("DOMContentLoaded", function () {
       // Store the data in sessionStorage
       sessionStorage.setItem("productData", JSON.stringify(productData));
 
-      // Redirect to the place-order page
-      window.location.href = "/place-order";
+      // Redirect to the specified page
+      window.location.href = redirectUrl;
     });
-  });
+  }
+
+  /* ---------- Event Listeners ---------- */
+  if (placeOrderButton) {
+    placeOrderButton.addEventListener("click", function (event) {
+      event.preventDefault();
+      saveDataAndRedirect("/place-order");
+    });
+  }
+
+  if (getQuoteButton) {
+    getQuoteButton.addEventListener("click", function (event) {
+      event.preventDefault();
+      saveDataAndRedirect("/quote");
+    });
+  }
 });
