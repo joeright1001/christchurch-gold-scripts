@@ -79,7 +79,6 @@ document.addEventListener("DOMContentLoaded", () => {
   
   // Direct mapping from data object to element ID
   const fieldMapping = {
-    "product-name-full": data.productNameFull,
     "product-name": data.productName,
     "slug": data.slug,
     "website-url": data.websiteUrl,
@@ -88,6 +87,8 @@ document.addEventListener("DOMContentLoaded", () => {
     "collect": data.collect,
     "cms-id": data.cmsId,
     "year": data.year,
+    "mint": data.mint,
+    "size": data.size,
     "zoho-id": data.zohoId,
     "1-oz-gold-stock-level": data.stockLevelText,
     "market-status": data.marketStatus,
@@ -109,6 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // --- Part 3: Populate Pricing and Total Fields (using setPair) ---
+  setPair("product-name-full", data.productNameFull);
   setPair("quantity", data.quantity);
   setPair("unit-price-nzd", data.unitPriceNzd);
   setPair("unit-total-price-nzd", data.unitTotalPriceNzd);
