@@ -122,6 +122,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setPair("price-signed", data.priceSigned);
   setPair("total-amount", data.totalPrice); // Initial total amount
 
-  // Optional: Clean the session storage after use
-  // sessionStorage.removeItem("productData");
+  // Clean the session storage after use to prevent stale data
+  sessionStorage.removeItem("productData");
 });
