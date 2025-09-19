@@ -1,10 +1,12 @@
-/**
+/*
  * Place-Order URL Data Receiver (Combined)
  *
  * Handles filtering the CMS collection based on a 'slug' query parameter,
  * populating form fields from other URL query parameters, and updating
  * page elements (like the product image) from the visible CMS item.
- */
+ *
+ * DISABLED - Replaced by load-sessionstore-data.js
+ *
 document.addEventListener("DOMContentLoaded", () => {
   // Get all query parameters from the URL
   const qs = new URLSearchParams(window.location.search);
@@ -12,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ------------------------------------------------------------------
      Part 1: Filter CMS Collection and Update from its Content
-  ------------------------------------------------------------------ */
+  ------------------------------------------------------------------ * /
   
   const productSlug = val('slug');
 
@@ -89,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ------------------------------------------------------------------
      Part 2: Populate Form Fields from URL Query Parameters
-  ------------------------------------------------------------------ */
+  ------------------------------------------------------------------ * /
 
   function setPair(idBase, value) {
     if (!value) return;
@@ -117,8 +119,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ------------------------------------------------------------------
      Part 3: Clean the URL
-  ------------------------------------------------------------------ */
+  ------------------------------------------------------------------ * /
   if (window.location.search) {
     window.history.replaceState({}, "", window.location.pathname);
   }
 });
+*/
