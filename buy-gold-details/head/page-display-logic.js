@@ -68,10 +68,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const onlineOrder = document.getElementById('online-order')?.textContent.trim().toLowerCase();
     const metal = document.getElementById('metal')?.textContent.trim().toLowerCase();
 
-    if (market === 'dg-closed' || stock === 'out-stock') {
+    // Hides the 'tag1' element if the market is closed or the product is out of stock. Commented out so it displays.
+    /* if (market === 'dg-closed' || stock === 'out-stock') {
       const tag1 = document.getElementById('tag1');
       if (tag1) tag1.style.display = 'none';
-    }
+    } */
 
     // Override: online-order = false
     if (onlineOrder === 'false') {
