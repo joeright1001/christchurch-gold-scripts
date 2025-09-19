@@ -2,6 +2,9 @@
  * Payment Status Checker
  * Handles payment button states and API communication
  * Extracted from code-payment-checker.txt
+ * 
+ * UPDATE: Windcave and Blink payment options have been temporarily disabled
+ * by commenting out the relevant code. To re-enable, search for "Windcave" and "Blink".
  */
 
 // Define URLs
@@ -78,15 +81,15 @@ function sleep(ms) {
 
 function setInitialStates() {
     const poliButton = document.querySelector('#paymentButton');
-    const blinkButton = document.querySelector('#paymentBlinkpay');
+    // const blinkButton = document.querySelector('#paymentBlinkpay');
     // const btcPayButton = document.querySelector('#paymentBitpay');
     const stripeButton = document.querySelector('#paymentCreditcard');
     const alipayButton = document.querySelector('#paymentAlipay');
-    const windcaveButton = document.querySelector('#paymentWindcave');
+    // const windcaveButton = document.querySelector('#paymentWindcave');
     const pdfCheckmark = document.querySelector('#pdf-checkmark');
     const paylinkCheckmark = document.querySelector('#paylink-checkmark');
 
-    [poliButton, blinkButton, /* btcPayButton, */ stripeButton, alipayButton, windcaveButton].forEach(button => {
+    [poliButton, /* blinkButton, */ /* btcPayButton, */ stripeButton, alipayButton, /* windcaveButton */].forEach(button => {
         if (button) {
             button.innerHTML = `
                 <span class="spinner"></span>
@@ -137,14 +140,14 @@ async function initializePaymentCheck() {
     console.log(`Using API URL: ${API_URL}`);
     
     const poliButton = document.querySelector('#paymentButton');
-    const blinkButton = document.querySelector('#paymentBlinkpay');
+    // const blinkButton = document.querySelector('#paymentBlinkpay');
     // const btcPayButton = document.querySelector('#paymentBitpay');
     const stripeButton = document.querySelector('#paymentCreditcard');
     const alipayButton = document.querySelector('#paymentAlipay');
-    const windcaveButton = document.querySelector('#paymentWindcave');
+    // const windcaveButton = document.querySelector('#paymentWindcave');
 
     // Check only required buttons (windcave is optional)
-    if (!poliButton || !blinkButton || /* !btcPayButton || */ !stripeButton || !alipayButton) {
+    if (!poliButton || /* !blinkButton || */ /* !btcPayButton || */ !stripeButton || !alipayButton) {
         console.error('ERROR: One or more required payment buttons not found');
         return;
     }
@@ -158,7 +161,7 @@ async function initializePaymentCheck() {
 
     if (!orderToken) {
         console.error('ERROR: No order token found in sessionStorage or token has expired');
-        [poliButton, blinkButton, /* btcPayButton, */ stripeButton, alipayButton, windcaveButton].forEach(button => {
+        [poliButton, /* blinkButton, */ /* btcPayButton, */ stripeButton, alipayButton, /* windcaveButton */].forEach(button => {
             if (button) {
                 button.innerHTML = 'Payment Option Not Available';
                 button.classList.add('error');
@@ -174,8 +177,8 @@ async function initializePaymentCheck() {
 
         if (attempts > MAX_ATTEMPTS) {
             console.error('Maximum attempts reached');
-            const allButtons = [poliButton, blinkButton, /* btcPayButton, */ stripeButton, alipayButton];
-            if (windcaveButton) allButtons.push(windcaveButton);
+            const allButtons = [poliButton, /* blinkButton, */ /* btcPayButton, */ stripeButton, alipayButton];
+            // if (windcaveButton) allButtons.push(windcaveButton);
             
             const allButtonsFailed = allButtons.every(button => !button.classList.contains('ready'));
 
@@ -206,11 +209,11 @@ async function initializePaymentCheck() {
             console.log('Payment status response:', data);
 
             let poliReady = false;
-            let blinkReady = false;
+            // let blinkReady = false;
             // let btcPayReady = false;
             let stripeReady = false;
             let alipayReady = false;
-            let windcaveReady = false;
+            // let windcaveReady = false;
 
             if (data.payments) {
                 if (data.payments.POLi && poliButton) {
@@ -221,13 +224,13 @@ async function initializePaymentCheck() {
                     poliReady = true;
                 }
                 
-                if (data.payments.BLINK && blinkButton) {
-                    blinkButton.innerHTML = 'Pay with Blink';
-                    blinkButton.href = data.payments.BLINK.payment_url;
-                    blinkButton.classList.remove('processing');
-                    blinkButton.classList.add('ready');
-                    blinkReady = true;
-                }
+                // if (data.payments.BLINK && blinkButton) {
+                //     blinkButton.innerHTML = 'Pay with Blink';
+                //     blinkButton.href = data.payments.BLINK.payment_url;
+                //     blinkButton.classList.remove('processing');
+                //     blinkButton.classList.add('ready');
+                //     blinkReady = true;
+                // }
 
                 // BTCPay processing - COMMENTED OUT
                 // if (data.payments.BTCPAY && btcPayButton) {
@@ -255,20 +258,20 @@ async function initializePaymentCheck() {
                 }
 
                 // Windcave processing (only if button exists)
-                if (data.payments.WINDCAVE && windcaveButton) {
-                    windcaveButton.innerHTML = 'Pay with Windcave';
-                    windcaveButton.href = data.payments.WINDCAVE.payment_url;
-                    windcaveButton.classList.remove('processing');
-                    windcaveButton.classList.add('ready');
-                    windcaveReady = true;
-                }
+                // if (data.payments.WINDCAVE && windcaveButton) {
+                //     windcaveButton.innerHTML = 'Pay with Windcave';
+                //     windcaveButton.href = data.payments.WINDCAVE.payment_url;
+                //     windcaveButton.classList.remove('processing');
+                //     windcaveButton.classList.add('ready');
+                //     windcaveReady = true;
+                // }
 
                 // Check if at least one payment is ready
-                const anyPaymentReady = poliReady || blinkReady || /* btcPayReady || */ stripeReady || alipayReady || windcaveReady;
+                const anyPaymentReady = poliReady || /* blinkReady || */ /* btcPayReady || */ stripeReady || alipayReady /* || windcaveReady */;
                 
                 // Check if all expected payments are ready (windcave only if button exists)
-                const allExpectedReady = poliReady && blinkReady && /* btcPayReady && */ stripeReady && alipayReady && 
-                    (!windcaveButton || windcaveReady);
+                const allExpectedReady = poliReady && /* blinkReady && */ /* btcPayButton && */ stripeReady && alipayReady; 
+                    // (!windcaveButton || windcaveReady);
 
                 if (anyPaymentReady) {
                     setCompletionState();
@@ -292,8 +295,8 @@ async function initializePaymentCheck() {
                 await sleep(2000);
                 await checkPaymentStatus();
             } else {
-                const allButtons = [poliButton, blinkButton, /* btcPayButton, */ stripeButton, alipayButton];
-                if (windcaveButton) allButtons.push(windcaveButton);
+                const allButtons = [poliButton, /* blinkButton, */ /* btcPayButton, */ stripeButton, alipayButton];
+                // if (windcaveButton) allButtons.push(windcaveButton);
                 
                 const allButtonsFailed = allButtons.every(button => !button.classList.contains('ready'));
 
