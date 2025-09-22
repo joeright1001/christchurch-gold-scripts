@@ -187,7 +187,9 @@ document.addEventListener('DOMContentLoaded',async()=>{
           size               : fd.get('size')||"",
           mint               : fd.get('mint')||"",
           stock_level        : fd.get('stock-level')||"",
-          slug               : fd.get('slug')||""
+          slug               : fd.get('slug')||"",
+          mark_up            : parseFloat(fd.get('mark-up'))||0,
+          base_metal_price   : parseFloat(fd.get('base-metal-price'))||0
         }
       ]
     };

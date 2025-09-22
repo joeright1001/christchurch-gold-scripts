@@ -103,6 +103,8 @@ document.addEventListener("DOMContentLoaded", () => {
     "supplier-availability": data.supplierAvailability,
     "supplier-isactivesell": data.supplierIsActiveSell,
     "price_nzd": data.priceNzd,
+    "mark-up": data.markUp,
+    "base-metal-price": data.baseMetalPrice,
   };
 
   for (const [id, value] of Object.entries(fieldMapping)) {
