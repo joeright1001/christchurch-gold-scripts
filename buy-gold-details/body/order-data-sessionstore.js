@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
         mint: getText("mint"),
         size: getText("size"),
         zohoId: getText("zoho-id"),
+        weightGrams: getText("weight-grams"),
 
         // Stock & Status
         stockLevelText: getText("1-oz-gold-stock-level"),
