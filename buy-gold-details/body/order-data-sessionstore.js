@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
         weightGrams: getText("weight-grams"),
 
         // Stock & Status
-        stockLevelText: getText("1-oz-gold-stock-level"),
+        stockLevel: getText("stock-level"),
         marketStatus: getText("market-status"),
         stockStatus: getText("stock-status"),
         productType: getText("product-type"),
