@@ -76,6 +76,8 @@ document.addEventListener("DOMContentLoaded", function () {
         totalPrice: getText("total-price"),
         priceNzd: getText("price_nzd"),
         priceSigned: getText("price-signed"),
+        markUp: getText("mark-up"),
+        baseMetalPrice: getText("base-metal-price"),
       };
 
       // Store the data in sessionStorage
