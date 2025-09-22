@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "size": data.size,
     "zoho-id": data.zohoId,
     "weight-grams": data.weightGrams,
-    "1-oz-gold-stock-level": data.stockLevelText,
+    "stock-level": data.stockLevel,
     "market-status": data.marketStatus,
     "stock-status": data.stockStatus,
     "product-type": data.productType,
