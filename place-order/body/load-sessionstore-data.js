@@ -90,6 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "mint": data.mint,
     "size": data.size,
     "zoho-id": data.zohoId,
+    "weight-grams": data.weightGrams,
     "1-oz-gold-stock-level": data.stockLevelText,
     "market-status": data.marketStatus,
     "stock-status": data.stockStatus,
