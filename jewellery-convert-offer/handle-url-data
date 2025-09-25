@@ -1,0 +1,89 @@
+<script>
+    /**
+     * Script to dynamically populate and display estimate calculation data
+     * 
+     * Purpose:
+     * This script retrieves serialized estimate calculation data from the URL, 
+     * processes it into a human-readable format, and populates it into a 
+     * hidden text area within a wrapper div. The wrapper div is revealed 
+     * only if valid data is present in the URL.
+     * 
+     * Context:
+     * - The data is serialized and appended as a query parameter (`estCalcData`) 
+     *   when navigating to this page.
+     * - The text area displays formatted rows of calculation data and a grand total.
+     * - Intended for Webflow pages that involve transferring data between 
+     *   an estimation calculator and a form submission page.
+     * 
+     * Constraints:
+     * - The script requires the following elements on the page:
+     *   1. A **wrapper div** with the ID `est-calc-data-display` that contains the text area.
+     *   2. A **text area** with the ID `est-calc-data` to display the formatted data.
+     * - The `#est-calc-data-display` div must be hidden by default using CSS:
+     *     #est-calc-data-display { display: none; }
+     * - The script assumes the query parameter `estCalcData` is properly formatted JSON.
+     */
+
+    document.addEventListener('DOMContentLoaded', function () {
+        function populateEstCalcData() {
+            // Get the query parameters from the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const estCalcData = urlParams.get('estCalcData');
+
+            if (!estCalcData) {
+                console.warn('No data found in the URL to populate.');
+                return;
+            }
+
+            try {
+                // Decode the data
+                const decodedData = JSON.parse(decodeURIComponent(estCalcData));
+                console.log('Decoded Data:', decodedData);
+
+                let formattedData = '';
+                let itemIndex = 1;
+
+                // Process each entry in the data
+                decodedData.forEach((entry) => {
+                    if (entry.data && entry.data.item && entry.data.purity && entry.data.weight && entry.data.value) {
+                        formattedData += `Item ${itemIndex}:\t${entry.data.item}\t${entry.data.purity}\t${entry.data.weight}\tvalue${itemIndex}:${entry.data.value}\n`;
+                        itemIndex++;
+                    }
+                });
+
+                // Add the grand total at the end (no duplicate)
+                const totalEntry = decodedData.find(entry => entry.total);
+                if (totalEntry && totalEntry.data && totalEntry.data.total) {
+                    formattedData += `\n${totalEntry.data.total}`;
+                }
+
+                // Populate the text area
+                const estCalcTextBox = document.getElementById('est-calc-data');
+                const estCalcDataDisplayDiv = document.getElementById('est-calc-data-display');
+                const estCalcMessageWrapper = document.getElementById('est-calc-message-wrapper'); // Added line
+
+                if (estCalcTextBox && estCalcDataDisplayDiv) {
+                    estCalcTextBox.value = formattedData.trim(); // Add the formatted data
+                    estCalcTextBox.style.color = '#666'; // Set text color to #aaa
+
+                    // Reveal the div containing the text area
+                    estCalcDataDisplayDiv.style.display = 'block';
+
+                    // Reveal the message wrapper div
+                    if (estCalcMessageWrapper) {
+                        estCalcMessageWrapper.style.display = 'block'; // Added line
+                    }
+
+                    console.log('Data populated in est-calc-data:', formattedData);
+                } else {
+                    console.error('Required elements (text area or wrapper div) not found.');
+                }
+            } catch (error) {
+                console.error('Error decoding or processing estCalcData:', error);
+            }
+        }
+
+        // Populate data on page load
+        populateEstCalcData();
+    });
+</script>
