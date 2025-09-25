@@ -46,8 +46,8 @@
                 // Process each entry in the data
                 decodedData.forEach((entry) => {
                     if (entry.data && entry.data.item && entry.data.purity && entry.data.weight && entry.data.value) {
-                        // MODIFIED LINE: Changed formatting to use pipes
-                        formattedData += `Item ${itemIndex}: ${entry.data.item} | ${entry.data.purity} | ${entry.data.weight} | ${entry.data.value}\n`;
+                        // This line adds the descriptive labels as requested
+                        formattedData += `Item ${itemIndex}: ${entry.data.item} | Purity: ${entry.data.purity} | Weight: ${entry.data.weight} | Value: ${entry.data.value}\n`;
                         itemIndex++;
                     }
                 });
@@ -55,25 +55,24 @@
                 // Add the grand total at the end (no duplicate)
                 const totalEntry = decodedData.find(entry => entry.total);
                 if (totalEntry && totalEntry.data && totalEntry.data.total) {
-                    // This line is now reverted to its original state
                     formattedData += `\n${totalEntry.data.total}`;
                 }
 
                 // Populate the text area
                 const estCalcTextBox = document.getElementById('est-calc-data');
                 const estCalcDataDisplayDiv = document.getElementById('est-calc-data-display');
-                const estCalcMessageWrapper = document.getElementById('est-calc-message-wrapper'); // Added line
+                const estCalcMessageWrapper = document.getElementById('est-calc-message-wrapper'); 
 
                 if (estCalcTextBox && estCalcDataDisplayDiv) {
-                    estCalcTextBox.value = formattedData.trim(); // Add the formatted data
-                    estCalcTextBox.style.color = '#666'; // Set text color to #aaa
+                    estCalcTextBox.value = formattedData.trim(); 
+                    estCalcTextBox.style.color = '#666'; 
 
-                    // Reveal the div containing the text area
+                    // Reveal the div containing the text area -- THIS LINE IS NOW FIXED
                     estCalcDataDisplayDiv.style.display = 'block';
 
                     // Reveal the message wrapper div
                     if (estCalcMessageWrapper) {
-                        estCalcMessageWrapper.style.display = 'block'; // Added line
+                        estCalcMessageWrapper.style.display = 'block'; 
                     }
 
                     console.log('Data populated in est-calc-data:', formattedData);
