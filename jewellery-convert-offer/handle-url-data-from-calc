@@ -46,7 +46,8 @@
                 // Process each entry in the data
                 decodedData.forEach((entry) => {
                     if (entry.data && entry.data.item && entry.data.purity && entry.data.weight && entry.data.value) {
-                        formattedData += `Item ${itemIndex}:\t${entry.data.item}\t${entry.data.purity}\t${entry.data.weight}\tvalue${itemIndex}:${entry.data.value}\n`;
+                        // MODIFIED LINE: Changed formatting to use pipes
+                        formattedData += `Item ${itemIndex}: ${entry.data.item} | ${entry.data.purity} | ${entry.data.weight} | ${entry.data.value}\n`;
                         itemIndex++;
                     }
                 });
@@ -54,6 +55,7 @@
                 // Add the grand total at the end (no duplicate)
                 const totalEntry = decodedData.find(entry => entry.total);
                 if (totalEntry && totalEntry.data && totalEntry.data.total) {
+                    // This line is now reverted to its original state
                     formattedData += `\n${totalEntry.data.total}`;
                 }
 
