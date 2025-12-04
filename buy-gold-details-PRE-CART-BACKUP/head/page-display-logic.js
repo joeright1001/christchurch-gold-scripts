@@ -10,7 +10,7 @@
     #state-today,#state-34-weeks,#state-35-days,#state-out-stock,
     #state-market-247,#state-market-nz-open,#state-market-nz-closed,
     #state-market-dg-open,#state-market-dg-closed,#state-market-out-stock,
-    #add-to-cart-btn,#place-order,#get-quote,#button-closed,#button-247,
+    #place-order,#get-quote,#button-closed,#button-247,
     #market-button-text-nz-closed,#market-button-text-dg-closed,
     #market-button-text-closed,#investor-1-oz-gold,#investor-1-oz-silver,
     #offline-order-text,#broker-text,#out-stock-broker-text{display:none;}
@@ -105,7 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showElement('market-button-text-dg-closed');
       }
       else if (market === 'dg-open' && stock === 'live-at-the-mint') {
-        showElement('add-to-cart-btn', 'inline-block');
         showElement('place-order', 'inline-block');
         showElement('get-quote', 'inline-block');
         showElement('broker-text');
@@ -115,7 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showElement('state-34-weeks', 'flex');
       }
       else if (market === 'dg-open' && stock === 'in-stock') {
-        showElement('add-to-cart-btn', 'inline-block');
         showElement('place-order', 'inline-block');
         showElement('get-quote', 'inline-block');
         showElement('broker-text');
@@ -126,7 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showElement('icon-247');
       }
       else if (market === '247-open' && stock === 'in-stock') {
-        showElement('add-to-cart-btn', 'inline-block');
         showElement('place-order', 'inline-block');
         showElement('get-quote', 'inline-block');
         showElement('broker-text');
@@ -137,7 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
         showElement('icon-247');
       }
       else if (market === '247-open' && stock === 'low-stock') {
-        showElement('add-to-cart-btn', 'inline-block');
         showElement('place-order', 'inline-block');
         showElement('get-quote', 'inline-block');
         showElement('broker-text');
