@@ -10,7 +10,7 @@
     #state-today,#state-34-weeks,#state-35-days,#state-out-stock,
     #state-market-247,#state-market-nz-open,#state-market-nz-closed,
     #state-market-dg-open,#state-market-dg-closed,#state-market-out-stock,
-    #add-to-cart-btn,#place-order,#get-quote,#button-closed,#button-247,
+  #add-to-cart-btn,#place-order,#get-quote,#button-closed,#button-247,
     #market-button-text-nz-closed,#market-button-text-dg-closed,
     #market-button-text-closed,#investor-1-oz-gold,#investor-1-oz-silver,
     #offline-order-text,#broker-text,#out-stock-broker-text{display:none;}
@@ -62,11 +62,20 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ---------- 3. Stock & market status logic (template guard) ------------ */
-  if (window.location.pathname.startsWith('/buy-gold-details/')) {
+  // Relaxed check to include /buy-gold-details (without trailing slash)
+  if (window.location.pathname.startsWith('/buy-gold-details')) {
     const stock = document.getElementById('stock-status')?.textContent.trim();
     const market = document.getElementById('market-status')?.textContent.trim();
     const onlineOrder = document.getElementById('online-order')?.textContent.trim().toLowerCase();
     const metal = document.getElementById('metal')?.textContent.trim().toLowerCase();
+
+    console.log('Page Logic Debug:', {
+      path: window.location.pathname,
+      stock,
+      market,
+      onlineOrder,
+      metal
+    });
 
     // Hides the 'tag1' element if the market is closed or the product is out of stock. Commented out so it displays.
     /* if (market === 'dg-closed' || stock === 'out-stock') {
