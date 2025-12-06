@@ -1,5 +1,7 @@
 /* =========================================================================
-   Christchurch Gold – Display Logic (template-only)
+   THE MASTER SCRIPT THAT CONTROLS WHAT BUTTON, ICONS AND TEXT ARE SHOWN DEPENDING ON THE STOCK-STATUS, MARKET & ONLINE ORDER STATUS
+   
+   Display Logic (template-only)
    Injects its own "hide by default" CSS so the rules are page-local.
    ========================================================================= */
 
@@ -10,7 +12,7 @@
     #state-today,#state-34-weeks,#state-35-days,#state-out-stock,
     #state-market-247,#state-market-nz-open,#state-market-nz-closed,
     #state-market-dg-open,#state-market-dg-closed,#state-market-out-stock,
-  #add-to-cart-btn,#place-order,#get-quote,#button-closed,#button-247,
+  #add-to-cart-btn,#place-order,#get-quote,#get-quote-btn,#button-closed,#button-247,
     #market-button-text-nz-closed,#market-button-text-dg-closed,
     #market-button-text-closed,#investor-1-oz-gold,#investor-1-oz-silver,
     #offline-order-text,#broker-text,#out-stock-broker-text{display:none;}
@@ -117,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showElement('add-to-cart-btn', 'inline-block');
         showElement('place-order', 'inline-block');
         showElement('get-quote', 'inline-block');
+        showElement('get-quote-btn', 'inline-block');
         showElement('broker-text');
         showElement('broker');
         showElement('icon-34-weeks');
@@ -127,6 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showElement('add-to-cart-btn', 'inline-block');
         showElement('place-order', 'inline-block');
         showElement('get-quote', 'inline-block');
+        showElement('get-quote-btn', 'inline-block');
         showElement('broker-text');
         showElement('broker');
         showElement('state-today', 'flex');
@@ -138,6 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showElement('add-to-cart-btn', 'inline-block');
         showElement('place-order', 'inline-block');
         showElement('get-quote', 'inline-block');
+        showElement('get-quote-btn', 'inline-block');
         showElement('broker-text');
         showElement('broker');
         showElement('state-today', 'flex');
@@ -149,6 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showElement('add-to-cart-btn', 'inline-block');
         showElement('place-order', 'inline-block');
         showElement('get-quote', 'inline-block');
+        showElement('get-quote-btn', 'inline-block');
         showElement('broker-text');
         showElement('broker');
         showElement('state-35-days', 'flex');

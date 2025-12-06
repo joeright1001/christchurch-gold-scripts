@@ -1,5 +1,7 @@
 /**
- * Script Name: Broker Data Transfer Script
+ * Script Name: DEALER DIRECT Transfer Script. Picks up the current product data from the cms and takes it to the /connect-dealer page.
+ * 
+ * the button is called DEALER DIRECT but the ID is "broker"
  *
  * Purpose:
  * This script captures product details from the page, including product name, quantity, total price, 
