@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     constructor(config) {
       this.config = config;
       this.buttons = {};
+      this.parentWrappers = {}; // Cache parent wrappers for filters
       this.filterStates = {};
       this.productElements = [];
       this.gridContainer = null;
@@ -47,9 +48,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     cacheElements() {
-      // Cache desktop checkbox buttons
+      // Cache desktop checkbox buttons and their parent wrappers
       Object.entries(this.config.buttons).forEach(([key, id]) => {
         this.buttons[key] = document.getElementById(id);
+        
+        // Cache parent wrapper if it exists
+        const wrapper = document.querySelector(`[data-filter-parent-for="${key}"]`);
+        if (wrapper) {
+          this.parentWrappers[key] = wrapper;
+        }
       });
 
       // Cache clear all filters button (both desktop and mobile)
@@ -97,6 +104,23 @@ document.addEventListener('DOMContentLoaded', function() {
         if (this.config.rules[filterName]) {
           button.style.cursor = 'pointer';
           button.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.toggleFilter(filterName);
+          });
+        }
+      });
+
+      // Bind parent wrappers for better UX (click anywhere on the filter item)
+      Object.entries(this.parentWrappers).forEach(([filterName, wrapper]) => {
+        if (!wrapper) return;
+
+        if (this.config.rules[filterName]) {
+          wrapper.style.cursor = 'pointer';
+          wrapper.addEventListener('click', (e) => {
+            // If the click target is the checkbox button itself, ignore (let the button handler handle it)
+            // Note: button handler calls stopPropagation, so it shouldn't bubble here anyway.
+            // But just in case, we prevent default behavior.
             e.preventDefault();
             e.stopPropagation();
             this.toggleFilter(filterName);
@@ -751,7 +775,9 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!groupFilters) return;
 
       groupFilters.forEach(filterName => {
-        const parentWrapper = document.querySelector(`[data-filter-parent-for="${filterName}"]`);
+        // Use cached parent wrapper
+        const parentWrapper = this.parentWrappers[filterName];
+        
         if (parentWrapper) {
           if (activeFilterName) {
             if (filterName === activeFilterName) {
