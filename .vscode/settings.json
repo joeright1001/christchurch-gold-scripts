@@ -2,8 +2,8 @@
     "kiroAgent.configureMCP": "Enabled",
     "editor.colorDecorators": true,
     "workbench.colorCustomizations": {
-        "activityBar.background": "#42430c",
-        "titleBar.activeBackground": "#2d340a",
+        "activityBar.background": "#4d0e0e",
+        "titleBar.activeBackground": "#582424",
         "titleBar.activeForeground": "#ffffff",
                 "editor.background": "#0f0f0f",
         "sideBar.background": "#141414",
