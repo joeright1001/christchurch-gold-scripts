@@ -74,6 +74,25 @@
 /* Lighter "Default" placeholder before the user picks something */
 #custom-filter[data-selected="default"] .selected-text { color:#aaa; }
 
+/* Desktop-specific UI tweaks request */
+@media (min-width: 992px) {
+  /* Fix dropdown hidden by panels */
+  .div-filter-dropdown {
+    position: relative;
+    z-index: 2000;
+    overflow: visible;
+  }
+
+  /* Rounder style for desktop */
+  #custom-filter .filter-selected {
+    border-radius: 20px;
+  }
+
+  #custom-filter .filter-options {
+    border-radius: 20px;
+  }
+}
+
 /* Hide mobile-specific filter options on DESKTOP */
 @media (min-width: 1024px) {
   #custom-filter .filter-option[data-value="getting-started-select"],
