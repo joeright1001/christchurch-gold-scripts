@@ -45,6 +45,13 @@
 
 /* ==================== PERFORMANCE FIX: CSS-BASED FILTERING ==================== */
 /* This replaces expensive DOM cloning with fast CSS class toggles */
-.w-dyn-item.filter-hidden {
+/* Increased specificity to ensure filtered items are hidden and don't affect layout */
+.w-dyn-list .w-dyn-items .w-dyn-item.filter-hidden,
+.w-dyn-list .w-dyn-items.w-row .w-dyn-item.filter-hidden,
+.w-dyn-list .w-dyn-items.w-row .w-dyn-item.w-col.filter-hidden {
   display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
