@@ -78,9 +78,9 @@
 @media (min-width: 992px) {
   /* Fix dropdown hidden by panels */
   .div-filter-dropdown {
-    position: relative;
-    z-index: 2000;
-    overflow: visible;
+    position: relative !important;
+    z-index: 2000 !important;
+    overflow: visible !important;
   }
 
   /* Rounder style for desktop */
