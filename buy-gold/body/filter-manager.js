@@ -595,7 +595,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Style as a centered square fill
         fill.style.position = 'absolute';
-        fill.style.top = 'calc(50% + 0.5px)';
+        fill.style.top = 'calc(50% + 0.25px)';
         fill.style.left = '50%';
         fill.style.transform = 'translate(-50%, -50%)';
         fill.style.width = '60%'; 
