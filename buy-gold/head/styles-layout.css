@@ -3,6 +3,8 @@
   display: flex !important;
   flex-wrap: wrap !important;
   justify-content: flex-start !important;
+  width: 100% !important;
+  text-align: left !important;
 }
 
 /* Fix for phantom elements in Webflow flex containers */
