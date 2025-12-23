@@ -595,13 +595,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Style as a centered square fill
         fill.style.position = 'absolute';
-        fill.style.top = '50%';
+        fill.style.top = 'calc(50% + 0.5px)';
         fill.style.left = '50%';
         fill.style.transform = 'translate(-50%, -50%)';
         fill.style.width = '60%'; 
         fill.style.height = '60%';
-        fill.style.backgroundColor = '#333';
-        fill.style.borderRadius = '2px';
+        fill.style.backgroundColor = '#666';
+        fill.style.borderRadius = '2.5px';
         fill.style.pointerEvents = 'none';
         
         button.style.position = 'relative';
