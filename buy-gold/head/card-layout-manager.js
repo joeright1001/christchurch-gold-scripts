@@ -61,6 +61,10 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   function initializeDynamicSizing() {
+    // DISABLED: Returning early to allow CSS flexbox to handle layout
+    console.log('🚀 SIZING: Dynamic JS sizing disabled in favor of CSS flexbox');
+    return;
+
     // Wait for the page to fully render
     setTimeout(() => {
       optimalCardWidth = detectOptimalCardWidth();

@@ -6,13 +6,17 @@
 }
 
 .w-dyn-list .w-dyn-items.w-row .w-dyn-item.w-col.w-col-4 {
-  width: 32.3333% !important;
-  max-width: 450px !important;
-  min-width: 320px !important;
-  flex: 0 0 32.3333% !important;
+  /* Fluid layout settings */
+  width: auto !important;
+  max-width: none !important;
+  min-width: 300px !important;
+  flex-grow: 1 !important;
+  flex-basis: 300px !important;
+  
   box-sizing: border-box !important;
   margin-left: 0.5% !important;
   margin-right: 0.5% !important;
+  margin-bottom: 10px !important;
 }
 
 /* Responsive adjustments */
