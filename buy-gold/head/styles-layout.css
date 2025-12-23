@@ -1,36 +1,48 @@
 /* Force consistent sizing for filtered products */
 .w-dyn-list .w-dyn-items.w-row {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  justify-content: flex-start !important;
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)) !important;
+  gap: 20px !important;
+  justify-content: start !important;
+  
+  /* Reset flex properties */
+  flex-wrap: unset !important;
 }
 
 .w-dyn-list .w-dyn-items.w-row .w-dyn-item.w-col.w-col-4 {
-  /* Fluid layout settings */
+  /* Reset flex/width properties for Grid items */
   width: auto !important;
   max-width: none !important;
-  min-width: 420px !important;
-  flex-grow: 1 !important;
-  flex-basis: 420px !important;
+  min-width: 0 !important;
+  flex: none !important;
   
-  box-sizing: border-box !important;
-  margin-left: 0.5% !important;
-  margin-right: 0.5% !important;
-  margin-bottom: 10px !important;
+  /* Remove margins as we use gap */
+  margin: 0 !important;
+  
+  /* Ensure height consistency */
+  height: 100% !important;
+}
+
+/* Handle the no results message in grid */
+.no-results-message {
+  grid-column: 1 / -1 !important;
+  text-align: left !important;
+  width: 100% !important;
+  padding-left: 0 !important; /* Ensure no extra padding pushes it */
 }
 
 /* Responsive adjustments */
 @media (max-width: 991px) {
-  .w-dyn-list .w-dyn-items.w-row .w-dyn-item.w-col.w-col-4 {
-    width: 49% !important;
-    flex: 0 0 49% !important;
+  .w-dyn-list .w-dyn-items.w-row {
+    /* On smaller screens, we might want smaller cards to allow 2 columns */
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
   }
 }
 
-@media (max-width: 767px) {
-  .w-dyn-list .w-dyn-items.w-row .w-dyn-item.w-col.w-col-4 {
-    width: 100% !important;
-    flex: 0 0 100% !important;
+@media (max-width: 479px) {
+  .w-dyn-list .w-dyn-items.w-row {
+    /* Single column on mobile */
+    grid-template-columns: 1fr !important;
   }
 }
 
