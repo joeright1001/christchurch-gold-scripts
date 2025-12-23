@@ -5,13 +5,20 @@
   justify-content: flex-start !important;
 }
 
+/* Fix for phantom elements in Webflow flex containers */
+.w-dyn-list .w-dyn-items.w-row::before,
+.w-dyn-list .w-dyn-items.w-row::after {
+  display: none !important;
+  content: none !important;
+}
+
 .w-dyn-list .w-dyn-items.w-row .w-dyn-item.w-col.w-col-4 {
   /* Fluid layout settings */
-  width: auto !important;
+  width: 32.3% !important;
   max-width: none !important;
   min-width: 420px !important;
-  flex-grow: 1 !important;
-  flex-basis: 420px !important;
+  flex-grow: 0 !important;
+  flex-basis: 32.3% !important;
   
   box-sizing: border-box !important;
   margin-left: 0.5% !important;
