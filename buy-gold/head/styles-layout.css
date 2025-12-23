@@ -9,9 +9,9 @@
   /* Fluid layout settings */
   width: auto !important;
   max-width: none !important;
-  min-width: 300px !important;
+  min-width: 420px !important;
   flex-grow: 1 !important;
-  flex-basis: 300px !important;
+  flex-basis: 420px !important;
   
   box-sizing: border-box !important;
   margin-left: 0.5% !important;
