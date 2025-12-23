@@ -582,30 +582,30 @@ document.addEventListener('DOMContentLoaded', function() {
       const button = this.buttons[filterName];
       if (!button) return;
       
-      // Remove any existing checkmark
-      const existingCheck = button.querySelector('.custom-checkmark');
+      // Remove any existing checkmark or fill
+      const existingCheck = button.querySelector('.custom-center-fill, .custom-checkmark');
       if (existingCheck) {
         existingCheck.remove();
       }
       
       if (isActive) {
-        // Create and add checkmark SVG
-        const checkmark = document.createElement('div');
-        checkmark.className = 'custom-checkmark';
-        checkmark.innerHTML = `
-          <svg width="20" height="20" viewBox="0 0 24 24" style="position: absolute; top: -5px; left: -2px; pointer-events: none;">
-            <polyline fill="none" points="3.7 14.3 9.6 19 20.3 5" stroke="#666" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
-          </svg>
-        `;
-        checkmark.style.position = 'absolute';
-        checkmark.style.top = '0';
-        checkmark.style.left = '0';
-        checkmark.style.width = '100%';
-        checkmark.style.height = '100%';
-        checkmark.style.pointerEvents = 'none';
+        // Create and add center fill
+        const fill = document.createElement('div');
+        fill.className = 'custom-center-fill';
+        
+        // Style as a centered square fill
+        fill.style.position = 'absolute';
+        fill.style.top = '50%';
+        fill.style.left = '50%';
+        fill.style.transform = 'translate(-50%, -50%)';
+        fill.style.width = '60%'; 
+        fill.style.height = '60%';
+        fill.style.backgroundColor = '#333';
+        fill.style.borderRadius = '2px';
+        fill.style.pointerEvents = 'none';
         
         button.style.position = 'relative';
-        button.appendChild(checkmark);
+        button.appendChild(fill);
       }
       
       button.style.backgroundColor = '';
