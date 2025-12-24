@@ -23,12 +23,12 @@
       { text: 'Default (Popular)', value: 'default' },
     //  { text: 'Started Options', value: 'getting-started-select' },
     //  { text: 'Investment Options', value: 'investor-select' },
-      { text: `${STAR_SVG_ICON}Same Day Collect`, value: 'in-stock-select' },
       { text: 'Latest / 2025', value: 'latest' },
       { text: 'Price: Best per Oz', value: 'value' },
       { text: 'Price: Low to High', value: 'lowest-price' },
       { text: 'Weight: Low to High', value: 'lowest-weight' },
       { text: 'Weight: High to Low', value: 'highest-weight' },
+      { text: `Same Day Collect`, value: 'in-stock-select' },
       { text: 'All Gold', value: 'all-gold-select' },
       { text: 'All Silver', value: 'all-silver-select' }
     ]
