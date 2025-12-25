@@ -23,7 +23,7 @@
       { text: 'Default (Popular)', value: 'default' },
     //  { text: 'Started Options', value: 'getting-started-select' },
     //  { text: 'Investment Options', value: 'investor-select' },
-      { text: 'Latest / 2025', value: 'latest' },
+      { text: 'Latest / 2026', value: 'latest' },
       { text: 'Price: Best per Oz', value: 'value' },
       { text: 'Price: Low to High', value: 'lowest-price' },
       { text: 'Weight: Low to High', value: 'lowest-weight' },
