@@ -115,6 +115,15 @@ document.addEventListener('DOMContentLoaded', () => {
         showElement('broker');
         showElement('market-button-text-dg-closed');
       }
+      else if (market === 'local-closed' && stock === 'in-stock') {
+        showElement('state-market-dg-closed', 'block');
+        showInvestorButtons(metal);
+        showElement('icon-market-closed');
+        showElement('button-closed');
+        showElement('broker-text');
+        showElement('broker');
+        showElement('market-button-text-dg-closed');
+      }
       else if (market === 'dg-open' && stock === 'live-at-the-mint') {
         showElement('add-to-cart-btn', 'inline-block');
         showElement('place-order', 'inline-block');
@@ -127,6 +136,18 @@ document.addEventListener('DOMContentLoaded', () => {
         showElement('state-34-weeks', 'flex');
       }
       else if (market === 'dg-open' && stock === 'in-stock') {
+        showElement('add-to-cart-btn', 'inline-block');
+        showElement('place-order', 'inline-block');
+        showElement('get-quote', 'inline-block');
+        showElement('get-quote-btn', 'inline-block');
+        showElement('broker-text');
+        showElement('broker');
+        showElement('state-today', 'flex');
+        showElement('state-market-247', 'flex');
+        showElement('icon-in-stock');
+        showElement('icon-247');
+      }
+      else if (market === 'local-open' && stock === 'in-stock') {
         showElement('add-to-cart-btn', 'inline-block');
         showElement('place-order', 'inline-block');
         showElement('get-quote', 'inline-block');
