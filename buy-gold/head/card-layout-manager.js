@@ -12,22 +12,46 @@ document.addEventListener('DOMContentLoaded', function() {
     // Get all cards
     const cards = container.querySelectorAll('.w-dyn-item.w-col.w-col-4');
     if (cards.length === 0) return;
+
+    // DESKTOP VIEW RESTORATION (> 991px)
+    // If we are on desktop, we want to rely on the CSS grid/flex layout (3 columns)
+    // and NOT apply dynamic inline sizing. We must remove any inline styles
+    // that might have been applied if the user resized from tablet.
+    if (window.innerWidth > 991) {
+        cards.forEach(card => {
+            card.style.removeProperty('width');
+            card.style.removeProperty('flex');
+            card.style.removeProperty('min-width');
+            card.style.removeProperty('max-width');
+        });
+        return;
+    }
     
+    // TABLET/MOBILE VIEW DYNAMIC SIZING (<= 991px)
     const containerRect = container.getBoundingClientRect();
     const containerWidth = containerRect.width;
     
     if (containerWidth === 0) return; // Container not visible
     
+    // Get margin from first card to account for it in width calculation
+    const firstCardStyle = window.getComputedStyle(cards[0]);
+    const marginLeft = parseFloat(firstCardStyle.marginLeft) || 0;
+    const marginRight = parseFloat(firstCardStyle.marginRight) || 0;
+    const marginPerCard = marginLeft + marginRight;
+
     // Determine number of cards per row based on available space
-    let cardsPerRow = Math.floor(containerWidth / MIN_CARD_WIDTH);
+    // We need to account for the margin in the space required for a card
+    let cardsPerRow = Math.floor(containerWidth / (MIN_CARD_WIDTH + marginPerCard));
     
     // Constraints
     if (cardsPerRow < 1) cardsPerRow = 1;
-    if (cardsPerRow > 3) cardsPerRow = 3; // Max 3 columns as per original design
+    // On tablet, we might want 2 or 3 columns depending on width, but usually 2.
+    // The original code capped at 3. Let's keep that cap or adjust if needed.
+    if (cardsPerRow > 3) cardsPerRow = 3;
     
     // Calculate width
-    // Use floor to avoid sub-pixel wrapping issues
-    const newWidth = Math.floor(containerWidth / cardsPerRow);
+    // Use floor to avoid sub-pixel wrapping issues and subtract margins
+    const newWidth = Math.floor((containerWidth / cardsPerRow) - marginPerCard);
     
     // console.log(`🚀 SIZING: Container ${containerWidth}px | Cards per row: ${cardsPerRow} | Width: ${newWidth}px`);
     
