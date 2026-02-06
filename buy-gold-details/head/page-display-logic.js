@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showElement('get-quote-btn', 'inline-block');
         showElement('broker-text');
         showElement('broker');
-        showElement('state-today', 'flex');
+        showElement('state-today', 'block');
         showElement('state-market-247', 'flex');
         showElement('icon-in-stock');
         showElement('icon-247');
@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showElement('get-quote-btn', 'inline-block');
         showElement('broker-text');
         showElement('broker');
-        showElement('state-today', 'flex');
+        showElement('state-today', 'block');
         showElement('state-market-247', 'flex');
         showElement('icon-in-stock');
         showElement('icon-247');
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showElement('get-quote-btn', 'inline-block');
         showElement('broker-text');
         showElement('broker');
-        showElement('state-today', 'flex');
+        showElement('state-today', 'block');
         showElement('state-market-247', 'flex');
         showElement('icon-in-stock');
         showElement('icon-247');
