@@ -5,14 +5,8 @@
      Elements
   ------------------------------------------------------------------ */
   const qtyInput     = document.getElementById("quantity");
-  // Visible display elements (Targets)
   const minQtyEl     = document.getElementById("min-quantity-value");
   const maxQtyEl     = document.getElementById("max-quantity-value");
-  
-  // Hidden data elements (Sources)
-  const orderMinEl   = document.getElementById("order-min");
-  const orderMaxEl   = document.getElementById("order-max");
-  const stockLevelEl = document.getElementById("stock-level");
 
   const priceNZDEl   = document.getElementById("price_nzd");       // optional
   const totalPriceEl = document.getElementById("total-price");     // optional
@@ -129,49 +123,12 @@
 
     qtyInput.style.display = "inline-block";
 
-    // 1. Determine Effective Max Limit
-    let effectiveMax = Infinity;
-    
-    // Start with Order Max
-    if (orderMaxEl) {
-      const val = parseInt(orderMaxEl.textContent.trim(), 10);
-      if (!isNaN(val)) effectiveMax = val;
+    // ensure starting value meets minimum
+    let minQty = 1;
+    if (minQtyEl) {
+      const parsed = parseInt(minQtyEl.textContent.trim(), 10);
+      if (!isNaN(parsed)) minQty = parsed;
     }
-
-    // Check Stock Level
-    if (stockLevelEl) {
-      const stock = parseInt(stockLevelEl.textContent.trim(), 10);
-      // If stock is positive, it caps the limit (use smaller of stock vs orderMax)
-      if (!isNaN(stock) && stock > 0) {
-        if (stock < effectiveMax) {
-          effectiveMax = stock;
-        }
-      }
-    }
-
-    // 2. Update Visible Display
-    if (maxQtyEl && effectiveMax !== Infinity) {
-      maxQtyEl.textContent = effectiveMax;
-    }
-
-    // 3. Determine Effective Min Limit
-    let effectiveMin = 1;
-    if (orderMinEl) {
-      const val = parseInt(orderMinEl.textContent.trim(), 10);
-      if (!isNaN(val)) effectiveMin = val;
-    } else if (minQtyEl) {
-      // Fallback to existing display value if hidden field missing
-      const val = parseInt(minQtyEl.textContent.trim(), 10);
-      if (!isNaN(val)) effectiveMin = val;
-    }
-
-    // Update Visible Min Display
-    if (minQtyEl && orderMinEl) {
-      minQtyEl.textContent = effectiveMin;
-    }
-
-    // 4. Enforce Initial Values on Input
-    let minQty = effectiveMin;
     if (!qtyInput.value || parseInt(qtyInput.value, 10) < minQty) {
       qtyInput.value = minQty;
     }
