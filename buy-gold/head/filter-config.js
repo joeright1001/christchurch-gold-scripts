@@ -225,7 +225,7 @@ window.FILTER_CONFIG = {
       'checkbox_royal', 'checkbox_usa', 'checkbox_valcambi'
     ],
     metal: ['checkbox_gold', 'checkbox_silver'],
-    stock: ['checkbox_in_stock', 'checkbox_live_mint'],
+    // stock: ['checkbox_in_stock', 'checkbox_live_mint'], // Removed to allow additive selection
     main_category: [
       'checkbox_popular',
       'checkbox_starter',
