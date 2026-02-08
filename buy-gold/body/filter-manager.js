@@ -505,9 +505,35 @@ document.addEventListener('DOMContentLoaded', function() {
         return false;
       }
 
+      // Handle Stock Filters (Additive / OR logic)
+      // If either stock filter is active, product must match AT LEAST ONE of them
+      const inStockActive = this.filterStates.checkbox_in_stock;
+      const liveMintActive = this.filterStates.checkbox_live_mint;
+
+      if (inStockActive || liveMintActive) {
+        const stockStatus = dataElement.getAttribute('data-stock-status');
+        let stockMatch = false;
+
+        if (inStockActive && stockStatus === 'in-stock') {
+          stockMatch = true;
+        }
+        if (liveMintActive && stockStatus === 'live-at-the-mint') {
+          stockMatch = true;
+        }
+
+        if (!stockMatch) {
+          return false;
+        }
+      }
+
       // Check ALL active filters - product must match EVERY filter
       for (const [filterName, isActive] of activeFilters) {
         if (!isActive) continue;
+
+        // Skip stock filters as they are handled above with OR logic
+        if (filterName === 'checkbox_in_stock' || filterName === 'checkbox_live_mint') {
+          continue;
+        }
 
         // Special handling for popular filter
         if (filterName === 'checkbox_popular') {
@@ -522,24 +548,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (filterName === 'checkbox_starter') {
           const starterValue = dataElement.getAttribute('data-getting-started');
           if (!starterValue || isNaN(parseInt(starterValue))) {
-            return false;
-          }
-          continue;
-        }
-        
-        // Special handling for in-stock filter
-        if (filterName === 'checkbox_in_stock') {
-          const stockStatus = dataElement.getAttribute('data-stock-status');
-          if (stockStatus !== 'in-stock') {
-            return false;
-          }
-          continue;
-        }
-        
-        // Special handling for live-mint filter
-        if (filterName === 'checkbox_live_mint') {
-          const stockStatus = dataElement.getAttribute('data-stock-status');
-          if (stockStatus !== 'live-at-the-mint') {
             return false;
           }
           continue;
