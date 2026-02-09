@@ -17,35 +17,45 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('URL Filter Handler: Initialized');
+  
   // Get URL parameters
   const params = new URLSearchParams(window.location.search);
   
   // Handle multiple filter parameters
   // Support both ?filter=... and ?filter=...&filter=...
   const filterParams = params.getAll('filter');
+  console.log('URL Filter Handler: Found params', filterParams);
 
   if (filterParams.length > 0) {
-    // Add a small delay to ensure other scripts (like FilterManager) are initialized
+    // Add a delay to ensure other scripts (like FilterManager) are initialized
+    // Increased to 1000ms to be safe
     setTimeout(() => {
       let filtersApplied = false;
 
       filterParams.forEach(filterParam => {
+        console.log(`URL Filter Handler: Processing param "${filterParam}"`);
+        
         // Special shortcut: filter=all-live
         // Applies both "In Stock" and "Live at Mint" filters
-        if (filterParam === 'all-live') {
+        if (filterParam.trim() === 'all-live') {
           const inStockCheckbox = document.getElementById('checkbox_in_stock');
           const liveMintCheckbox = document.getElementById('checkbox_live_mint');
           
           if (inStockCheckbox) {
+            console.log('URL Filter Handler: Clicking In Stock checkbox');
             inStockCheckbox.click();
             filtersApplied = true;
-            console.log('Applied shortcut filter: In Stock');
+          } else {
+            console.warn('URL Filter Handler: In Stock checkbox not found');
           }
           
           if (liveMintCheckbox) {
+            console.log('URL Filter Handler: Clicking Live at Mint checkbox');
             liveMintCheckbox.click();
             filtersApplied = true;
-            console.log('Applied shortcut filter: Live at Mint');
+          } else {
+            console.warn('URL Filter Handler: Live at Mint checkbox not found');
           }
           return; // Skip standard processing for this param
         }
@@ -70,10 +80,14 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (checkbox) {
               // Click the checkbox to apply the filter
+              console.log(`URL Filter Handler: Clicking checkbox ${checkboxId}`);
               checkbox.click();
               filtersApplied = true;
-              console.log(`Applied filter from URL: ${checkboxId}`);
+            } else {
+              console.warn(`URL Filter Handler: Checkbox ${checkboxId} not found`);
             }
+          } else {
+            console.warn(`URL Filter Handler: No rule found for ${attribute}=${value}`);
           }
         }
       });
@@ -84,12 +98,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const filterIconBlock = document.getElementById('filter-icon-block2') || document.querySelector('.filter-icon-block2');
         
         if (filterIconBlock) {
-          console.log('Triggering Webflow interaction on filter-icon-block2');
+          console.log('URL Filter Handler: Triggering Webflow interaction on filter-icon-block2');
           filterIconBlock.click();
         } else {
-          console.warn('filter-icon-block2 not found - could not trigger Webflow interaction');
+          console.warn('URL Filter Handler: filter-icon-block2 not found - could not trigger Webflow interaction');
         }
       }
-    }, 500); // 500ms delay
+    }, 1000); // 1000ms delay
   }
 });
