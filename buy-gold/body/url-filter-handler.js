@@ -1,3 +1,21 @@
+/**
+ * URL Filter Handler
+ * 
+ * Handles applying filters based on URL parameters.
+ * 
+ * Usage:
+ * 1. Standard Filter: ?filter=(attribute=value)
+ *    Example: ?filter=(data-stock-status=in-stock)
+ * 
+ * 2. Multiple Filters: ?filter=(attr1=val1)&filter=(attr2=val2)
+ *    Example: ?filter=(data-stock-status=in-stock)&filter=(data-metal=gold)
+ * 
+ * 3. Shortcut: ?filter=all-live
+ *    Applies both "In Stock" and "Live at Mint" filters.
+ * 
+ * Triggers Webflow interaction (filter-icon-block2) after applying filters.
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
   // Get URL parameters
   const params = new URLSearchParams(window.location.search);
@@ -12,7 +30,27 @@ document.addEventListener('DOMContentLoaded', () => {
       let filtersApplied = false;
 
       filterParams.forEach(filterParam => {
-        // Expected format: "(data-stock-status=in-stock)"
+        // Special shortcut: filter=all-live
+        // Applies both "In Stock" and "Live at Mint" filters
+        if (filterParam === 'all-live') {
+          const inStockCheckbox = document.getElementById('checkbox_in_stock');
+          const liveMintCheckbox = document.getElementById('checkbox_live_mint');
+          
+          if (inStockCheckbox) {
+            inStockCheckbox.click();
+            filtersApplied = true;
+            console.log('Applied shortcut filter: In Stock');
+          }
+          
+          if (liveMintCheckbox) {
+            liveMintCheckbox.click();
+            filtersApplied = true;
+            console.log('Applied shortcut filter: Live at Mint');
+          }
+          return; // Skip standard processing for this param
+        }
+
+        // Standard format: "(data-stock-status=in-stock)"
         // Clean the parameter value by removing parentheses
         const cleanedParam = filterParam.replace(/[()]/g, '');
         
