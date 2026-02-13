@@ -151,7 +151,6 @@ function setupMobileFilterButton() {
   mobileButton.addEventListener('click', () => {
     const inStockCheckbox = document.getElementById('checkbox_in_stock');
     const liveMintCheckbox = document.getElementById('checkbox_live_mint');
-    const textElement = mobileButton.querySelector('.buy-banner-title1-button');
     
     if (!inStockCheckbox || !liveMintCheckbox) {
       console.warn('URL Filter Handler: Checkboxes not found for mobile button');
@@ -168,17 +167,13 @@ function setupMobileFilterButton() {
       
       // Update visual state: Inactive (reset styles)
       mobileButton.style.border = '';
-      mobileButton.style.color = '';
-      if (textElement) textElement.style.color = '';
     } else {
       // If not both checked, check them (toggle on)
       if (!inStockCheckbox.checked) inStockCheckbox.click();
       if (!liveMintCheckbox.checked) liveMintCheckbox.click();
       
-      // Update visual state: Active (Dark Gray border 4px, Dark Gray text)
+      // Update visual state: Active (Dark Gray border 4px)
       mobileButton.style.border = '4px solid #333';
-      mobileButton.style.color = '#333';
-      if (textElement) textElement.style.color = '#333';
     }
   });
 }
