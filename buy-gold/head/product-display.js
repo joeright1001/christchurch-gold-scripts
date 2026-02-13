@@ -4,12 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---------- CONSTANTS ---------- */
   // Stock-status icons
   const outOfStockImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a181380123c0be15d520b7_out-stock-notify.webp";
-  const liveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68adf02dc8e19135fcdb5540_in-stock-2-3weeks.webp";
+  const liveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/698e690fd335c584c843c194_in-stock-2-5weeks.webp";
   const inStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a1922a1c649958c68f32a0_in-stock3.webp";
 
   // Popular combo-images
   const popularOutOfStockImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a181380123c0be15d520b7_out-stock-notify.webp";
-  const popularLiveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68adf02d75e64e26618fb3c6_best-seller-2-3weeks.webp";
+  const popularLiveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/698e690e6dc96a4e3bb98f28_best-seller-2-5weeks.webp";
   const popularInStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68adf02d176754b3b0f0bb72_best-seller-sameday.webp";
 
   // Metal colours
