@@ -12,13 +12,20 @@
  * 
  * 3. Shortcut: ?filter=all-live
  *    Applies both "In Stock" and "Live at Mint" filters.
- * 
+ *    - On Mobile (<= 991px): Activates the mobile-specific "View All Hottest" button.
+ *    - On Desktop: Directly checks the filter checkboxes.
+ *
  * Triggers Webflow interaction (filter-icon-block2) after applying filters.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   console.log('URL Filter Handler: Initialized');
   
+  // Setup mobile filter button (only on mobile)
+  if (window.innerWidth <= 991) {
+    setupMobileFilterButton();
+  }
+
   // Get URL parameters
   const params = new URLSearchParams(window.location.search);
   
@@ -39,6 +46,18 @@ document.addEventListener('DOMContentLoaded', () => {
         // Special shortcut: filter=all-live
         // Applies both "In Stock" and "Live at Mint" filters
         if (filterParam.trim() === 'all-live') {
+          // Check if mobile (<= 991px)
+          if (window.innerWidth <= 991) {
+            const mobileButton = document.getElementById('buy-banner-product1-hottest-button');
+            if (mobileButton) {
+              console.log('URL Filter Handler: Clicking mobile filter button');
+              mobileButton.click();
+              filtersApplied = true;
+              return; // Skip standard processing
+            }
+          }
+
+          // Desktop behavior or fallback if button not found
           const inStockCheckbox = document.getElementById('checkbox_in_stock');
           const liveMintCheckbox = document.getElementById('checkbox_live_mint');
           
@@ -107,3 +126,56 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 1000); // 1000ms delay
   }
 });
+
+/**
+ * Sets up the mobile filter button logic.
+ *
+ * This function handles the mobile-specific "View All Hottest In-Stock Products" button.
+ * When clicked, it toggles both "In Stock" and "Live at Mint" filters simultaneously.
+ * It also updates the button's visual state (border/text color) to indicate activation.
+ *
+ * Only runs on mobile devices (width <= 991px).
+ */
+function setupMobileFilterButton() {
+  // Double check we are on mobile
+  if (window.innerWidth > 991) return;
+
+  const mobileButton = document.getElementById('buy-banner-product1-hottest-button');
+  if (!mobileButton) {
+    console.warn('URL Filter Handler: Mobile filter button not found');
+    return;
+  }
+
+  console.log('URL Filter Handler: Setting up mobile filter button');
+
+  mobileButton.addEventListener('click', () => {
+    const inStockCheckbox = document.getElementById('checkbox_in_stock');
+    const liveMintCheckbox = document.getElementById('checkbox_live_mint');
+    
+    if (!inStockCheckbox || !liveMintCheckbox) {
+      console.warn('URL Filter Handler: Checkboxes not found for mobile button');
+      return;
+    }
+
+    // Check current state
+    const bothChecked = inStockCheckbox.checked && liveMintCheckbox.checked;
+    
+    if (bothChecked) {
+      // If both are checked, uncheck them (toggle off)
+      if (inStockCheckbox.checked) inStockCheckbox.click();
+      if (liveMintCheckbox.checked) liveMintCheckbox.click();
+      
+      // Update visual state: Inactive (reset styles)
+      mobileButton.style.borderColor = '';
+      mobileButton.style.color = '';
+    } else {
+      // If not both checked, check them (toggle on)
+      if (!inStockCheckbox.checked) inStockCheckbox.click();
+      if (!liveMintCheckbox.checked) liveMintCheckbox.click();
+      
+      // Update visual state: Active (Dark Gray)
+      mobileButton.style.borderColor = '#333';
+      mobileButton.style.color = '#333';
+    }
+  });
+}
