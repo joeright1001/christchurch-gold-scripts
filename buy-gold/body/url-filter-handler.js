@@ -76,6 +76,13 @@ document.addEventListener('DOMContentLoaded', () => {
           } else {
             console.warn('URL Filter Handler: Live at Mint checkbox not found');
           }
+
+          // Apply sort 'value' for desktop as well
+          if (window.sortManager) {
+            console.log('URL Filter Handler: Applying value sort for desktop');
+            window.sortManager.handleSortSelection('value', false);
+          }
+
           return; // Skip standard processing for this param
         }
 
