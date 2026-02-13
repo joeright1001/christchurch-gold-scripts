@@ -148,6 +148,12 @@ function setupMobileFilterButton() {
 
   console.log('URL Filter Handler: Setting up mobile filter button');
 
+  // Store original text
+  const textElement = mobileButton.querySelector('.buy-banner-title1-button');
+  if (textElement && !mobileButton.dataset.originalText) {
+    mobileButton.dataset.originalText = textElement.textContent;
+  }
+
   mobileButton.addEventListener('click', () => {
     const inStockCheckbox = document.getElementById('checkbox_in_stock');
     const liveMintCheckbox = document.getElementById('checkbox_live_mint');
@@ -157,23 +163,48 @@ function setupMobileFilterButton() {
       return;
     }
 
-    // Check current state
-    const bothChecked = inStockCheckbox.checked && liveMintCheckbox.checked;
+    // Check current state using FilterManager's global controls if available
+    // Fallback to DOM checked property if FilterManager is not ready (though it should be)
+    let inStockActive = false;
+    let liveMintActive = false;
+
+    if (window.filterControls && typeof window.filterControls.getActiveFilters === 'function') {
+      const activeFilters = window.filterControls.getActiveFilters();
+      inStockActive = activeFilters.includes('checkbox_in_stock');
+      liveMintActive = activeFilters.includes('checkbox_live_mint');
+    } else {
+      // Fallback (unlikely to be accurate if FilterManager is hijacking clicks)
+      inStockActive = inStockCheckbox.checked;
+      liveMintActive = liveMintCheckbox.checked;
+    }
+
+    const bothActive = inStockActive && liveMintActive;
     
-    if (bothChecked) {
-      // If both are checked, uncheck them (toggle off)
-      if (inStockCheckbox.checked) inStockCheckbox.click();
-      if (liveMintCheckbox.checked) liveMintCheckbox.click();
+    if (bothActive) {
+      // If both are active, toggle them off
+      // We click them to trigger FilterManager's toggle logic
+      if (inStockActive) inStockCheckbox.click();
+      if (liveMintActive) liveMintCheckbox.click();
       
       // Update visual state: Inactive (reset styles)
       mobileButton.style.border = '';
+      
+      // Restore original text
+      if (textElement && mobileButton.dataset.originalText) {
+        textElement.textContent = mobileButton.dataset.originalText;
+      }
     } else {
-      // If not both checked, check them (toggle on)
-      if (!inStockCheckbox.checked) inStockCheckbox.click();
-      if (!liveMintCheckbox.checked) liveMintCheckbox.click();
+      // If not both active, toggle them on
+      if (!inStockActive) inStockCheckbox.click();
+      if (!liveMintActive) liveMintCheckbox.click();
       
       // Update visual state: Active (Dark Gray border 4px)
       mobileButton.style.border = '4px solid #333';
+      
+      // Change text to "Show All Including Out-Stock"
+      if (textElement) {
+        textElement.textContent = "Show All Including Out-Stock";
+      }
     }
   });
 }
