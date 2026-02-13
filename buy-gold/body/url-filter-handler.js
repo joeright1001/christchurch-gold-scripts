@@ -193,6 +193,11 @@ function setupMobileFilterButton() {
       if (textElement && mobileButton.dataset.originalText) {
         textElement.textContent = mobileButton.dataset.originalText;
       }
+
+      // Reset sort to default
+      if (window.sortManager) {
+        window.sortManager.handleSortSelection('default', false);
+      }
     } else {
       // If not both active, toggle them on
       if (!inStockActive) inStockCheckbox.click();
@@ -204,6 +209,11 @@ function setupMobileFilterButton() {
       // Change text to "Show All Including Out-Stock"
       if (textElement) {
         textElement.textContent = "Show All Including Out-Stock";
+      }
+
+      // Apply sort 'value'
+      if (window.sortManager) {
+        window.sortManager.handleSortSelection('value', false);
       }
     }
   });
