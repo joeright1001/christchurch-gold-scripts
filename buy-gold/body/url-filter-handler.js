@@ -43,6 +43,38 @@ document.addEventListener('DOMContentLoaded', () => {
       filterParams.forEach(filterParam => {
         console.log(`URL Filter Handler: Processing param "${filterParam}"`);
         
+        // Check for Profile
+        const trimmedParam = filterParam.trim();
+        if (window.FILTER_PROFILES && window.FILTER_PROFILES[trimmedParam]) {
+            console.log(`URL Filter Handler: Applying profile "${trimmedParam}"`);
+            const profile = window.FILTER_PROFILES[trimmedParam];
+            
+            // Apply Filters
+            if (profile.filters) {
+                profile.filters.forEach(checkboxId => {
+                    const checkbox = document.getElementById(checkboxId);
+                    if (checkbox) {
+                        console.log(`URL Filter Handler: Clicking profile checkbox ${checkboxId}`);
+                        checkbox.click();
+                        filtersApplied = true;
+                    } else {
+                        console.warn(`URL Filter Handler: Profile checkbox ${checkboxId} not found`);
+                    }
+                });
+            }
+            
+            // Apply Sort
+            if (profile.sort && window.sortManager) {
+                console.log(`URL Filter Handler: Applying profile sort "${profile.sort}"`);
+                // Use a small timeout to ensure filters are processed first
+                setTimeout(() => {
+                    window.sortManager.handleSortSelection(profile.sort, false);
+                }, 100);
+            }
+            
+            return; // Skip standard processing
+        }
+
         // Special shortcut: filter=all-live
         // Applies both "In Stock" and "Live at Mint" filters
         if (filterParam.trim() === 'all-live') {
