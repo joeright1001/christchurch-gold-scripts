@@ -505,68 +505,67 @@ document.addEventListener('DOMContentLoaded', function() {
         return false;
       }
 
-      // Handle Stock Filters (Additive / OR logic)
-      // If either stock filter is active, product must match AT LEAST ONE of them
-      const inStockActive = this.filterStates.checkbox_in_stock;
-      const liveMintActive = this.filterStates.checkbox_live_mint;
-
-      if (inStockActive || liveMintActive) {
-        const stockStatus = dataElement.getAttribute('data-stock-status');
-        let stockMatch = false;
-
-        if (inStockActive && stockStatus === 'in-stock') {
-          stockMatch = true;
-        }
-        if (liveMintActive && stockStatus === 'live-at-the-mint') {
-          stockMatch = true;
-        }
-
-        if (!stockMatch) {
-          return false;
-        }
-      }
-
-      // Check ALL active filters - product must match EVERY filter
+      // Group active filters by attribute to implement additive logic (OR within groups, AND between groups)
+      const filtersByAttribute = {};
+      
+      // Process active filters
       for (const [filterName, isActive] of activeFilters) {
         if (!isActive) continue;
 
-        // Skip stock filters as they are handled above with OR logic
-        if (filterName === 'checkbox_in_stock' || filterName === 'checkbox_live_mint') {
-          continue;
-        }
-
-        // Special handling for popular filter
+        // Handle special filters that don't fit the attribute grouping
         if (filterName === 'checkbox_popular') {
-          const popularValue = dataElement.getAttribute('data-popular');
-          if (!popularValue || isNaN(parseInt(popularValue))) {
-            return false;
-          }
-          continue;
-        }
-
-        // Special handling for starter filter
-        if (filterName === 'checkbox_starter') {
-          const starterValue = dataElement.getAttribute('data-getting-started');
-          if (!starterValue || isNaN(parseInt(starterValue))) {
-            return false;
-          }
-          continue;
+             const popularValue = dataElement.getAttribute('data-popular');
+             if (!popularValue || isNaN(parseInt(popularValue))) {
+               return false;
+             }
+             continue;
         }
         
-        // Get the rule for standard filters
+        if (filterName === 'checkbox_starter') {
+             const starterValue = dataElement.getAttribute('data-getting-started');
+             if (!starterValue || isNaN(parseInt(starterValue))) {
+               return false;
+             }
+             continue;
+        }
+
+        // Skip dealer as it's handled above
+        if (filterName === 'checkbox_dealer') continue;
+
         const rule = this.config.rules[filterName];
         if (!rule) continue;
+
+        // Use attribute for grouping
+        // Note: Stock filters (in_stock, live_mint) share 'data-stock-status' attribute, so they will be grouped together
+        const groupKey = rule.attribute || filterName;
         
-        // Standard attribute filtering
-        const productValue = dataElement.getAttribute(rule.attribute);
-        
-        if (!productValue) {
-          return false;
+        if (!filtersByAttribute[groupKey]) {
+            filtersByAttribute[groupKey] = [];
         }
-        
-        if (!rule.values.includes(productValue)) {
-          return false;
-        }
+        filtersByAttribute[groupKey].push(rule);
+      }
+
+      // Check each attribute group (AND logic between groups)
+      for (const [attribute, rules] of Object.entries(filtersByAttribute)) {
+          const productValue = dataElement.getAttribute(attribute);
+          
+          if (!productValue) {
+              // If product doesn't have the attribute but filters are active for it, hide it
+              return false;
+          }
+
+          // Check if product matches ANY of the rules in this group (OR logic within group)
+          let matchFound = false;
+          for (const rule of rules) {
+              if (rule.values && rule.values.includes(productValue)) {
+                  matchFound = true;
+                  break;
+              }
+          }
+
+          if (!matchFound) {
+              return false;
+          }
       }
 
       return true;
