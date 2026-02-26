@@ -212,26 +212,6 @@ window.FILTER_CONFIG = {
   },
 
   // Defines groups where only one filter can be active at a time
-  exclusiveGroups: {
-    type: ['checkbox_coin', 'checkbox_minted_bar', 'checkbox_cast_bar'],
-    weight: [
-      'checkbox_1g', 'checkbox_2_5g', 'checkbox_5g', 'checkbox_10g', 'checkbox_20g', 'checkbox_25g',
-      'checkbox_1_20oz', 'checkbox_1_10oz', 'checkbox_1_4oz', 'checkbox_1_2oz', 'checkbox_1oz',
-      'checkbox_2oz', 'checkbox_5oz', 'checkbox_10oz', 'checkbox_1kg'
-    ],
-    mint: [
-      'checkbox_asahi', 'checkbox_austrian', 'checkbox_gsm', 'checkbox_investment', 'checkbox_nzmint',
-      'checkbox_pamp', 'checkbox_canada', 'checkbox_african', 'checkbox_highland', 'checkbox_perth',
-      'checkbox_royal', 'checkbox_usa', 'checkbox_valcambi'
-    ],
-    metal: ['checkbox_gold', 'checkbox_silver'],
-    // stock: ['checkbox_in_stock', 'checkbox_live_mint'], // Removed to allow additive selection
-    main_category: [
-      'checkbox_popular',
-      'checkbox_starter',
-      'checkbox_investor',
-      'checkbox_dealer',
-      'checkbox_collectables'
-    ]
-  }
+  // Empty object means all filters are additive (multiple selections allowed)
+  exclusiveGroups: {}
 };
