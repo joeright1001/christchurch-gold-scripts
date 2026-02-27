@@ -80,5 +80,17 @@ window.FILTER_PROFILES = {
     ],
     sort: 'value',
     displayName: 'Recommended silver investment. Click to clear filter.'
+  },
+
+  // Gold Investor Profile
+  'gold-investor': {
+    products: [
+      '1-oz-gold-kangaroo-various',
+      '1-oz-gold-maple-leaf-2026',
+      '1-oz-gold-perth-cast-bar',
+      '1-oz-gold'
+    ],
+    sort: 'value',
+    displayName: 'Recommended gold investment. Click to clear filter.'
   }
 };
