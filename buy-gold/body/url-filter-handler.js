@@ -24,6 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // Setup mobile filter button (only on mobile)
   if (window.innerWidth <= 991) {
     setupMobileFilterButton();
+    
+    // Ensure profile button is hidden by default
+    const profileButton = document.getElementById('buy-banner-product1-filter-button');
+    if (profileButton) {
+        profileButton.style.display = 'none';
+    }
   }
 
   // Get URL parameters
@@ -61,7 +67,57 @@ document.addEventListener('DOMContentLoaded', () => {
                         console.warn(`URL Filter Handler: Profile checkbox ${checkboxId} not found`);
                     }
                 });
-            }
+              }
+              
+              /**
+               * Activates the mobile profile button and hides the default button.
+               *
+               * @param {string} displayName - The text to display in the button
+               */
+              function activateMobileProfileButton(displayName) {
+                if (window.innerWidth > 991) return;
+              
+                const defaultButton = document.getElementById('buy-banner-product1-hottest-button');
+                const profileButton = document.getElementById('buy-banner-product1-filter-button');
+                
+                if (!profileButton) {
+                    console.warn('URL Filter Handler: Profile button not found');
+                    return;
+                }
+              
+                console.log(`URL Filter Handler: Activating mobile profile button for "${displayName}"`);
+              
+                // Hide default button
+                if (defaultButton) {
+                    defaultButton.style.display = 'none';
+                }
+              
+                // Show profile button
+                profileButton.style.display = 'flex'; // Assuming flex layout
+              
+                // Update Text
+                // Try ID first, then class fallback
+                const textElement = document.getElementById('buy-banner-title1-filter');
+                if (textElement) {
+                  textElement.textContent = `Currently viewing ${displayName}. Click to clear`;
+                } else {
+                    const textElementByClass = profileButton.querySelector('.buy-banner-title1-filter');
+                    if (textElementByClass) {
+                        textElementByClass.textContent = `Currently viewing ${displayName}. Click to clear`;
+                    } else {
+                        console.warn('URL Filter Handler: Profile button text element not found');
+                    }
+                }
+              
+                // Add Click Listener to Reload
+                // Note: We use a named function or ensure we don't add multiple listeners if called multiple times
+                // But since this runs once on load, it's fine.
+                profileButton.onclick = () => {
+                    console.log('URL Filter Handler: Clearing profile and reloading');
+                    // Reload page without query parameters
+                    window.location.href = window.location.pathname;
+                };
+              }
             
             // Apply Sort
             if (profile.sort && window.sortManager) {
@@ -72,50 +128,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 100);
             }
             
-            return; // Skip standard processing
-        }
-
-        // Special shortcut: filter=all-live
-        // Applies both "In Stock" and "Live at Mint" filters
-        if (filterParam.trim() === 'all-live') {
-          // Check if mobile (<= 991px)
-          if (window.innerWidth <= 991) {
-            const mobileButton = document.getElementById('buy-banner-product1-hottest-button');
-            if (mobileButton) {
-              console.log('URL Filter Handler: Clicking mobile filter button');
-              mobileButton.click();
-              filtersApplied = true;
-              return; // Skip standard processing
+            // Activate mobile profile button if profile has display name
+            if (profile.displayName) {
+                activateMobileProfileButton(profile.displayName);
             }
-          }
 
-          // Desktop behavior or fallback if button not found
-          const inStockCheckbox = document.getElementById('checkbox_in_stock');
-          const liveMintCheckbox = document.getElementById('checkbox_live_mint');
-          
-          if (inStockCheckbox) {
-            console.log('URL Filter Handler: Clicking In Stock checkbox');
-            inStockCheckbox.click();
-            filtersApplied = true;
-          } else {
-            console.warn('URL Filter Handler: In Stock checkbox not found');
-          }
-          
-          if (liveMintCheckbox) {
-            console.log('URL Filter Handler: Clicking Live at Mint checkbox');
-            liveMintCheckbox.click();
-            filtersApplied = true;
-          } else {
-            console.warn('URL Filter Handler: Live at Mint checkbox not found');
-          }
-
-          // Apply sort 'value' for desktop as well
-          if (window.sortManager) {
-            console.log('URL Filter Handler: Applying value sort for desktop');
-            window.sortManager.handleSortSelection('value', false);
-          }
-
-          return; // Skip standard processing for this param
+            return; // Skip standard processing
         }
 
         // Standard format: "(data-stock-status=in-stock)"
