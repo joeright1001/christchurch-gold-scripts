@@ -14,40 +14,40 @@ window.FILTER_PROFILES = {
   'all-silver': {
     filters: ['checkbox_silver'],
     sort: 'default',
-    displayName: 'Silver'
+    displayName: 'Currently Viewing All Silver Products. Click to clear filter'
   },
   'all-silver-by-oz': {
     filters: ['checkbox_silver'],
     sort: 'value', // Sort by weight (low to high)
-    displayName: 'Silver sorted by Value'
+    displayName: 'Currently viewing Silver sorted by Value. Click to clear'
   },
   'all-silver-instock': {
     filters: ['checkbox_silver', 'checkbox_in_stock'],
     sort: 'default',
-    displayName: 'In-Stock Silver'
+    displayName: 'Currently viewing In-Stock Silver. Click to clear'
   },
 
   // Migrated from handler
   'all-live': {
     filters: ['checkbox_in_stock', 'checkbox_live_mint'],
     sort: 'value',
-    displayName: 'In Stock & Live at Mint'
+    displayName: 'Currently viewing In Stock & Live at Mint. Click to clear'
   },
 
   // Example Profiles (Placeholders)
   'profile1': {
     filters: ['checkbox_gold', 'checkbox_1oz'],
     sort: 'value', // Best Value per Oz
-    displayName: '1oz Gold Best Value'
+    displayName: 'Currently viewing 1oz Gold Best Value. Click to clear'
   },
   'profile2': {
     filters: ['checkbox_gold', 'checkbox_cast_bar'],
     sort: 'lowest-price',
-    displayName: 'Gold Cast Bars'
+    displayName: 'Currently viewing Gold Cast Bars. Click to clear'
   },
   'profile3-10': {
     filters: ['checkbox_silver', 'checkbox_coin', 'checkbox_in_stock'],
     sort: 'latest', // Latest Year
-    displayName: 'In-Stock Silver Coins'
+    displayName: 'Currently viewing In-Stock Silver Coins. Click to clear'
   }
 };

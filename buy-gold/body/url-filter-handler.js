@@ -99,11 +99,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Try ID first, then class fallback
                 const textElement = document.getElementById('buy-banner-title1-filter');
                 if (textElement) {
-                  textElement.textContent = `Currently viewing ${displayName}. Click to clear`;
+                  textElement.textContent = displayName;
                 } else {
                     const textElementByClass = profileButton.querySelector('.buy-banner-title1-filter');
                     if (textElementByClass) {
-                        textElementByClass.textContent = `Currently viewing ${displayName}. Click to clear`;
+                        textElementByClass.textContent = displayName;
                     } else {
                         console.warn('URL Filter Handler: Profile button text element not found');
                     }
