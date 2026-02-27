@@ -409,3 +409,110 @@ if (profileButton) {
     profileButton.style.display = 'none';
 }
 ```
+
+---
+
+# Phase 4: Specific Product Filtering
+
+## Overview
+This feature extends the URL Filter Profiles to support filtering by specific product names (slugs). This allows creating curated views that display only a specific set of products, regardless of their attributes.
+
+## Requirements
+1.  **Update Profile Configuration:**
+    *   Add a `products` property to the profile definition in `buy-gold/body/url-filter-profiles.js`.
+    *   This property will contain an array of product slugs (e.g., `['1-oz-silver', '1-oz-gold']`).
+2.  **Update Filter Manager:**
+    *   Implement logic to filter products based on this specific list of slugs.
+    *   Ensure this specific filter overrides or works in conjunction with other filters (acting as a whitelist).
+3.  **Update URL Handler:**
+    *   Process the `products` property from the profile and pass it to the Filter Manager.
+
+## Implementation Plan
+
+### 1. Update `buy-gold/body/url-filter-profiles.js`
+Add the `products` property to the profile structure.
+
+```javascript
+window.FILTER_PROFILES = {
+  // ... existing profiles
+  'specific-products-example': {
+    products: ['1-oz-silver', '1-oz-gold-cast-bar'], // List of slugs
+    sort: 'default',
+    displayName: 'Specific Selection. Click to clear'
+  }
+};
+```
+
+### 2. Update `buy-gold/body/filter-manager.js`
+
+**A. Add State and Method**
+Add `specificProductSlugs` to the class state and a method to set it.
+
+```javascript
+class FilterManager {
+  constructor(config) {
+    // ... existing init
+    this.specificProductSlugs = null; // Initialize as null
+  }
+
+  // ...
+
+  setSpecificProducts(slugs) {
+    this.specificProductSlugs = slugs;
+    this.applyAllFiltersOptimized();
+    console.log(`🚀 FILTER: Set specific products list: ${slugs.length} items`);
+  }
+```
+
+**B. Update `shouldShowProduct`**
+Modify the filtering logic to check the specific products list first.
+
+```javascript
+  shouldShowProduct(dataElement) {
+    const slug = dataElement.getAttribute('data-slug');
+
+    // Check specific products list acting as a whitelist
+    if (this.specificProductSlugs && this.specificProductSlugs.length > 0) {
+      if (!this.specificProductSlugs.includes(slug)) {
+        return false;
+      }
+      // If it matches, we continue to check other filters (e.g. In Stock)
+      // This allows "Show these 5 products, but only if In Stock"
+    }
+
+    // ... existing logic ...
+  }
+```
+
+**C. Update Reset Logic**
+Ensure `specificProductSlugs` is cleared when filters are reset.
+
+```javascript
+  resetAllFilters() {
+    this.specificProductSlugs = null;
+    // ... existing reset logic
+  }
+```
+
+**D. Expose to Global Namespace**
+Make the method accessible to the URL handler.
+
+```javascript
+  setupGlobalNamespace() {
+    // ... existing exports
+    window.filterControls.setSpecificProducts = (slugs) => this.setSpecificProducts(slugs);
+  }
+```
+
+### 3. Update `buy-gold/body/url-filter-handler.js`
+Update the handler to process the `products` property.
+
+```javascript
+// Inside profile processing block
+if (profile.products) {
+    console.log(`URL Filter Handler: Applying specific products filter`);
+    if (window.filterControls && window.filterControls.setSpecificProducts) {
+        window.filterControls.setSpecificProducts(profile.products);
+    }
+}
+```
