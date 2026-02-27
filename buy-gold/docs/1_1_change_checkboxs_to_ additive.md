@@ -160,3 +160,252 @@ Replace the `shouldShowProduct` method in the `FilterManager` class with the fol
 
 ## Conclusion
 By removing the exclusivity constraints in the configuration and updating the filtering logic to group by attribute, the filtering system will seamlessly support additive selections. Users will be able to select multiple options within any category (e.g., "Gold" and "Silver", or "1oz" and "10oz") and see all relevant products, significantly improving the UX.
+
+---
+
+# URL-Based Filter Profiles Design
+
+## Overview
+This feature introduces "Filter Profiles" which allow users to apply a predefined set of filters and sort options via a single URL parameter (e.g., `?filter=all-silver`). This simplifies sharing specific product views and enhances marketing campaigns.
+
+## Configuration Structure
+A new configuration object `window.FILTER_PROFILES` will be defined in `buy-gold/body/url-filter-profiles.js`. This object maps profile names (slugs) to an object containing:
+- `filters`: An array of checkbox IDs to activate.
+- `sort`: (Optional) A sort key to apply (e.g., 'value', 'lowest-price').
+
+**Example Structure:**
+```javascript
+window.FILTER_PROFILES = {
+  'all-silver': {
+    filters: ['checkbox_silver'],
+    sort: 'default'
+  },
+  'all-silver-by-oz': {
+    filters: ['checkbox_silver'],
+    sort: 'lowest-weight' // Assumed "by oz" means sorted by weight
+  },
+  'all-silver-instock': {
+    filters: ['checkbox_silver', 'checkbox_in_stock'],
+    sort: 'default'
+  },
+  'profile1': {
+    filters: ['checkbox_gold', 'checkbox_1oz'],
+    sort: 'value'
+  },
+  'profile2': {
+    filters: ['checkbox_gold', 'checkbox_cast_bar'],
+    sort: 'lowest-price'
+  },
+  'profile3-10': {
+    filters: ['checkbox_silver', 'checkbox_coin', 'checkbox_in_stock'],
+    sort: 'latest'
+  }
+};
+```
+
+## Integration Logic
+The existing `buy-gold/body/url-filter-handler.js` will be updated to support profile names within the `filter` URL parameter.
+
+**Logic Flow:**
+1.  **Initialization:** Wait for DOM content loaded.
+2.  **Parameter Parsing:** Iterate through `filter` parameters in the URL query string.
+3.  **Profile Lookup:** Check if the parameter value exists as a key in `window.FILTER_PROFILES`.
+4.  **Application:** 
+    - If a profile is found:
+        - Iterate through the `filters` array and simulate a click on each valid checkbox element.
+        - If `sort` is defined, call `window.sortManager.handleSortSelection(sortType, false)`.
+    - If not a profile, proceed with existing logic (parsing `attribute=value` or `all-live` shortcut).
+5.  **Timing:** Ensure this happens after the page has fully loaded and other scripts (like `FilterManager`) are initialized (using the existing `setTimeout` mechanism).
+6.  **Interaction:** Trigger the Webflow interaction (filter icon block) if any filters were applied.
+
+## Implementation Steps
+
+### Step 1: Create `buy-gold/body/url-filter-profiles.js`
+Create a new file to store the profile definitions.
+
+```javascript
+// URL Filter Profiles Configuration
+window.FILTER_PROFILES = {
+  'all-silver': {
+    filters: ['checkbox_silver'],
+    sort: 'default'
+  },
+  'all-silver-by-oz': {
+    filters: ['checkbox_silver'],
+    sort: 'lowest-weight'
+  },
+  'all-silver-instock': {
+    filters: ['checkbox_silver', 'checkbox_in_stock'],
+    sort: 'default'
+  },
+  'profile1': {
+    filters: ['checkbox_gold', 'checkbox_1oz'],
+    sort: 'value'
+  },
+  'profile2': {
+    filters: ['checkbox_gold', 'checkbox_cast_bar'],
+    sort: 'lowest-price'
+  },
+  'profile3-10': {
+    filters: ['checkbox_silver', 'checkbox_coin', 'checkbox_in_stock'],
+    sort: 'latest'
+  }
+};
+```
+
+### Step 2: Update `buy-gold/body/url-filter-handler.js`
+Modify the existing handler to check for profiles.
+
+```javascript
+// ... inside the loop iterating filterParams ...
+
+        console.log(`URL Filter Handler: Processing param "${filterParam}"`);
+        
+        // Check for Profile
+        if (window.FILTER_PROFILES && window.FILTER_PROFILES[filterParam]) {
+            console.log(`URL Filter Handler: Applying profile "${filterParam}"`);
+            const profile = window.FILTER_PROFILES[filterParam];
+            
+            // Apply Filters
+            if (profile.filters) {
+                profile.filters.forEach(checkboxId => {
+                    const checkbox = document.getElementById(checkboxId);
+                    if (checkbox) {
+                        console.log(`URL Filter Handler: Clicking profile checkbox ${checkboxId}`);
+                        checkbox.click();
+                        filtersApplied = true;
+                    } else {
+                        console.warn(`URL Filter Handler: Profile checkbox ${checkboxId} not found`);
+                    }
+                });
+            }
+            
+            // Apply Sort
+            if (profile.sort && window.sortManager) {
+                console.log(`URL Filter Handler: Applying profile sort "${profile.sort}"`);
+                // Use a small timeout to ensure filters are processed first
+                setTimeout(() => {
+                    window.sortManager.handleSortSelection(profile.sort, false);
+                }, 100);
+            }
+            
+            return; // Skip standard processing
+        }
+
+        // Special shortcut: filter=all-live
+        // ... existing code ...
+```
+
+### Step 3: Update Build Scripts
+Ensure the new `buy-gold/body/url-filter-profiles.js` file is included in the build process (e.g., `buy-gold/body/build.ps1`) so it's loaded on the page.
+
+---
+
+# Phase 3: Mobile View Enhancement
+
+## Overview
+Enhance the mobile view to support a dedicated "Clear Filter" button when a URL profile is active. This involves toggling between the default "Show In Stock" button and a new custom "Profile Active" button.
+
+## Requirements
+1.  **Update Profile Configuration:**
+    *   Add `displayName` to each profile in `buy-gold/body/url-filter-profiles.js`.
+2.  **Implement Button Toggling Logic:**
+    *   **Elements:**
+        *   `buy-banner-product1-hottest-button`: Default mobile button (Show In Stock / Show All).
+        *   `buy-banner-product1-filter-button`: New custom button for profiles.
+    *   **Behavior:**
+        *   **Default State:** Show `hottest-button`, Hide `filter-button`.
+        *   **Profile Active State:** Hide `hottest-button`, Show `filter-button`.
+        *   **Profile Button Text:** "Currently viewing [Profile Name]. Click to clear".
+    *   **Action:**
+        *   Clicking `buy-banner-product1-filter-button` should remove the filter from the URL and reload the page to the default state.
+
+## Implementation Plan
+
+### 1. Update `buy-gold/body/url-filter-profiles.js`
+Add `displayName` property to each profile object.
+
+```javascript
+window.FILTER_PROFILES = {
+  'all-silver': {
+    filters: ['checkbox_silver'],
+    sort: 'default',
+    displayName: 'all Silver sorted by best value per Oz'
+  },
+  // ... other profiles
+};
+```
+
+### 2. Update `buy-gold/body/url-filter-handler.js`
+
+**A. Add Helper Function `activateMobileProfileButton`**
+Create a function to handle the button swap and text update.
+
+```javascript
+function activateMobileProfileButton(displayName) {
+  if (window.innerWidth > 991) return;
+
+  const defaultButton = document.getElementById('buy-banner-product1-hottest-button');
+  const profileButton = document.getElementById('buy-banner-product1-filter-button');
+  
+  if (!profileButton) {
+      console.warn('URL Filter Handler: Profile button not found');
+      return;
+  }
+
+  // Hide default button
+  if (defaultButton) {
+      defaultButton.style.display = 'none';
+  }
+
+  // Show profile button
+  profileButton.style.display = 'flex'; // Assuming flex, or 'block'
+
+  // Update Text
+  // UPDATED: Use ID 'buy-banner-title1-filter'
+  const textElement = document.getElementById('buy-banner-title1-filter');
+  if (textElement) {
+    textElement.textContent = `Currently viewing ${displayName}. Click to clear`;
+  } else {
+      // Fallback to class if ID not found
+      const textElementByClass = profileButton.querySelector('.buy-banner-title1-filter');
+      if (textElementByClass) {
+          textElementByClass.textContent = `Currently viewing ${displayName}. Click to clear`;
+      }
+  }
+
+  // Add Click Listener to Reload
+  profileButton.addEventListener('click', () => {
+      console.log('URL Filter Handler: Clearing profile and reloading');
+      // Reload page without query parameters
+      window.location.href = window.location.pathname;
+  });
+}
+```
+
+**B. Integrate into Main Loop**
+Call `activateMobileProfileButton` when a profile is successfully applied.
+
+```javascript
+// Inside filterParams.forEach loop
+if (window.FILTER_PROFILES && window.FILTER_PROFILES[trimmedParam]) {
+    const profile = window.FILTER_PROFILES[trimmedParam];
+    // ... apply filters ...
+    
+    // NEW: Activate mobile profile button if profile has display name
+    if (profile.displayName) {
+        activateMobileProfileButton(profile.displayName);
+    }
+}
+```
+
+**C. Ensure Default State**
+Ensure the profile button is hidden by default on load (if not handled by CSS).
+
+```javascript
+// At start of DOMContentLoaded
+const profileButton = document.getElementById('buy-banner-product1-filter-button');
+if (profileButton) {
+    profileButton.style.display = 'none';
+}
+```
