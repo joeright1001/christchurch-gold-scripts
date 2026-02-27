@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Popular combo-images
   const popularOutOfStockImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a181380123c0be15d520b7_out-stock-notify.webp";
   const popularLiveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/698e690e6dc96a4e3bb98f28_best-seller-2-5weeks.webp";
-  const popularInStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68adf02d176754b3b0f0bb72_best-seller-sameday.webp";
+  const popularInStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/69a2223e47ada4f9c4cecd1f_best-seller-nextday.webp";
 
   // Metal colours
   const goldBackground  = "#fff7e0";
