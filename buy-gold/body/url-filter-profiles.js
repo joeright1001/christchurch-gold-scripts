@@ -70,6 +70,8 @@ window.FILTER_PROFILES = {
   'silver-investor': {
     products: [
       '1-oz-silver',
+      '1-oz-silver-staint-gauden-round',
+      '1-oz-silver-walking-liberty-bar',
       '1-oz-silver-maple-leaf-2026',
       '10-oz-silver-various-dg',
       '1-kg-silver-various-dg',
