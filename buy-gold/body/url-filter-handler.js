@@ -1,72 +1,82 @@
 /**
  * URL Filter Handler
- * 
- * Handles applying filters based on URL parameters.
- * 
- * Usage:
+ *
+ * This script manages the application of product filters based on URL parameters when the page loads.
+ * It supports two primary modes of operation: Standard Filters and Profile Filters.
+ *
+ * MODES:
  * 1. Standard Filter: ?filter=(attribute=value)
- *    Example: ?filter=(data-stock-status=in-stock)
- * 
- * 2. Multiple Filters: ?filter=(attr1=val1)&filter=(attr2=val2)
- *    Example: ?filter=(data-stock-status=in-stock)&filter=(data-metal=gold)
- * 
- * 3. Shortcut: ?filter=all-live
- *    Applies both "In Stock" and "Live at Mint" filters.
- *    - On Mobile (<= 991px): Activates the mobile-specific "View All Hottest" button.
- *    - On Desktop: Directly checks the filter checkboxes.
+ *    - Maps directly to a specific filter checkbox defined in window.FILTER_CONFIG.
+ *    - Example: ?filter=(data-stock-status=in-stock)
+ *    - Multiple filters can be combined: ?filter=(attr1=val1)&filter=(attr2=val2)
  *
- * 4. Profile: ?filter=profile-name
- *    Applies a predefined set of filters, sort options, and/or specific product whitelists.
- *    - On Mobile (<= 991px): Activates the mobile-specific "Clear Filter" button with custom text.
- *    - On Desktop (> 991px): Activates the desktop-specific notification banner with custom text.
+ * 2. Profile Filter: ?filter=profile-name
+ *    - Applies a predefined configuration from window.FILTER_PROFILES.
+ *    - A profile can include:
+ *      - A set of checkboxes to activate.
+ *      - A specific list of products to display (whitelist).
+ *      - A sorting preference (e.g., 'value', 'lowest-price').
+ *      - Custom display text for UI notifications.
+ *    - UI Behavior:
+ *      - Mobile (<= 991px): Replaces the default "Hottest" button with a "Clear Filter" button showing the profile name.
+ *      - Desktop (> 991px): Displays a notification banner with the profile name and a "Clear" option.
  *
- * Triggers Webflow interaction (filter-icon-block2) after applying filters.
+ * INITIALIZATION:
+ * - Runs on DOMContentLoaded.
+ * - Hides profile-specific UI elements (mobile button, desktop notice) by default.
+ * - Initializes the mobile-specific "Hottest" button logic.
+ * - Parses URL parameters and applies filters after a short delay (500ms) to ensure other scripts (FilterManager, SortManager) are ready.
+ * - Triggers a Webflow interaction (filter-icon-block2) if any filters are applied to refresh the view.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   console.log('URL Filter Handler: Initialized');
   
-  // Setup mobile filter button (only on mobile)
+  // --- Mobile Initialization ---
+  // If on mobile (<= 991px), setup the default "Hottest" button and hide the profile button.
   if (window.innerWidth <= 991) {
     setupMobileFilterButton();
     
-    // Ensure profile button is hidden by default
+    // Ensure the profile-specific "Clear Filter" button is hidden by default
     const profileButton = document.getElementById('buy-banner-product1-filter-button');
     if (profileButton) {
         profileButton.style.display = 'none';
     }
   }
 
-  // Ensure desktop notice is hidden by default
+  // --- Desktop Initialization ---
+  // Ensure the desktop profile notification banner is hidden by default
   const desktopNotice = document.getElementById('custom-filter-notice');
   if (desktopNotice) {
       desktopNotice.style.display = 'none';
   }
 
-  // Get URL parameters
+  // --- URL Parameter Parsing ---
   const params = new URLSearchParams(window.location.search);
   
-  // Handle multiple filter parameters
-  // Support both ?filter=... and ?filter=...&filter=...
+  // Retrieve all 'filter' parameters from the URL
+  // Supports multiple occurrences: ?filter=...&filter=...
   const filterParams = params.getAll('filter');
   console.log('URL Filter Handler: Found params', filterParams);
 
   if (filterParams.length > 0) {
-    // Add a delay to ensure other scripts (like FilterManager) are initialized
-    // Increased to 1000ms to be safe
+    // --- Filter Application ---
+    // Wait 500ms to ensure dependent scripts (FilterManager, SortManager, DOM elements) are fully loaded and initialized.
     setTimeout(() => {
       let filtersApplied = false;
 
       filterParams.forEach(filterParam => {
         console.log(`URL Filter Handler: Processing param "${filterParam}"`);
         
-        // Check for Profile
+        // --- Profile Filter Logic ---
+        // Check if the parameter matches a key in the global FILTER_PROFILES object
         const trimmedParam = filterParam.trim();
         if (window.FILTER_PROFILES && window.FILTER_PROFILES[trimmedParam]) {
             console.log(`URL Filter Handler: Applying profile "${trimmedParam}"`);
             const profile = window.FILTER_PROFILES[trimmedParam];
             
-            // Apply Filters
+            // 1. Apply Checkbox Filters
+            // Iterate through the profile's 'filters' array and click corresponding checkboxes
             if (profile.filters) {
                 profile.filters.forEach(checkboxId => {
                     const checkbox = document.getElementById(checkboxId);
@@ -80,7 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
               }
 
-            // Apply Specific Products
+            // 2. Apply Specific Product Whitelist
+            // If the profile specifies a list of products, use filterControls to restrict the view
             if (profile.products) {
                 console.log(`URL Filter Handler: Applying specific products filter`);
                 if (window.filterControls && window.filterControls.setSpecificProducts) {
@@ -92,7 +103,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
               
               /**
-               * Activates the mobile profile button and hides the default button.
+               * Helper: Activates the mobile profile button.
+               *
+               * - Hides the default "Hottest" button.
+               * - Shows the "Clear Filter" profile button.
+               * - Updates the button text with the profile's display name.
+               * - Attaches a click listener to reset filters and restore the default UI.
                *
                * @param {string} displayName - The text to display in the button
                */
@@ -286,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
           console.warn('URL Filter Handler: filter-icon-block2 not found - could not trigger Webflow interaction');
         }
       }
-    }, 500); // 1000ms delay
+    }, 500); // 500ms delay
   }
 });
 
@@ -390,7 +406,7 @@ function setupMobileFilterButton() {
       
       // Change text to "Show All Including Out-Stock"
       if (textElement) {
-        textElement.textContent = "All Including Out-Stock";
+        textElement.textContent = "Show All Including Out-Stock";
       }
 
       // Apply sort 'value'
