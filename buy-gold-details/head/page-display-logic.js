@@ -124,6 +124,15 @@ document.addEventListener('DOMContentLoaded', () => {
         showElement('broker');
         showElement('market-button-text-dg-closed');
       }
+      else if (market === 'local-closed' && stock === 'low-stock') {
+        showElement('state-market-dg-closed', 'block');
+        showInvestorButtons(metal);
+        showElement('icon-market-closed');
+        showElement('button-closed');
+        showElement('broker-text');
+        showElement('broker');
+        showElement('market-button-text-dg-closed');
+      }
       else if (market === 'dg-open' && stock === 'live-at-the-mint') {
         showElement('add-to-cart-btn', 'inline-block');
         showElement('place-order', 'inline-block');
