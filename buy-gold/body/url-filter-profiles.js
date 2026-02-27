@@ -14,7 +14,7 @@ window.FILTER_PROFILES = {
   'all-silver': {
     filters: ['checkbox_silver'],
     sort: 'default',
-    displayName: 'Currently Viewing All Silver Products. Click to clear filter'
+    displayName: 'Currently Only Viewing Silver Products. Click to clear filter'
   },
   'all-silver-by-oz': {
     filters: ['checkbox_silver'],

@@ -241,6 +241,7 @@ function setupMobileFilterButton() {
     const liveMintCheckbox = document.getElementById('checkbox_live_mint');
     const icon1 = document.getElementById('click-icon1'); // Default icon
     const icon2 = document.getElementById('click-icon2'); // Active/Grayed icon
+    const bgImage = mobileButton.querySelector('.buy-banner-image1-button'); // Background image
     
     if (!inStockCheckbox || !liveMintCheckbox) {
       console.warn('URL Filter Handler: Checkboxes not found for mobile button');
@@ -275,9 +276,12 @@ function setupMobileFilterButton() {
       if (icon1) icon1.style.display = 'block';
       if (icon2) icon2.style.display = 'none';
       
-      // Remove opacity
+      // Remove opacity/filter
       mobileButton.style.backgroundColor = '';
-      mobileButton.style.opacity = '';
+      if (bgImage) {
+          bgImage.style.filter = '';
+          bgImage.style.opacity = '';
+      }
       
       // Restore original text
       if (textElement && mobileButton.dataset.originalText) {
@@ -298,9 +302,14 @@ function setupMobileFilterButton() {
       if (icon1) icon1.style.display = 'none';
       if (icon2) icon2.style.display = 'block';
       
-      // Add 50% Black opacity to root button div
-      // Using backgroundColor with rgba to create overlay effect
-      mobileButton.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+      // Add 50% Black opacity effect
+      // Since the image is an <img> tag, we need to dim the image itself
+      if (bgImage) {
+          bgImage.style.filter = 'brightness(0.5)';
+      } else {
+          // Fallback if image not found
+          mobileButton.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+      }
       
       // Ensure no border/outline shifts layout
       mobileButton.style.border = 'none';
@@ -308,7 +317,7 @@ function setupMobileFilterButton() {
       
       // Change text to "Show All Including Out-Stock"
       if (textElement) {
-        textElement.textContent = "Show All Including Out-Stock";
+        textElement.textContent = "All Including Out-Stock";
       }
 
       // Apply sort 'value'
