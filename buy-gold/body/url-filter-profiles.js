@@ -6,6 +6,7 @@
  * 
  * Each profile maps to:
  * - filters: Array of checkbox IDs to activate
+ * - products: (Optional) Array of product slugs to show (whitelist). If present, only these products are shown.
  * - sort: (Optional) Sort type to apply (e.g., 'value', 'lowest-price', 'lowest-weight')
  * - displayName: Text to display on the mobile "Clear Filter" button
  */
@@ -49,5 +50,19 @@ window.FILTER_PROFILES = {
     filters: ['checkbox_silver', 'checkbox_coin', 'checkbox_in_stock'],
     sort: 'latest', // Latest Year
     displayName: 'Currently viewing In-Stock Silver Coins. Click to clear'
+  },
+
+  // Specific Product Selection Example
+  'example-specific-products': {
+    products: ['1-oz-silver', '1-oz-gold-cast-bar'], // Replace with actual slugs
+    sort: 'default',
+    displayName: 'Viewing Specific Selection. Click to clear'
+  },
+
+  // Test Profile: 1oz Gold and 1oz Silver
+  'test-1oz-gold-silver': {
+    products: ['1-oz-gold', '1-oz-silver'],
+    sort: 'default',
+    displayName: 'Viewing 1oz Gold & Silver. Click to clear'
   }
 };

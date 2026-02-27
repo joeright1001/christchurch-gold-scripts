@@ -68,6 +68,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
               }
+
+            // Apply Specific Products
+            if (profile.products) {
+                console.log(`URL Filter Handler: Applying specific products filter`);
+                if (window.filterControls && window.filterControls.setSpecificProducts) {
+                    window.filterControls.setSpecificProducts(profile.products);
+                    filtersApplied = true;
+                } else {
+                    console.warn('URL Filter Handler: filterControls.setSpecificProducts not available');
+                }
+            }
               
               /**
                * Activates the mobile profile button and hides the default button.
@@ -239,8 +250,6 @@ function setupMobileFilterButton() {
   mobileButton.addEventListener('click', () => {
     const inStockCheckbox = document.getElementById('checkbox_in_stock');
     const liveMintCheckbox = document.getElementById('checkbox_live_mint');
-    const icon1 = document.getElementById('click-icon1'); // Default icon
-    const icon2 = document.getElementById('click-icon2'); // Active/Grayed icon
     const bgImage = mobileButton.querySelector('.buy-banner-image1-button'); // Background image
     
     if (!inStockCheckbox || !liveMintCheckbox) {
@@ -272,9 +281,6 @@ function setupMobileFilterButton() {
       if (liveMintActive) liveMintCheckbox.click();
       
       // Update visual state: Inactive (Show All)
-      // Show icon 1, Hide icon 2
-      if (icon1) icon1.style.display = 'block';
-      if (icon2) icon2.style.display = 'none';
       
       // Remove opacity/filter
       mobileButton.style.backgroundColor = '';
@@ -298,9 +304,6 @@ function setupMobileFilterButton() {
       if (!liveMintActive) liveMintCheckbox.click();
       
       // Update visual state: Active (In Stock)
-      // Hide icon 1, Show icon 2
-      if (icon1) icon1.style.display = 'none';
-      if (icon2) icon2.style.display = 'block';
       
       // Add 50% Black opacity effect
       // Since the image is an <img> tag, we need to dim the image itself

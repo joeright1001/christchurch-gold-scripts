@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
       this.buttons = {};
       this.parentWrappers = {}; // Cache parent wrappers for filters
       this.filterStates = {};
+      this.specificProductSlugs = null; // Whitelist of specific product slugs to show
       this.productElements = [];
       this.gridContainer = null;
       this.originalOrder = []; // Store original DOM order
@@ -290,9 +291,12 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Check if search is active (use the search manager's state)
       const hasActiveSearch = window.searchManager && window.searchManager.isActive && window.searchManager.isActive();
+
+      // Check if specific products are set
+      const hasSpecificProducts = this.specificProductSlugs && this.specificProductSlugs.length > 0;
       
-      // If no filters active and no search, show all items and restore original order
-      if (activeFilters.length === 0 && !hasActiveSearch) {
+      // If no filters active and no search and no specific products, show all items and restore original order
+      if (activeFilters.length === 0 && !hasActiveSearch && !hasSpecificProducts) {
         this.showAllItemsCSS();
         this.restoreOriginalOrder();
         this.manageDivVisibility();
@@ -497,6 +501,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     shouldShowProduct(dataElement) {
+      // Check specific products list acting as a whitelist
+      if (this.specificProductSlugs && this.specificProductSlugs.length > 0) {
+        const slug = dataElement.getAttribute('data-slug');
+        if (!this.specificProductSlugs.includes(slug)) {
+          return false;
+        }
+      }
+
       const activeFilters = Object.entries(this.filterStates).filter(([_, isActive]) => isActive);
       if (activeFilters.length === 0) return true;
 
@@ -706,6 +718,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     resetAllFilters() {
+      // Reset specific products
+      this.specificProductSlugs = null;
+
       // Reset regular filters
       Object.keys(this.filterStates).forEach(filterName => {
         this.filterStates[filterName] = false;
@@ -743,6 +758,9 @@ document.addEventListener('DOMContentLoaded', function() {
       if (window.searchManager && window.searchManager.clearSearch) {
         window.searchManager.clearSearch();
       }
+
+      // Reset specific products
+      this.specificProductSlugs = null;
 
       // Reset all group styles
       Object.keys(this.config.exclusiveGroups).forEach(groupName => {
@@ -804,6 +822,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     resetFiltersOnly() {
+      // Reset specific products
+      this.specificProductSlugs = null;
+
       // Reset regular filters
       Object.keys(this.filterStates).forEach(filterName => {
         this.filterStates[filterName] = false;
@@ -950,8 +971,17 @@ document.addEventListener('DOMContentLoaded', function() {
       };
       // NEW: Method to check if any filters are currently active
       window.filterControls.hasActiveFilters = () => {
-        return Object.values(this.filterStates).some(isActive => isActive);
+        const hasSpecific = this.specificProductSlugs && this.specificProductSlugs.length > 0;
+        return hasSpecific || Object.values(this.filterStates).some(isActive => isActive);
       };
+      // NEW: Method to set specific products (whitelist)
+      window.filterControls.setSpecificProducts = (slugs) => this.setSpecificProducts(slugs);
+    }
+
+    setSpecificProducts(slugs) {
+      this.specificProductSlugs = slugs;
+      this.applyAllFiltersOptimized();
+      console.log(`🚀 FILTER: Set specific products list: ${slugs ? slugs.length : 0} items`);
     }
   }
 
