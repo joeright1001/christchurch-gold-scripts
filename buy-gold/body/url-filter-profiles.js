@@ -14,7 +14,7 @@ window.FILTER_PROFILES = {
   'all-silver': {
     filters: ['checkbox_silver'],
     sort: 'default',
-    displayName: 'Currently Only Viewing Silver Products. Click to clear filter'
+    displayName: 'Only Viewing Silver Products. Click to clear filter'
   },
   'all-silver-by-oz': {
     filters: ['checkbox_silver'],
@@ -36,9 +36,9 @@ window.FILTER_PROFILES = {
 
   // Example Profiles (Placeholders)
   'profile1': {
-    filters: ['checkbox_gold', 'checkbox_1oz'],
+    filters: ['checkbox_gold', 'checkbox_1oz', 'checkbox_silver, checkbox_1kg'],
     sort: 'value', // Best Value per Oz
-    displayName: 'Currently viewing 1oz Gold Best Value. Click to clear'
+    displayName: 'Filtered view showing best value 1oz Gold, Silver and 1kg. Click to clear'
   },
   'profile2': {
     filters: ['checkbox_gold', 'checkbox_cast_bar'],
