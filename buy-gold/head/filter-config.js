@@ -17,6 +17,9 @@ window.FILTER_CONFIG = {
     checkbox_2oz: 'checkbox_2oz',
     checkbox_5oz: 'checkbox_5oz',
     checkbox_10oz: 'checkbox_10oz',
+    checkbox_100g: 'checkbox_100g',
+    checkbox_250g: 'checkbox_250g',
+    checkbox_500g: 'checkbox_500g',
     checkbox_1kg: 'checkbox_1kg',
     checkbox_asahi: 'checkbox_asahi',
     checkbox_austrian: 'checkbox_austrian',
@@ -105,6 +108,18 @@ window.FILTER_CONFIG = {
     checkbox_10oz: {
       attribute: 'data-size',
       values: ['10oz']
+    },
+    checkbox_100g: {
+      attribute: 'data-size',
+      values: ['100g']
+    },
+    checkbox_250g: {
+      attribute: 'data-size',
+      values: ['250g']
+    },
+    checkbox_500g: {
+      attribute: 'data-size',
+      values: ['500g']
     },
     checkbox_1kg: {
       attribute: 'data-size',
