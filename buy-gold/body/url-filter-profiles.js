@@ -8,7 +8,7 @@
  * - filters: Array of checkbox IDs to activate
  * - products: (Optional) Array of product slugs to show (whitelist). If present, only these products are shown.
  * - sort: (Optional) Sort type to apply (e.g., 'value', 'lowest-price', 'lowest-weight')
- * - displayName: Text to display on the mobile "Clear Filter" button
+ * - displayName: Text to display on the mobile "Clear Filter" button AND the desktop notification banner.
  */
 window.FILTER_PROFILES = {
   // Silver Profiles

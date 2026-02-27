@@ -15,6 +15,11 @@
  *    - On Mobile (<= 991px): Activates the mobile-specific "View All Hottest" button.
  *    - On Desktop: Directly checks the filter checkboxes.
  *
+ * 4. Profile: ?filter=profile-name
+ *    Applies a predefined set of filters, sort options, and/or specific product whitelists.
+ *    - On Mobile (<= 991px): Activates the mobile-specific "Clear Filter" button with custom text.
+ *    - On Desktop (> 991px): Activates the desktop-specific notification banner with custom text.
+ *
  * Triggers Webflow interaction (filter-icon-block2) after applying filters.
  */
 
@@ -30,6 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (profileButton) {
         profileButton.style.display = 'none';
     }
+  }
+
+  // Ensure desktop notice is hidden by default
+  const desktopNotice = document.getElementById('custom-filter-notice');
+  if (desktopNotice) {
+      desktopNotice.style.display = 'none';
   }
 
   // Get URL parameters
@@ -154,6 +165,64 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.history.pushState({}, '', newUrl);
                 };
               }
+
+              /**
+               * Activates the desktop profile notification banner.
+               *
+               * Shows the 'custom-filter-notice' element and updates its text.
+               * Attaches a click listener to the inner '.filter-box' to clear all filters,
+               * emulating the behavior of the main "Clear All" button.
+               *
+               * @param {string} displayName - The text to display in the notification
+               */
+              function activateDesktopProfileNotification(displayName) {
+                // Only run on desktop
+                if (window.innerWidth <= 991) return;
+
+                const noticeElement = document.getElementById('custom-filter-notice');
+                const textElement = document.getElementById('d-filter-notice-text2');
+
+                if (!noticeElement) {
+                    console.warn('URL Filter Handler: Desktop notice element not found');
+                    return;
+                }
+
+                console.log(`URL Filter Handler: Activating desktop notification for "${displayName}"`);
+
+                // Show the notice
+                noticeElement.style.display = 'flex'; // Assuming flex layout
+
+                // Update text
+                if (textElement) {
+                    textElement.textContent = displayName;
+                }
+
+                // Add click listener to clear filter
+                // We attach it to the 'filter-box' element inside the notice
+                const filterBox = noticeElement.querySelector('.filter-box');
+                if (filterBox) {
+                    filterBox.style.cursor = 'pointer';
+                    filterBox.onclick = () => {
+                        console.log('URL Filter Handler: Clearing desktop profile filter');
+                        
+                        // 1. Clear all filters (emulating 'clear-filter' button)
+                        if (window.filterControls && window.filterControls.clearAllFilters) {
+                            window.filterControls.clearAllFilters();
+                        } else if (window.filterControls && window.filterControls.resetAllFilters) {
+                            window.filterControls.resetAllFilters();
+                        }
+
+                        // 2. Hide notice (root element)
+                        noticeElement.style.display = 'none';
+
+                        // 3. Update URL
+                        const newUrl = window.location.pathname;
+                        window.history.pushState({}, '', newUrl);
+                    };
+                } else {
+                    console.warn('URL Filter Handler: .filter-box not found inside custom-filter-notice');
+                }
+              }
             
             // Apply Sort
             if (profile.sort && window.sortManager) {
@@ -167,6 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Activate mobile profile button if profile has display name
             if (profile.displayName) {
                 activateMobileProfileButton(profile.displayName);
+                activateDesktopProfileNotification(profile.displayName);
             }
 
             return; // Skip standard processing

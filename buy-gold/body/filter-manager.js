@@ -958,6 +958,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setupGlobalNamespace() {
       window.filterControls = window.filterControls || {};
       window.filterControls.resetAllFilters = () => this.resetAllFilters();
+      window.filterControls.clearAllFilters = () => this.clearAllFilters(); // Expose clearAllFilters (clears search too)
       window.filterControls.resetFiltersOnly = () => this.resetFiltersOnly();
       window.filterControls.getActiveFilters = () => {
         return Object.entries(this.filterStates)
