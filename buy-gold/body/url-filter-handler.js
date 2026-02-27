@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
           console.warn('URL Filter Handler: filter-icon-block2 not found - could not trigger Webflow interaction');
         }
       }
-    }, 1000); // 1000ms delay
+    }, 500); // 1000ms delay
   }
 });
 
