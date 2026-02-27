@@ -181,6 +181,16 @@ document.addEventListener('DOMContentLoaded', () => {
         showElement('state-35-days', 'flex');
         showElement('icon-35-days');
       }
+      else if (market === 'local-open' && stock === 'low-stock') {
+        showElement('add-to-cart-btn', 'inline-block');
+        showElement('place-order', 'inline-block');
+        showElement('get-quote', 'inline-block');
+        showElement('get-quote-btn', 'inline-block');
+        showElement('broker-text');
+        showElement('broker');
+        showElement('state-35-days', 'flex');
+        showElement('icon-35-days');
+      }
       // All other combinations: hide all (default behavior)
     }
   }
