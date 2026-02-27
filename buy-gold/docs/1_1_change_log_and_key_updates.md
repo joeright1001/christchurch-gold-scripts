@@ -1,3 +1,10 @@
+# Change Log and Key Updates
+
+## Introduction
+This document serves as a change log and implementation plan for new features and updates to the Buy Gold page scripts. New features and changes are added iteratively in each new section appended to the last. This ensures a clear history of modifications and a roadmap for future enhancements.
+
+---
+
 # Additive Checkbox Filtering Implementation Plan
 
 ## Overview
@@ -516,3 +523,141 @@ if (profile.products) {
     }
 }
 ```
+
+---
+
+# Phase 5: Desktop Filter Notification
+
+## Overview
+To prevent desktop users from being confused when a specific product filter is active (as they might not see any checkboxes selected), we will display a custom notification banner. This banner will show the active filter name and provide a way to clear it.
+
+## Requirements
+1.  **Target Element:** `custom-filter-notice` (Hidden by default).
+2.  **Text Element:** `d-filter-notice-text2` (Inside the notice).
+3.  **Behavior:**
+    *   Show the notice only when a specific product filter (profile with `products`) is active on Desktop (> 991px).
+    *   Update the text with the profile's `displayName`.
+    *   Clicking the notice (or the clear icon) should clear the filter and hide the notice.
+
+## Implementation Plan
+
+### 1. Update `buy-gold/body/url-filter-handler.js`
+
+**A. Add `activateDesktopProfileNotification` Function**
+Create a function to handle the desktop notification logic.
+
+```javascript
+function activateDesktopProfileNotification(displayName) {
+  // Only run on desktop
+  if (window.innerWidth <= 991) return;
+
+  const noticeElement = document.getElementById('custom-filter-notice');
+  const textElement = document.getElementById('d-filter-notice-text2');
+
+  if (!noticeElement) {
+    console.warn('URL Filter Handler: Desktop notice element not found');
+    return;
+  }
+
+  // Show the notice
+  noticeElement.style.display = 'flex'; // Assuming flex layout
+
+  // Update text
+  if (textElement) {
+    textElement.textContent = displayName;
+  }
+
+  // Add click listener to clear filter
+  // We attach it to the 'filter-box' element inside the notice
+  const filterBox = noticeElement.querySelector('.filter-box');
+  if (filterBox) {
+    filterBox.style.cursor = 'pointer';
+    filterBox.onclick = () => {
+      console.log('URL Filter Handler: Clearing desktop profile filter');
+      
+      // 1. Clear all filters (emulating 'clear-filter' button)
+      // We need to ensure clearAllFilters is exposed or use resetAllFilters if sufficient
+      if (window.filterControls && window.filterControls.clearAllFilters) {
+        window.filterControls.clearAllFilters();
+      } else if (window.filterControls && window.filterControls.resetAllFilters) {
+        window.filterControls.resetAllFilters();
+      }
+
+      // 2. Hide notice (root element)
+      noticeElement.style.display = 'none';
+
+      // 3. Update URL
+      const newUrl = window.location.pathname;
+      window.history.pushState({}, '', newUrl);
+    };
+  } else {
+      console.warn('URL Filter Handler: .filter-box not found inside custom-filter-notice');
+  }
+}
+```
+
+### 2. Update `buy-gold/body/filter-manager.js`
+
+**Expose `clearAllFilters`**
+Ensure the `clearAllFilters` method is accessible globally so we can emulate the "Clear All" button behavior exactly (which includes clearing search).
+
+```javascript
+  setupGlobalNamespace() {
+    // ... existing exports
+    window.filterControls.clearAllFilters = () => this.clearAllFilters();
+  }
+```
+
+**B. Integrate into Main Loop**
+Call this function when a profile with `products` is applied.
+
+```javascript
+// Inside profile processing loop
+if (profile.products) {
+    // ... apply specific products ...
+
+    // Show desktop notification if display name exists
+    if (profile.displayName) {
+        activateDesktopProfileNotification(profile.displayName);
+    }
+}
+```
+
+**C. Ensure Default State**
+Ensure the notice is hidden on page load.
+
+```javascript
+// At start of DOMContentLoaded
+const desktopNotice = document.getElementById('custom-filter-notice');
+if (desktopNotice) {
+    desktopNotice.style.display = 'none';
+}
+```
+
+---
+
+# Phase 6: Automated Webflow Tag Compilation
+
+## Overview
+To streamline the deployment process and reduce errors when updating Webflow, we have introduced automated scripts to populate the `X_Inside 'body' tag.txt` and `X_Inside 'head' tag.txt` files. These scripts take the minified CSS and JS from the build process and inject them into the text files, along with the correct version number for CDN links.
+
+## New Scripts
+
+### 1. `buy-gold/body/compile-webflow-body-tags.ps1`
+This script updates `buy-gold/body/X_Inside 'body' tag.txt`.
+- **Functionality:**
+    - Retrieves the latest Git tag.
+    - Reads the minified `main.css`.
+    - Updates the content within `<style>...</style>` tags.
+    - Updates the version number in the CDN link for `main.js`.
+
+### 2. `buy-gold/head/compile-webflow-head-tags.ps1`
+This script updates `buy-gold/head/X_Inside 'head' tag.txt`.
+- **Functionality:**
+    - Retrieves the latest Git tag.
+    - Reads the minified `main.css` and `main.js`.
+    - Updates the content within `<style>...</style>` tags.
+    - Updates the content within `<script>...</script>` tags.
+
+## Usage
+These scripts should be run after the main build process (`build-core.ps1`) has completed and a new tag has been created. They will prepare the text files for immediate copy-pasting into Webflow.

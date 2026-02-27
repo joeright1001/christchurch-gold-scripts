@@ -64,5 +64,21 @@ window.FILTER_PROFILES = {
     products: ['1-oz-gold', '1-oz-silver'],
     sort: 'default',
     displayName: 'Viewing 1oz Gold & Silver. Click to clear'
+  },
+
+  // Silver Investor Profile
+  'silver-investor': {
+    products: [
+      '1-oz-silver',
+      '1-oz-silver-maple-leaf-2026',
+      '10-oz-silver-various-dg',
+      '1-kg-silver-various-dg',
+      '5-oz-silver-various-dg',
+      '1-kg-silver-perth-kookaburra-various',
+      '1-kg-silver-perth-koala-various',
+      '250-gram-silver-various-dg'
+    ],
+    sort: 'value',
+    displayName: 'Recommended silver investment. Click to clear filter.'
   }
 };
