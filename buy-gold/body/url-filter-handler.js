@@ -109,13 +109,38 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
               
-                // Add Click Listener to Reload
-                // Note: We use a named function or ensure we don't add multiple listeners if called multiple times
-                // But since this runs once on load, it's fine.
+                // Add Click Listener to Clear Filter (Instant)
                 profileButton.onclick = () => {
-                    console.log('URL Filter Handler: Clearing profile and reloading');
-                    // Reload page without query parameters
-                    window.location.href = window.location.pathname;
+                    console.log('URL Filter Handler: Clearing profile instantly');
+                    
+                    // 1. Clear all filters using FilterManager
+                    if (window.filterControls && window.filterControls.resetAllFilters) {
+                        window.filterControls.resetAllFilters();
+                    }
+                    
+                    // 2. Hide profile button, Show default button
+                    profileButton.style.display = 'none';
+                    if (defaultButton) {
+                        defaultButton.style.display = 'flex'; // Restore default button
+                        
+                        // Reset default button visual state to "Show All" (Inactive)
+                        const icon1 = document.getElementById('click-icon1');
+                        const icon2 = document.getElementById('click-icon2');
+                        const textElement = defaultButton.querySelector('.buy-banner-title1-button');
+                        
+                        if (icon1) icon1.style.display = 'block';
+                        if (icon2) icon2.style.display = 'none';
+                        defaultButton.style.backgroundColor = '';
+                        defaultButton.style.opacity = '';
+                        
+                        if (textElement && defaultButton.dataset.originalText) {
+                            textElement.textContent = defaultButton.dataset.originalText;
+                        }
+                    }
+                    
+                    // 3. Update URL without reload
+                    const newUrl = window.location.pathname;
+                    window.history.pushState({}, '', newUrl);
                 };
               }
             
@@ -214,6 +239,8 @@ function setupMobileFilterButton() {
   mobileButton.addEventListener('click', () => {
     const inStockCheckbox = document.getElementById('checkbox_in_stock');
     const liveMintCheckbox = document.getElementById('checkbox_live_mint');
+    const icon1 = document.getElementById('click-icon1'); // Default icon
+    const icon2 = document.getElementById('click-icon2'); // Active/Grayed icon
     
     if (!inStockCheckbox || !liveMintCheckbox) {
       console.warn('URL Filter Handler: Checkboxes not found for mobile button');
@@ -238,13 +265,19 @@ function setupMobileFilterButton() {
     const bothActive = inStockActive && liveMintActive;
     
     if (bothActive) {
-      // If both are active, toggle them off
+      // If both are active, toggle them off (Show All)
       // We click them to trigger FilterManager's toggle logic
       if (inStockActive) inStockCheckbox.click();
       if (liveMintActive) liveMintCheckbox.click();
       
-      // Update visual state: Inactive (reset styles)
-      mobileButton.style.border = '';
+      // Update visual state: Inactive (Show All)
+      // Show icon 1, Hide icon 2
+      if (icon1) icon1.style.display = 'block';
+      if (icon2) icon2.style.display = 'none';
+      
+      // Remove opacity
+      mobileButton.style.backgroundColor = '';
+      mobileButton.style.opacity = '';
       
       // Restore original text
       if (textElement && mobileButton.dataset.originalText) {
@@ -256,12 +289,22 @@ function setupMobileFilterButton() {
         window.sortManager.handleSortSelection('default', false);
       }
     } else {
-      // If not both active, toggle them on
+      // If not both active, toggle them on (Show In Stock)
       if (!inStockActive) inStockCheckbox.click();
       if (!liveMintActive) liveMintCheckbox.click();
       
-      // Update visual state: Active (Dark Gray border 4px)
-      mobileButton.style.border = '4px solid #333';
+      // Update visual state: Active (In Stock)
+      // Hide icon 1, Show icon 2
+      if (icon1) icon1.style.display = 'none';
+      if (icon2) icon2.style.display = 'block';
+      
+      // Add 50% Black opacity to root button div
+      // Using backgroundColor with rgba to create overlay effect
+      mobileButton.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+      
+      // Ensure no border/outline shifts layout
+      mobileButton.style.border = 'none';
+      mobileButton.style.outline = 'none';
       
       // Change text to "Show All Including Out-Stock"
       if (textElement) {
