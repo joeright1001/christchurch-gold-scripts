@@ -195,7 +195,7 @@ window.FILTER_CONFIG = {
     },
     checkbox_in_stock: {
       attribute: 'data-stock-status',
-      values: ['in-stock']
+      values: ['in-stock', 'low-stock']
     },
     checkbox_live_mint: {
       attribute: 'data-stock-status',

@@ -661,3 +661,37 @@ This script updates `buy-gold/head/X_Inside 'head' tag.txt`.
 
 ## Usage
 These scripts should be run after the main build process (`build-core.ps1`) has completed and a new tag has been created. They will prepare the text files for immediate copy-pasting into Webflow.
+
+---
+
+# Phase 7: Include Low Stock in In-Stock Filter
+
+## Overview
+The requirement is to update the native behavior of the "In Stock" filter checkbox so that it also includes products with a `data-stock-status` of `low-stock`. This ensures that products running low on inventory remain visible when users filter for in-stock items. The update must also seamlessly support URL-based filters (e.g., `?filter=(data-stock-status=in-stock)` or `?filter=(data-stock-status=low-stock)`).
+
+## Requirements
+1.  **Filter Configuration Update:**
+    *   Update `checkbox_in_stock` in `buy-gold/head/filter-config.js` to include `'low-stock'` in its `values` array.
+2.  **No Additional Logic Changes Needed:**
+    *   `url-filter-handler.js` already matches against the `values` array dynamically, meaning a URL parameter containing either value will correctly activate the "In Stock" checkbox.
+    *   `filter-manager.js` processes all values inside the `values` array using OR logic.
+    *   `product-display.js` already explicitly handles `low-stock` status by assigning it the same badge icon and alt text behavior as `in-stock`.
+
+## Implementation Plan
+
+### 1. Update `buy-gold/head/filter-config.js`
+Modify the `rules` object to add `'low-stock'` to the `checkbox_in_stock` values.
+
+```javascript
+// BEFORE
+    checkbox_in_stock: {
+      attribute: 'data-stock-status',
+      values: ['in-stock']
+    },
+
+// AFTER
+    checkbox_in_stock: {
+      attribute: 'data-stock-status',
+      values: ['in-stock', 'low-stock']
+    },
+```
