@@ -123,6 +123,28 @@
 
     qtyInput.style.display = "inline-block";
 
+    // --- DG Supplier Stock Level Capping Logic ---
+    const supplierIsActiveSellEl = document.getElementById("supplier-isactivesell");
+    const marketEl = document.getElementById("market");
+    const stockLevelEl = document.getElementById("stock-level");
+
+    if (maxQtyEl && supplierIsActiveSellEl && marketEl && stockLevelEl) {
+      const isSupplierActiveN = supplierIsActiveSellEl.textContent.trim().toUpperCase() === "N";
+      const isMarketDg = marketEl.textContent.trim().toLowerCase() === "dg";
+      
+      if (isSupplierActiveN && isMarketDg) {
+        const stockLevel = parseInt(stockLevelEl.textContent.trim(), 10);
+        const currentMax = parseInt(maxQtyEl.textContent.trim(), 10);
+        
+        if (!isNaN(stockLevel)) {
+           if (isNaN(currentMax) || stockLevel < currentMax) {
+               maxQtyEl.textContent = stockLevel.toString();
+           }
+        }
+      }
+    }
+    // ---------------------------------------------
+
     // ensure starting value meets minimum
     let minQty = 1;
     if (minQtyEl) {
