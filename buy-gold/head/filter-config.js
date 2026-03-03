@@ -17,6 +17,7 @@ window.FILTER_CONFIG = {
     checkbox_2oz: 'checkbox_2oz',
     checkbox_5oz: 'checkbox_5oz',
     checkbox_10oz: 'checkbox_10oz',
+    checkbox_100oz: 'checkbox_100oz',
     checkbox_100g: 'checkbox_100g',
     checkbox_250g: 'checkbox_250g',
     checkbox_500g: 'checkbox_500g',
@@ -108,6 +109,10 @@ window.FILTER_CONFIG = {
     checkbox_10oz: {
       attribute: 'data-size',
       values: ['10oz']
+    },
+    checkbox_100oz: {
+      attribute: 'data-size',
+      values: ['100oz']
     },
     checkbox_100g: {
       attribute: 'data-size',

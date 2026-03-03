@@ -695,3 +695,65 @@ Modify the `rules` object to add `'low-stock'` to the `checkbox_in_stock` values
       values: ['in-stock', 'low-stock']
     },
 ```
+
+---
+
+# Phase 8: Add 100oz Size Category Filter
+
+## Overview
+A new size category "100oz" has been added to the Buy Gold page UI. The filtering system needs to be updated to recognize and process this new size option correctly.
+
+## Requirements
+1.  **Filter Configuration Update:**
+    *   Add the new `checkbox_100oz` mapping to the `window.FILTER_CONFIG.buttons` object in `buy-gold/head/filter-config.js`.
+    *   Define the filter rule for `checkbox_100oz` in `window.FILTER_CONFIG.rules`, targeting the `data-size` attribute with the value `['100oz']`.
+2.  **Filter Manager Update:**
+    *   Add `checkbox_100oz` to the `scrollTriggerFilters` array in `buy-gold/body/filter-manager.js` so that clicking the filter triggers the smooth scroll to the product grid/price ticker.
+
+## Implementation Plan
+
+### 1. Update `buy-gold/head/filter-config.js`
+Add the button mapping and rule for the new 100oz checkbox.
+
+```javascript
+  // Desktop checkbox IDs
+  buttons: {
+    // ... existing buttons
+    checkbox_10oz: 'checkbox_10oz',
+    checkbox_100oz: 'checkbox_100oz', // NEW
+    checkbox_100g: 'checkbox_100g',
+    // ...
+  },
+  
+  // Filter rules
+  rules: {
+    // ... existing rules
+    checkbox_10oz: {
+      attribute: 'data-size',
+      values: ['10oz']
+    },
+    // NEW
+    checkbox_100oz: {
+      attribute: 'data-size',
+      values: ['100oz']
+    },
+    checkbox_100g: {
+      attribute: 'data-size',
+      values: ['100g']
+    },
+    // ...
+```
+
+### 2. Update `buy-gold/body/filter-manager.js`
+Add the new checkbox to the scroll trigger list.
+
+```javascript
+      this.scrollTriggerFilters = [
+        'checkbox_coin', 'checkbox_minted_bar', 'checkbox_cast_bar', // Type
+        'checkbox_1g', 'checkbox_2_5g', 'checkbox_5g', 'checkbox_10g', 'checkbox_20g', 'checkbox_25g',
+        'checkbox_1_20oz', 'checkbox_1_10oz', 'checkbox_1_4oz', 'checkbox_1_2oz', 'checkbox_1oz',
+        'checkbox_2oz', 'checkbox_5oz', 'checkbox_10oz', 'checkbox_100oz', 'checkbox_100g', 'checkbox_250g', 'checkbox_500g', 'checkbox_1kg', // Weight
+        // ... Mint
+      ];
+```
+
