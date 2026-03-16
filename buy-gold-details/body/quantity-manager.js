@@ -168,6 +168,8 @@
           font-size: 1.2rem;
           color: #333;
           transition: background 0.2s;
+          border: none;
+          outline: none;
         }
         .qty-btn:hover { background: #eee; }
         .qty-btn:active { background: #ddd; }
@@ -277,17 +279,41 @@
     qtyInput.addEventListener("blur",   hardUpdate);
     qtyInput.addEventListener("change", hardUpdate);
 
-    btnMinus.addEventListener("click", () => {
-        const val = parseInt(qtyInput.value, 10) || 1;
-        qtyInput.value = val - 1;
-        hardUpdate();
-    });
+    /* Repeat Functionality */
+    let repeatTimer = null;
+    let repeatInterval = null;
+
+    const startRepeat = (change) => {
+        userInteracted = true;
+        const applyChange = () => {
+            const val = parseInt(qtyInput.value, 10) || 0;
+            qtyInput.value = val + change;
+            enforceQtyLimits(true);
+        };
+        
+        applyChange(); // First tick
+        
+        repeatTimer = setTimeout(() => {
+            repeatInterval = setInterval(applyChange, 80); // Fast repeat
+        }, 500); // Wait 0.5s before repeating
+    };
+
+    const stopRepeat = () => {
+        clearTimeout(repeatTimer);
+        clearInterval(repeatInterval);
+    };
+
+    btnMinus.addEventListener("mousedown", () => startRepeat(-1));
+    btnPlus.addEventListener("mousedown", () => startRepeat(1));
     
-    btnPlus.addEventListener("click", () => {
-        const val = parseInt(qtyInput.value, 10) || 0;
-        qtyInput.value = val + 1;
-        hardUpdate();
-    });
+    btnMinus.addEventListener("touchstart", (e) => { e.preventDefault(); startRepeat(-1); });
+    btnPlus.addEventListener("touchstart", (e) => { e.preventDefault(); startRepeat(1); });
+
+    window.addEventListener("mouseup", stopRepeat);
+    window.addEventListener("touchend", stopRepeat);
+    window.addEventListener("touchcancel", stopRepeat);
+    btnMinus.addEventListener("mouseleave", stopRepeat);
+    btnPlus.addEventListener("mouseleave", stopRepeat);
 
     document.addEventListener("price-refreshed", recalcTotals);
 
