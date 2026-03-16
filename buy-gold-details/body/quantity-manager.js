@@ -1,4 +1,4 @@
-/* qty-limits.js – shows red min/max badges 5 px right of field */
+/* qty-limits.js – shows red min/max badges 5 px right of field, plus custom controls */
 (function () {
 
   /* ------------------------------------------------------------------
@@ -29,9 +29,18 @@
      Totals
   ------------------------------------------------------------------ */
   function recalcTotals() {
-    const qty = parseInt(qtyInput?.value, 10) || 1;
-    const unitPrice = num(unitPriceEl.textContent);
-    const unitGst = num(unitGstEl.textContent);
+    if (!qtyInput) return;
+    
+    // Parse quantity - if invalid/empty while typing, default to 1 for calculation or ignore
+    let qty = parseInt(qtyInput.value, 10);
+    if (isNaN(qty) || qty < 1) {
+       // While typing, we don't want to show $0.00 if they've just deleted the number
+       // We'll use 1 as a fallback for the text display
+       qty = 1;
+    }
+
+    const unitPrice = num(unitPriceEl?.textContent);
+    const unitGst = num(unitGstEl?.textContent);
 
     // Perform all calculations
     const unitTotalPrice = unitPrice * qty;
@@ -57,7 +66,13 @@
     span.className   = className;
     span.textContent = message;
     span.style.display = "none";
-    qtyInput.parentNode.insertBefore(span, qtyInput.nextSibling);
+    
+    // Insert after the input (or the container we'll create)
+    if (qtyInput.parentNode.classList.contains('qty-container')) {
+        qtyInput.parentNode.parentNode.insertBefore(span, qtyInput.parentNode.nextSibling);
+    } else {
+        qtyInput.parentNode.insertBefore(span, qtyInput.nextSibling);
+    }
     return span;
   }
 
@@ -68,7 +83,7 @@
   let maxWarnSpan = null;
   let userInteracted = false;
 
-  function enforceQtyLimits() {
+  function enforceQtyLimits(hardClamp = true) {
     if (!qtyInput) return;
 
     // read min / max values from DOM
@@ -83,16 +98,25 @@
       if (!isNaN(parsed)) maxQty = parsed;
     }
 
-    // clamp value
-    let val = parseInt(qtyInput.value, 10) || minQty;
-    if (val < minQty) val = minQty;
-    if (val > maxQty) val = maxQty;
-    qtyInput.value = val;
+    let currentVal = parseInt(qtyInput.value, 10);
+    
+    if (hardClamp) {
+        // Force value into range
+        let val = currentVal || minQty;
+        if (val < minQty) val = minQty;
+        if (val > maxQty) val = maxQty;
+        qtyInput.value = val;
+        currentVal = val;
+    }
 
     // show / hide badges once the shopper has interacted
-    if (userInteracted) {
-      if (minWarnSpan) minWarnSpan.style.display = (val <= minQty) ? "inline-block" : "none";
-      if (maxWarnSpan) maxWarnSpan.style.display = (val >= maxQty) ? "inline-block" : "none";
+    if (userInteracted || hardClamp) {
+      if (minWarnSpan) {
+          minWarnSpan.style.display = (isNaN(currentVal) || currentVal <= minQty) ? "inline-block" : "none";
+      }
+      if (maxWarnSpan) {
+          maxWarnSpan.style.display = (!isNaN(currentVal) && currentVal >= maxQty) ? "inline-block" : "none";
+      }
     }
 
     recalcTotals();
@@ -104,24 +128,62 @@
   document.addEventListener("DOMContentLoaded", () => {
     if (!qtyInput) return;
 
-    /* inject style for the badges once */
+    /* inject style for the badges and buttons once */
     if (!document.getElementById("qty-limits-style")) {
       const style = document.createElement("style");
       style.id = "qty-limits-style";
       style.textContent = `
+        .qty-container {
+          display: inline-flex;
+          align-items: center;
+          vertical-align: middle;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          overflow: hidden;
+          background: #fff;
+        }
+        .qty-container input {
+          border: none !important;
+          margin: 0 !important;
+          text-align: center;
+          width: 50px !important;
+          height: 40px !important;
+          -moz-appearance: textfield;
+        }
+        .qty-container input::-webkit-outer-spin-button,
+        .qty-container input::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+        .qty-btn {
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          background: #f8f8f8;
+          user-select: none;
+          font-weight: bold;
+          font-size: 1.2rem;
+          color: #333;
+          transition: background 0.2s;
+        }
+        .qty-btn:hover { background: #eee; }
+        .qty-btn:active { background: #ddd; }
+        
         .min-qty-message,
         .max-qty-message {
-          margin-left: 5px;
+          margin-left: 8px;
           font-size: 0.875rem;
           line-height: 1;
           vertical-align: middle;
           color: #c00; /* red */
+          font-weight: bold;
         }
       `;
       document.head.appendChild(style);
     }
-
-    qtyInput.style.display = "inline-block";
 
     // --- DG Supplier Stock Level Capping Logic ---
     const supplierIsActiveSellEl = document.getElementById("supplier-isactivesell");
@@ -144,6 +206,27 @@
       }
     }
     // ---------------------------------------------
+
+    // Wrap input and add buttons
+    const container = document.createElement('div');
+    container.className = 'qty-container';
+    qtyInput.parentNode.insertBefore(container, qtyInput);
+    
+    const btnMinus = document.createElement('button');
+    btnMinus.type = 'button';
+    btnMinus.className = 'qty-btn minus';
+    btnMinus.textContent = '−';
+    
+    const btnPlus = document.createElement('button');
+    btnPlus.type = 'button';
+    btnPlus.className = 'qty-btn plus';
+    btnPlus.textContent = '+';
+    
+    container.appendChild(btnMinus);
+    container.appendChild(qtyInput);
+    container.appendChild(btnPlus);
+
+    qtyInput.style.display = "inline-block";
 
     // ensure starting value meets minimum
     let minQty = 1;
@@ -171,26 +254,44 @@
       }
     }
 
-    /* helper: mark interaction + enforce immediately */
-    const touchAndEnforce = () => {
-      userInteracted = true;
-      enforceQtyLimits();
+    /* listeners */
+    const softUpdate = () => {
+        userInteracted = true;
+        enforceQtyLimits(false);
+    };
+    
+    const hardUpdate = () => {
+        userInteracted = true;
+        enforceQtyLimits(true);
     };
 
-    /* listeners */
     qtyInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") e.preventDefault();
-      if (e.key === "ArrowUp" || e.key === "ArrowDown") touchAndEnforce();
+      if (e.key === "Enter") {
+          e.preventDefault();
+          hardUpdate();
+      }
     });
-    qtyInput.addEventListener("focus",  touchAndEnforce);
-    qtyInput.addEventListener("click",  touchAndEnforce);  // spinner arrows
-    qtyInput.addEventListener("wheel",  touchAndEnforce);  // mouse wheel
-    qtyInput.addEventListener("input",  touchAndEnforce);
-    qtyInput.addEventListener("change", touchAndEnforce);
+    
+    qtyInput.addEventListener("focus",  softUpdate);
+    qtyInput.addEventListener("input",  softUpdate);
+    qtyInput.addEventListener("blur",   hardUpdate);
+    qtyInput.addEventListener("change", hardUpdate);
+
+    btnMinus.addEventListener("click", () => {
+        const val = parseInt(qtyInput.value, 10) || 1;
+        qtyInput.value = val - 1;
+        hardUpdate();
+    });
+    
+    btnPlus.addEventListener("click", () => {
+        const val = parseInt(qtyInput.value, 10) || 0;
+        qtyInput.value = val + 1;
+        hardUpdate();
+    });
 
     document.addEventListener("price-refreshed", recalcTotals);
 
     /* initial clamp / totals (badges hidden) */
-    enforceQtyLimits();
+    enforceQtyLimits(true);
   });
 })();

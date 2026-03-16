@@ -56,6 +56,9 @@ document.addEventListener("DOMContentLoaded", function () {
   brokerButton?.addEventListener("click", function (event) {
     event.preventDefault(); // Prevent default anchor behaviour
 
+    // Force a final clamp/validation check in case the user is still focused on the field
+    quantityField?.dispatchEvent(new Event('change'));
+
     waitForCMSData(() => {
       /* --------- gather values --------- */
       const productName = productNameField.textContent.trim();
