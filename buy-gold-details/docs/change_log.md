@@ -105,7 +105,7 @@ This update addresses a critical usability issue on mobile devices where aggress
 ## Requirements
 1.  **Soft Validation:** During active typing (`input` event), the UI must show warning badges if the value is out of range, but must NOT overwrite the user's input.
 2.  **Hard Clamping:** Enforce the minimum and maximum bounds only when the user leaves the field (`blur`), completes a change (`change`), or uses the increment/decrement buttons.
-3.  **Custom Controls:** Programmatically inject '+' and '-' buttons next to the quantity input for easier mobile interaction.
+3.  **Custom Controls:** Programmatically inject '+' and '-' buttons next to the quantity input for easier mobile interaction. Supports "hold-to-repeat" for rapid incrementing/decrementing.
 4.  **Submission Guard:** Ensure that any submission (Add to Cart / Broker) performs a final range check before proceeding.
 
 ## Implementation Details
@@ -117,6 +117,7 @@ This update addresses a critical usability issue on mobile devices where aggress
 - Bind `updateWarnings()` to the `input` event.
 - Bind `clampToRange()` to `blur` and `change`.
 - Inject custom button elements with appropriate CSS for a tap-friendly interface.
+- **Hold-to-Repeat:** Implemented `mousedown`/`touchstart` timers that trigger rapid value changes if the button is held down for more than 500ms.
 
 ### 2. Submission Logic
 - Update `broker-data-transfer.js` to include a final `clampToRange` call or equivalent logic before processing the quantity for the URL payload.
