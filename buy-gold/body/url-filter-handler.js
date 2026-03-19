@@ -388,9 +388,10 @@ function setupMobileFilterButton() {
       mobileButton.style.border = 'none';
       mobileButton.style.outline = 'none';
       
-      // Apply sort 'value'
+      // Apply sort (default)
       if (window.sortManager) {
-        window.sortManager.handleSortSelection('value', false);
+        // window.sortManager.handleSortSelection('value', false); // Original: Price: Best per Oz
+        window.sortManager.handleSortSelection('default', false);
       }
     }
   });
