@@ -4,7 +4,7 @@
 
 
 
-<script src="https://cdn.jsdelivr.net/gh/joeright1001/christchurch-gold-scripts@v1.0.331/buy-gold/body/main.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/joeright1001/christchurch-gold-scripts@v1.0.337/buy-gold/body/main.js" defer></script>
 
 
 
@@ -36,5 +36,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 </script>
+
 
 
