@@ -1,7 +1,7 @@
 // Global configuration and utilities
 // ==================== FILTER CONFIGURATION ====================
 window.FILTER_CONFIG = {
-  // Desktop checkbox IDs (all filters now use checkbox format)
+  
   buttons: {
     checkbox_1g: 'checkbox_1g',
     checkbox_2_5g: 'checkbox_2_5g',
