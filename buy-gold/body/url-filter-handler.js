@@ -409,5 +409,8 @@ function setupMobileFilterButton() {
         }
       }, 300);
     }
+
+    // Scroll the button to the top of the page (with smooth behavior)
+    mobileButton.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 }
