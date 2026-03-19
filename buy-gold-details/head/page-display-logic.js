@@ -89,8 +89,21 @@ document.addEventListener('DOMContentLoaded', () => {
     if (onlineOrder === 'false') {
       showElement('broker');
       showElement('offline-order-text');
-      showElement('state-out-stock', 'flex');
-      showElement('icon-out-stock');
+      
+      if (stock === 'in-stock') {
+        showElement('state-today', 'block');
+        showElement('icon-in-stock');
+      } else if (stock === 'low-stock') {
+        showElement('state-35-days', 'flex');
+        showElement('icon-35-days');
+      } else if (stock === 'live-at-the-mint') {
+        showElement('state-34-weeks', 'flex');
+        showElement('icon-34-weeks');
+      } else if (stock === 'out-stock') {
+        showElement('state-out-stock', 'flex');
+        showElement('icon-out-stock');
+      }
+      
       return; // Exit early, don't process other combinations
     }
 
