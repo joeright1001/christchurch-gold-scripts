@@ -184,8 +184,8 @@ window.FILTER_CONFIG = {
       values: ['Valcambi Suisse']
     },
     checkbox_investor: {
-      attribute: 'data-product-type',
-      values: ['investor']
+      attribute: 'data-mint',
+      values: ['Investment Selection']
     },
     checkbox_collectables: {
       attribute: 'data-product-type',
