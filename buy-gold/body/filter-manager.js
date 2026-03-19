@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
         investmentBlock: null
       };
       this.originalDivStates = {}; // Store original visibility states
+      this.shortcuts = window.FILTER_SHORTCUTS || {}; // Shared custom filter shortcuts
       
       this.init();
     }
@@ -200,6 +201,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     toggleFilter(filterName) {
       const newState = !this.filterStates[filterName];
+
+      // Handle custom shortcuts (shared groups like 'hot')
+      if (this.shortcuts[filterName]) {
+        this.applyShortcut(filterName, newState);
+        return;
+      }
+
       const group = Object.keys(this.config.exclusiveGroups).find(groupName =>
         this.config.exclusiveGroups[groupName].includes(filterName)
       );
@@ -220,6 +228,28 @@ document.addEventListener('DOMContentLoaded', function() {
       if (group) {
         this.updateGroupStyles(group, newState ? filterName : null);
       }
+    }
+
+    applyShortcut(shortcutName, isActive) {
+      const shortcut = this.shortcuts[shortcutName];
+      if (!shortcut) return;
+
+      console.log(`🚀 SHORTCUT: ${shortcutName} ${isActive ? 'ON' : 'OFF'}`);
+      
+      this.filterStates[shortcutName] = isActive;
+      this.updateButtonStyles(shortcutName, isActive);
+
+      // Toggle sub-filters defined in the shortcut (e.g., In Stock + Live Mint)
+      if (shortcut.filters) {
+        shortcut.filters.forEach(filterName => {
+          // Update child filter state and UI
+          this.filterStates[filterName] = isActive;
+          this.updateCheckboxStyles(filterName, isActive);
+        });
+      }
+
+      // Final application of filters
+      this.applyAllFiltersOptimized();
     }
 
     applyFilter(filterName, isActive) {
@@ -356,6 +386,14 @@ document.addEventListener('DOMContentLoaded', function() {
         this.needsOrderRestoration = true;
       }
 
+      // Priority Product Sorting (e.g. 1-kg-silver) for active shortcuts
+      Object.entries(this.shortcuts).forEach(([name, shortcut]) => {
+        if (this.filterStates[name] && shortcut.priorityProduct) {
+          this.applyPriorityProductSort(shortcut.priorityProduct);
+          this.needsOrderRestoration = true;
+        }
+      });
+
       this.manageDivVisibility();
       
       // Reduce console logging frequency
@@ -444,6 +482,38 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!this._lastStarterSortTime || Date.now() - this._lastStarterSortTime > 2000) {
         console.log(`🚀 SORT: ${sortedItems.length} items by starter order`);
         this._lastStarterSortTime = Date.now();
+      }
+    }
+
+    applyPriorityProductSort(slug) {
+      if (!this.gridContainer) return;
+      
+      const itemToMove = this.gridContainer.querySelector(`[data-slug="${slug}"]`);
+      if (itemToMove) {
+        const container = itemToMove.closest('.w-dyn-item');
+        if (container) {
+          // If already at top, skip (to avoid redundant DOM work)
+          if (this.gridContainer.firstElementChild === container) return;
+          
+          this.gridContainer.prepend(container);
+          console.log(`🚀 SORT: Prioritized ${slug} to the top`);
+        }
+      }
+    }
+
+    applyPriorityProductSort(slug) {
+      if (!this.gridContainer) return;
+      
+      const itemToMove = this.gridContainer.querySelector(`[data-slug="${slug}"]`);
+      if (itemToMove) {
+        const container = itemToMove.closest('.w-dyn-item');
+        if (container) {
+          // If already at top, skip (to avoid redundant DOM work)
+          if (this.gridContainer.firstElementChild === container) return;
+          
+          this.gridContainer.prepend(container);
+          console.log(`🚀 SORT: Prioritized ${slug} to the top`);
+        }
       }
     }
 

@@ -44,6 +44,7 @@ window.FILTER_CONFIG = {
     checkbox_popular: 'checkbox_popular',
     checkbox_dealer: 'checkbox_dealer',
     checkbox_starter: 'checkbox_starter',
+    checkbox_hot: 'checkbox_hot',
     checkbox_coin: 'checkbox_coin',
     checkbox_minted_bar: 'checkbox_minted_bar',
     checkbox_cast_bar: 'checkbox_cast_bar'
@@ -216,6 +217,9 @@ window.FILTER_CONFIG = {
     checkbox_starter: {
       attribute: 'data-getting-started',
       specialHandling: true
+    },
+    checkbox_hot: {
+      specialHandling: 'shortcut' // Managed in filter-profile.js (shared groups)
     },
     checkbox_coin: {
       attribute: 'data-type',
