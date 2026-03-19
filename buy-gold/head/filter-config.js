@@ -42,6 +42,7 @@ window.FILTER_CONFIG = {
     checkbox_in_stock: 'checkbox_in_stock',
     checkbox_live_mint: 'checkbox_live_mint',
     checkbox_popular: 'checkbox_popular',
+    checkbox_hot: 'checkbox_hot',
     checkbox_dealer: 'checkbox_dealer',
     checkbox_starter: 'checkbox_starter',
     checkbox_coin: 'checkbox_coin',
@@ -205,6 +206,10 @@ window.FILTER_CONFIG = {
     checkbox_live_mint: {
       attribute: 'data-stock-status',
       values: ['live-at-the-mint']
+    },
+    checkbox_hot: {
+      attribute: 'data-stock-status',
+      values: ['in-stock', 'low-stock', 'live-at-the-mint']
     },
     checkbox_popular: {
       attribute: 'data-popular',
