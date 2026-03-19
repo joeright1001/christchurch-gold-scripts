@@ -410,7 +410,13 @@ function setupMobileFilterButton() {
       }, 300);
     }
 
-    // Scroll the button to the top of the page (with smooth behavior)
-    mobileButton.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // Scroll the button to the top of the page (with smooth behavior and 8rem offset for navbar)
+    const elementPosition = mobileButton.getBoundingClientRect().top + window.scrollY;
+    const offsetPosition = elementPosition - (8 * 16); // 8rem offset
+    
+    window.scrollTo({
+      top: offsetPosition,
+      behavior: 'smooth'
+    });
   });
 }
