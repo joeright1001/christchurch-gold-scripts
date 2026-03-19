@@ -1,3 +1,32 @@
+/**
+ * ============================================================================
+ * FILTER MANAGER (PERFORMANCE OPTIMIZED)
+ * ============================================================================
+ * 
+ * PURPOSE:
+ * This script serves as the central engine for dynamically filtering products
+ * on the product listing (Buy) pages. It intercepts user interactions with UI 
+ * filter checkboxes, evaluates products against defined rules, and smoothly 
+ * updates the visible product grid.
+ * 
+ * ARCHITECTURE & DESIGN:
+ * - Data-Driven Rules: Uses `window.FILTER_CONFIG` to map UI checkboxes to HTML 
+ *   data-attributes (e.g. `data-size`, `data-mint`, `data-stock-status`) on each product.
+ * - State Management: Maintains a persistent internal record of which filters 
+ *   are currently active, enabling additive (AND/OR) complex filtering scenarios.
+ * - Non-Destructive Rendering: Instead of removing DOM elements, it utilizes a 
+ *   performant CSS-based approach by simply toggling a `.filter-hidden` class.
+ * - DOM Reordering: For special filters (Popular, Starter, Hot) that dictate 
+ *   visual priority rather than strict inclusion, it safely plucks elements and 
+ *   physically reorders them using `DocumentFragment`s for maximum rendering speed, 
+ *   always capturing and restoring the original DOM load order when disabled.
+ * 
+ * INTEGRATION:
+ * - Coordinates smoothly with the `SearchManager` (to ensure searched items are also filtered).
+ * - Exposes a global `window.filterControls` API allowing external scripts 
+ *   (like `url-filter-handler.js`) to programmatically trigger filter states on load.
+ * ============================================================================
+ */
 // PERFORMANCE OPTIMIZED FILTERING SYSTEM
 // ==================== INTEGRATED FILTERING SYSTEM ====================
 document.addEventListener('DOMContentLoaded', function() {
