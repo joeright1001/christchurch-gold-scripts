@@ -37,6 +37,11 @@ document.addEventListener('DOMContentLoaded', function() {
       this.init();
     }
 
+    // =========================================================================
+    // 1. CLASS SETUP & CACHING
+    // Methods for initializing the manager, caching DOM elements, and setting up initial states.
+    // =========================================================================
+
     init() {
       this.cacheElements();
       this.initializeStates();
@@ -96,6 +101,11 @@ document.addEventListener('DOMContentLoaded', function() {
       
       console.log(`🚀 PERFORMANCE: Cached ${this.productElements.length} product elements`);
     }
+
+    // =========================================================================
+    // 2. EVENT BINDING
+    // Methods for attaching click listeners to desktop and mobile filter UI elements.
+    // =========================================================================
 
     bindDesktopEvents() {
       // Bind all checkbox buttons
@@ -198,6 +208,12 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
 
+    // =========================================================================
+    // 3. STATE MANAGEMENT & TOGGLE LOGIC
+    // Methods that update the internal active/inactive state of filters when clicked.
+    // Includes logic for exclusive groups (turning off other options in the same group).
+    // =========================================================================
+
     toggleFilter(filterName) {
       const newState = !this.filterStates[filterName];
       const group = Object.keys(this.config.exclusiveGroups).find(groupName =>
@@ -241,6 +257,12 @@ document.addEventListener('DOMContentLoaded', function() {
       // 🚀 PERFORMANCE: Use optimized CSS-based filtering
       this.applyAllFiltersOptimized();
     }
+
+    // =========================================================================
+    // 4. SCROLL & CORE FILTERING ENGINE
+    // The main logic that evaluates which products should be visible based on active states.
+    // This loops through all products and adds/removes CSS classes for performance.
+    // =========================================================================
 
     scrollToPriceTicker() {
       const priceTicker = document.getElementById('price-ticker');
@@ -303,9 +325,9 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
       
-      // Check if popular or starter filters were just turned off and restore order
-      const hasPopularOrStarter = this.filterStates.checkbox_popular || this.filterStates.checkbox_starter;
-      if (!hasPopularOrStarter && this.needsOrderRestoration) {
+      // Check if popular, starter, or hot filters were just turned off and restore order
+      const hasSortingFilter = this.filterStates.checkbox_popular || this.filterStates.checkbox_starter || this.filterStates.checkbox_hot;
+      if (!hasSortingFilter && this.needsOrderRestoration) {
         this.restoreOriginalOrder();
         this.needsOrderRestoration = false;
       }
@@ -346,13 +368,23 @@ document.addEventListener('DOMContentLoaded', function() {
         processedSlugs.add(slug);
       });
 
-      // Apply sorting if needed (only on visible items)
+      // =========================================================================
+      // CUSTOM SORTING LOGIC FOR SPECIAL FILTERS
+      // The below section handles special filters (Popular, Starter, Hot) that 
+      // require items to be REORDERED rather than just shown/hidden.
+      // We apply sorting here (only on visible items) to bubble priority items up.
+      // =========================================================================
+      
       if (this.filterStates.checkbox_popular) {
         this.applyPopularSortCSS();
-        this.needsOrderRestoration = true;
+        this.needsOrderRestoration = true; // Flags that original order is broken and needs reset later
       }
       if (this.filterStates.checkbox_starter) {
         this.applyStarterSortCSS();
+        this.needsOrderRestoration = true;
+      }
+      if (this.filterStates.checkbox_hot) {
+        this.applyHotSortCSS();
         this.needsOrderRestoration = true;
       }
 
@@ -376,6 +408,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 🚀 PERFORMANCE OPTIMIZED: CSS-based sorting with DocumentFragment
+    // HARDCODED LOGIC FOR "POPULAR" FILTER:
+    // This reads the 'data-popular' attribute from each product to determine its numeric rank.
+    // Products with a valid 'data-popular' integer are extracted, sorted numerically,
+    // and then appended back to the grid in their sorted order.
     applyPopularSortCSS() {
       if (!this.filterStates.checkbox_popular || !this.gridContainer) return;
       
@@ -412,6 +448,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 🚀 PERFORMANCE OPTIMIZED: CSS-based sorting with DocumentFragment
+    // HARDCODED LOGIC FOR "GETTING STARTED" FILTER:
+    // Similar to popular sorting, this reads the 'data-getting-started' attribute from each product.
+    // Products with this numeric rank are sorted and placed at the top of the grid.
     applyStarterSortCSS() {
       if (!this.filterStates.checkbox_starter || !this.gridContainer) return;
       
@@ -446,6 +485,53 @@ document.addEventListener('DOMContentLoaded', function() {
         this._lastStarterSortTime = Date.now();
       }
     }
+
+    // 🚀 PERFORMANCE OPTIMIZED: CSS-based sorting with DocumentFragment for Hot filter
+    // HARDCODED LOGIC FOR "HOT PRODUCTS" FILTER:
+    // When the Hot filter is checked, we specifically want the product with slug '1-kg-silver' 
+    // to always appear at the very top of the grid.
+    // We separate the 1-kg-silver item from all other items, then re-append it first
+    // followed by everything else, effectively bubbling it to the top.
+    applyHotSortCSS() {
+      if (!this.filterStates.checkbox_hot || !this.gridContainer) return;
+      
+      const visibleItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item:not(.filter-hidden)'));
+      const topItems = [];
+      const otherItems = [];
+      
+      visibleItems.forEach(item => {
+        const dataElement = item.querySelector('.product-data');
+        if (!dataElement) {
+          otherItems.push(item);
+          return;
+        }
+        
+        const slug = dataElement.getAttribute('data-slug');
+        if (slug === '1-kg-silver') {
+          topItems.push(item);
+        } else {
+          otherItems.push(item);
+        }
+      });
+      
+      // 🚀 PERFORMANCE: Use DocumentFragment for efficient DOM reordering
+      const fragment = document.createDocumentFragment();
+      topItems.forEach(item => fragment.appendChild(item));
+      otherItems.forEach(item => fragment.appendChild(item));
+      this.gridContainer.appendChild(fragment);
+      
+      // Reduced logging frequency
+      if (!this._lastHotSortTime || Date.now() - this._lastHotSortTime > 2000) {
+        console.log(`🚀 SORT: Promoted 1-kg-silver for hot filter`);
+        this._lastHotSortTime = Date.now();
+      }
+    }
+
+    // =========================================================================
+    // 5. SPECIAL DIV VISIBILITY & PRODUCT EVALUATION
+    // Methods for toggling promotional blocks and determining if a single product 
+    // matches the currently active filter conditions.
+    // =========================================================================
 
     manageDivVisibility() {
       // Handle dealer filter first
@@ -583,6 +669,12 @@ document.addEventListener('DOMContentLoaded', function() {
       return true;
     }
 
+    // =========================================================================
+    // 6. UI, STYLES & BUTTON MANAGERS
+    // Methods that update the visual appearance of filter buttons, custom checkboxes,
+    // and dynamic SVG icons (like the "Make It Easy" button).
+    // =========================================================================
+
     updateButtonStyles(filterName, isActive) {
       this.updateCheckboxStyles(filterName, isActive);
       
@@ -717,6 +809,12 @@ document.addEventListener('DOMContentLoaded', function() {
       console.log('🚀 STARTER SVG: Created SVG icons dynamically');
     }
 
+    // =========================================================================
+    // 7. RESET & CLEAR LOGIC
+    // Methods for safely clearing filter states, preserving search terms if needed,
+    // and restoring the view to its default state.
+    // =========================================================================
+
     resetAllFilters() {
       // Reset specific products
       this.specificProductSlugs = null;
@@ -847,6 +945,12 @@ document.addEventListener('DOMContentLoaded', function() {
       console.log('🚀 PERFORMANCE: Filters reset (search input preserved)');
     }
 
+    // =========================================================================
+    // 8. SEARCH ENGINE
+    // CSS-based search filtering that evaluates search strings against data attributes.
+    // Coordinates smoothly with the filter engine.
+    // =========================================================================
+
     // 🚀 PERFORMANCE OPTIMIZED: CSS-based search filtering
     performSearchOptimized(searchTerm) {
       if (!searchTerm) {
@@ -912,6 +1016,12 @@ document.addEventListener('DOMContentLoaded', function() {
       this.gridContainer.appendChild(noResultsDiv);
     }
 
+    // =========================================================================
+    // 9. DOM RESTORATION
+    // Methods for capturing the initial page load order of products so they can be
+    // correctly restored when sorting filters are turned off.
+    // =========================================================================
+
     captureOriginalOrder() {
       if (!this.gridContainer) return;
       
@@ -954,6 +1064,12 @@ document.addEventListener('DOMContentLoaded', function() {
         this._lastLogTime = Date.now();
       }
     }
+
+    // =========================================================================
+    // 10. GLOBAL EXPORTS & API
+    // Methods that expose internal filter functionality to the global window object,
+    // allowing other scripts (like search or custom dropdowns) to interact with it.
+    // =========================================================================
 
     setupGlobalNamespace() {
       window.filterControls = window.filterControls || {};
