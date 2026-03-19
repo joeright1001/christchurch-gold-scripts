@@ -393,6 +393,21 @@ function setupMobileFilterButton() {
         // window.sortManager.handleSortSelection('value', false); // Original: Price: Best per Oz
         window.sortManager.handleSortSelection('default', false);
       }
+
+      // CUSTOMIZATION: Prioritize 1-kg-silver at the top
+      setTimeout(() => {
+        const gridContainer = document.querySelector('.w-dyn-items.w-row');
+        if (gridContainer) {
+          const itemToMove = gridContainer.querySelector('[data-slug="1-kg-silver-various-dg"]');
+          if (itemToMove) {
+            const container = itemToMove.closest('.w-dyn-item');
+            if (container) {
+              gridContainer.prepend(container);
+              console.log('URL Filter Handler: Prioritized 1-kg-silver to top');
+            }
+          }
+        }
+      }, 300);
     }
   });
 }
