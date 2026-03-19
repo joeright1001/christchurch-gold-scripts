@@ -164,16 +164,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Reset default button visual state to "Show All" (Inactive)
                         const icon1 = document.getElementById('click-icon1');
                         const icon2 = document.getElementById('click-icon2');
-                        const textElement = defaultButton.querySelector('.buy-banner-title1-button');
                         
                         if (icon1) icon1.style.display = 'block';
                         if (icon2) icon2.style.display = 'none';
                         defaultButton.style.backgroundColor = '';
                         defaultButton.style.opacity = '';
-                        
-                        if (textElement && defaultButton.dataset.originalText) {
-                            textElement.textContent = defaultButton.dataset.originalText;
-                        }
                     }
                     
                     // 3. Update URL without reload
@@ -327,12 +322,6 @@ function setupMobileFilterButton() {
 
   console.log('URL Filter Handler: Setting up mobile filter button');
 
-  // Store original text
-  const textElement = mobileButton.querySelector('.buy-banner-title1-button');
-  if (textElement && !mobileButton.dataset.originalText) {
-    mobileButton.dataset.originalText = textElement.textContent;
-  }
-
   mobileButton.addEventListener('click', () => {
     const inStockCheckbox = document.getElementById('checkbox_in_stock');
     const liveMintCheckbox = document.getElementById('checkbox_live_mint');
@@ -375,11 +364,6 @@ function setupMobileFilterButton() {
           bgImage.style.opacity = '';
       }
       
-      // Restore original text
-      if (textElement && mobileButton.dataset.originalText) {
-        textElement.textContent = mobileButton.dataset.originalText;
-      }
-
       // Reset sort to default
       if (window.sortManager) {
         window.sortManager.handleSortSelection('default', false);
@@ -404,11 +388,6 @@ function setupMobileFilterButton() {
       mobileButton.style.border = 'none';
       mobileButton.style.outline = 'none';
       
-      // Change text to "Show All Including Out-Stock"
-      if (textElement) {
-        textElement.textContent = "Hottest in-Stock";
-      }
-
       // Apply sort 'value'
       if (window.sortManager) {
         window.sortManager.handleSortSelection('value', false);
