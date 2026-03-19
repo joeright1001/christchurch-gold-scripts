@@ -406,7 +406,7 @@ function setupMobileFilterButton() {
       
       // Change text to "Show All Including Out-Stock"
       if (textElement) {
-        textElement.textContent = "Show All Including Out-Stock";
+        textElement.textContent = "Hottest in-Stock";
       }
 
       // Apply sort 'value'
