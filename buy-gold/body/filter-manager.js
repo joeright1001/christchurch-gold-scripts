@@ -407,6 +407,12 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
 
+    // =========================================================================
+    // 5. DOM REORDERING & SORTING LOGIC
+    // Methods that physically reorder the DOM nodes (using DocumentFragment for performance)
+    // based on specific priority filters like Popular, Starter, and Hot.
+    // =========================================================================
+
     // 🚀 PERFORMANCE OPTIMIZED: CSS-based sorting with DocumentFragment
     // HARDCODED LOGIC FOR "POPULAR" FILTER:
     // This reads the 'data-popular' attribute from each product to determine its numeric rank.
@@ -490,40 +496,26 @@ document.addEventListener('DOMContentLoaded', function() {
     // HARDCODED LOGIC FOR "HOT PRODUCTS" FILTER:
     // When the Hot filter is checked, we specifically want the product with slug '1-kg-silver' 
     // to always appear at the very top of the grid.
-    // We separate the 1-kg-silver item from all other items, then re-append it first
-    // followed by everything else, effectively bubbling it to the top.
+    // We locate the 1-kg-silver item, ensure it is visible, and prepend it to the container.
     applyHotSortCSS() {
       if (!this.filterStates.checkbox_hot || !this.gridContainer) return;
       
-      const visibleItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item:not(.filter-hidden)'));
-      const topItems = [];
-      const otherItems = [];
-      
-      visibleItems.forEach(item => {
-        const dataElement = item.querySelector('.product-data');
-        if (!dataElement) {
-          otherItems.push(item);
-          return;
+      const itemToMove = this.gridContainer.querySelector('[data-slug="1-kg-silver"]');
+      if (itemToMove) {
+        const container = itemToMove.closest('.w-dyn-item');
+        if (container) {
+          // Force it to be visible even if it didn't pass the hot filter criteria
+          container.classList.remove('filter-hidden'); 
+          
+          // Prepend moves it to the very top of the grid container
+          this.gridContainer.prepend(container);
+          
+          // Reduced logging frequency
+          if (!this._lastHotSortTime || Date.now() - this._lastHotSortTime > 2000) {
+            console.log(`🚀 SORT: Prepended 1-kg-silver for hot filter`);
+            this._lastHotSortTime = Date.now();
+          }
         }
-        
-        const slug = dataElement.getAttribute('data-slug');
-        if (slug === '1-kg-silver') {
-          topItems.push(item);
-        } else {
-          otherItems.push(item);
-        }
-      });
-      
-      // 🚀 PERFORMANCE: Use DocumentFragment for efficient DOM reordering
-      const fragment = document.createDocumentFragment();
-      topItems.forEach(item => fragment.appendChild(item));
-      otherItems.forEach(item => fragment.appendChild(item));
-      this.gridContainer.appendChild(fragment);
-      
-      // Reduced logging frequency
-      if (!this._lastHotSortTime || Date.now() - this._lastHotSortTime > 2000) {
-        console.log(`🚀 SORT: Promoted 1-kg-silver for hot filter`);
-        this._lastHotSortTime = Date.now();
       }
     }
 
