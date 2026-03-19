@@ -171,10 +171,13 @@ if ($jsSuccess -or $cssSuccess) {
     Write-Host "----------------------------------------"
 
     # Automatic versioning
-    $latestTag = git describe --tags --abbrev=0 2>$null
+    $latestTag = git tag -l "v*" | Sort-Object { 
+        try { [version]($_ -replace '^v','') } catch { [version]"0.0.0" } 
+    } -Descending | Select-Object -First 1
+
     $newVersion = ""
 
-    if ($null -eq $latestTag) {
+    if ([string]::IsNullOrWhiteSpace($latestTag)) {
         Write-Host "No existing tags found. Starting with v1.0.0" -ForegroundColor Yellow
         $newVersion = "v1.0.0"
     } else {
@@ -201,17 +204,22 @@ if ($jsSuccess -or $cssSuccess) {
     Write-Host "Committing with message: `"$commitMessage`"" -ForegroundColor Yellow
     git commit -m "$commitMessage"
     
-    Write-Host "Creating tag $newVersion..." -ForegroundColor Yellow
-    git tag -a "$newVersion" -m "$commitMessage"
-    
-    Write-Host "Pushing to main branch..." -ForegroundColor Yellow
-    git push origin main
-    
-    Write-Host "Pushing tag $newVersion..." -ForegroundColor Yellow
-    git push origin "$newVersion"
-    
-    Write-Host "----------------------------------------" -ForegroundColor DarkCyan
-    Write-Host "Deployment complete!" -ForegroundColor Green
+    if ($LASTEXITCODE -eq 0) {
+        Write-Host "Creating tag $newVersion..." -ForegroundColor Yellow
+        git tag -a "$newVersion" -m "$commitMessage"
+        
+        Write-Host "Pushing to main branch..." -ForegroundColor Yellow
+        git push origin main
+        
+        Write-Host "Pushing tag $newVersion..." -ForegroundColor Yellow
+        git push origin "$newVersion"
+        
+        Write-Host "----------------------------------------" -ForegroundColor DarkCyan
+        Write-Host "Deployment complete!" -ForegroundColor Green
+    } else {
+        Write-Host "No changes added to commit. Aborting tag creation and deployment." -ForegroundColor Yellow
+        $newVersion = $latestTag # Fallback so the CDN URLs below point to the current working version
+    }
     
     # Dynamically generate URLs for both files
     $repoRoot = git rev-parse --show-toplevel
