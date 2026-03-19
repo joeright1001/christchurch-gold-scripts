@@ -398,7 +398,7 @@ function setupMobileFilterButton() {
       setTimeout(() => {
         const gridContainer = document.querySelector('.w-dyn-items.w-row');
         if (gridContainer) {
-          const itemToMove = gridContainer.querySelector('[data-slug="1-kg-silver-various-dg"]');
+          const itemToMove = gridContainer.querySelector('[data-slug="1-kg-silver"]');
           if (itemToMove) {
             const container = itemToMove.closest('.w-dyn-item');
             if (container) {
