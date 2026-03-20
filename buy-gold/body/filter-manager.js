@@ -536,7 +536,10 @@ document.addEventListener('DOMContentLoaded', function() {
       // Define the sequence of product slugs to appear at the top.
       // The first item in this array will be at the very top of the stack.
       const hotSlugsSequence = [
+        '5-oz-silver-various-dg',
+        '100-oz-silver-lbma-brands-dg',
         '1-kg-silver'
+
         // Add more product slugs here in the sequence you want them to appear, e.g.:
         // '1-oz-gold-bar',
         // '1-oz-silver-coin'
