@@ -394,18 +394,23 @@ function setupMobileFilterButton() {
         window.sortManager.handleSortSelection('default', false);
       }
 
-      // CUSTOMIZATION: Prioritize 1-kg-silver at the top
+      // CUSTOMIZATION: Prioritize specified products at the top (from CUSTOM_FILTER_PROFILES)
       setTimeout(() => {
         const gridContainer = document.querySelector('.w-dyn-items.w-row');
-        if (gridContainer) {
-          const itemToMove = gridContainer.querySelector('[data-slug="1-kg-silver"]');
-          if (itemToMove) {
-            const container = itemToMove.closest('.w-dyn-item');
-            if (container) {
-              gridContainer.prepend(container);
-              console.log('URL Filter Handler: Prioritized 1-kg-silver to top');
+        if (gridContainer && window.CUSTOM_FILTER_PROFILES && window.CUSTOM_FILTER_PROFILES.mobileInStockPriority) {
+          // Reverse array to ensure first item in array ends up at the very top after prepending
+          const prioritySlugs = [...window.CUSTOM_FILTER_PROFILES.mobileInStockPriority].reverse();
+          
+          prioritySlugs.forEach(slug => {
+            const itemToMove = gridContainer.querySelector(`[data-slug="${slug}"]`);
+            if (itemToMove) {
+              const container = itemToMove.closest('.w-dyn-item');
+              if (container) {
+                gridContainer.prepend(container);
+                console.log(`URL Filter Handler: Prioritized ${slug} to top`);
+              }
             }
-          }
+          });
         }
       }, 300);
     }

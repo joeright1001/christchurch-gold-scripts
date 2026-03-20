@@ -526,24 +526,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 🚀 PERFORMANCE OPTIMIZED: CSS-based sorting with DocumentFragment for Hot filter
-    // HARDCODED LOGIC FOR "HOT PRODUCTS" FILTER:
+    // CUSTOM LOGIC FOR "HOT PRODUCTS" FILTER:
     // When the Hot filter is checked, we specifically want certain products 
     // to always appear at the very top of the grid in a defined sequence.
     // We locate the items by slug, ensure they are visible, and prepend them to the container.
+    // Sequence is defined in window.CUSTOM_FILTER_PROFILES.hotFilterSequence.
     applyHotSortCSS() {
       if (!this.filterStates.checkbox_hot || !this.gridContainer) return;
       
-      // Define the sequence of product slugs to appear at the top.
-      // The first item in this array will be at the very top of the stack.
-      const hotSlugsSequence = [
-        '5-oz-silver-various-dg',
-        '100-oz-silver-lbma-brands-dg',
-        '1-kg-silver'
-
-        // Add more product slugs here in the sequence you want them to appear, e.g.:
-        // '1-oz-gold-bar',
-        // '1-oz-silver-coin'
-      ];
+      let hotSlugsSequence = [];
+      if (window.CUSTOM_FILTER_PROFILES && window.CUSTOM_FILTER_PROFILES.hotFilterSequence) {
+        hotSlugsSequence = window.CUSTOM_FILTER_PROFILES.hotFilterSequence;
+      }
       
       // Reverse the array because prepend pushes elements to the top. 
       // To keep them in array order, the first element must be prepended last.
