@@ -9,6 +9,8 @@ window.CUSTOM_FILTER_PROFILES = {
   // when the mobile "In Stock" (Hottest) button is activated.
   // The first item in this array will be at the very top of the stack.
   mobileInStockPriority: [
+    '5-oz-silver-various-dg',
+    '100-oz-silver-lbma-brands-dg',
     '1-kg-silver'
   ],
 
