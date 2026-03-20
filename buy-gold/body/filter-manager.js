@@ -354,8 +354,8 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
       
-      // Check if popular, starter, or hot filters were just turned off and restore order
-      const hasSortingFilter = this.filterStates.checkbox_popular || this.filterStates.checkbox_starter || this.filterStates.checkbox_hot;
+      // Check if popular, starter, hot, or investor filters were just turned off and restore order
+      const hasSortingFilter = this.filterStates.checkbox_popular || this.filterStates.checkbox_starter || this.filterStates.checkbox_hot || this.filterStates.checkbox_investor;
       if (!hasSortingFilter && this.needsOrderRestoration) {
         this.restoreOriginalOrder();
         this.needsOrderRestoration = false;
@@ -414,6 +414,10 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       if (this.filterStates.checkbox_hot) {
         this.applyHotSortCSS();
+        this.needsOrderRestoration = true;
+      }
+      if (this.filterStates.checkbox_investor) {
+        this.applyInvestorSortCSS();
         this.needsOrderRestoration = true;
       }
 
@@ -523,28 +527,102 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 🚀 PERFORMANCE OPTIMIZED: CSS-based sorting with DocumentFragment for Hot filter
     // HARDCODED LOGIC FOR "HOT PRODUCTS" FILTER:
-    // When the Hot filter is checked, we specifically want the product with slug '1-kg-silver' 
-    // to always appear at the very top of the grid.
-    // We locate the 1-kg-silver item, ensure it is visible, and prepend it to the container.
+    // When the Hot filter is checked, we specifically want certain products 
+    // to always appear at the very top of the grid in a defined sequence.
+    // We locate the items by slug, ensure they are visible, and prepend them to the container.
     applyHotSortCSS() {
       if (!this.filterStates.checkbox_hot || !this.gridContainer) return;
       
-      const itemToMove = this.gridContainer.querySelector('[data-slug="1-kg-silver"]');
-      if (itemToMove) {
-        const container = itemToMove.closest('.w-dyn-item');
-        if (container) {
-          // Force it to be visible even if it didn't pass the hot filter criteria
-          container.classList.remove('filter-hidden'); 
-          
-          // Prepend moves it to the very top of the grid container
-          this.gridContainer.prepend(container);
-          
-          // Reduced logging frequency
-          if (!this._lastHotSortTime || Date.now() - this._lastHotSortTime > 2000) {
-            console.log(`🚀 SORT: Prepended 1-kg-silver for hot filter`);
-            this._lastHotSortTime = Date.now();
+      // Define the sequence of product slugs to appear at the top.
+      // The first item in this array will be at the very top of the stack.
+      const hotSlugsSequence = [
+        '1-kg-silver'
+        // Add more product slugs here in the sequence you want them to appear, e.g.:
+        // '1-oz-gold-bar',
+        // '1-oz-silver-coin'
+      ];
+      
+      // Reverse the array because prepend pushes elements to the top. 
+      // To keep them in array order, the first element must be prepended last.
+      const reversedSlugs = [...hotSlugsSequence].reverse();
+      
+      reversedSlugs.forEach(slug => {
+        const itemToMove = this.gridContainer.querySelector(`[data-slug="${slug}"]`);
+        if (itemToMove) {
+          const container = itemToMove.closest('.w-dyn-item');
+          if (container) {
+            // Force it to be visible even if it didn't pass the hot filter criteria
+            container.classList.remove('filter-hidden'); 
+            
+            // Prepend moves it to the very top of the grid container
+            this.gridContainer.prepend(container);
           }
         }
+      });
+      
+      // Reduced logging frequency
+      if (!this._lastHotSortTime || Date.now() - this._lastHotSortTime > 2000) {
+        console.log(`🚀 SORT: Prepended hot items: ${hotSlugsSequence.join(', ')}`);
+        this._lastHotSortTime = Date.now();
+      }
+    }
+
+    // 🚀 PERFORMANCE OPTIMIZED: CSS-based sorting with DocumentFragment
+    // HARDCODED LOGIC FOR "INVESTMENT" FILTER:
+    // Reads the 'data-value' attribute from each product and sorts ascending (lowest value first).
+    applyInvestorSortCSS() {
+      if (!this.filterStates.checkbox_investor || !this.gridContainer) return;
+      
+      const visibleItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item:not(.filter-hidden)'));
+      const sortedItems = [];
+      const itemsWithoutValues = [];
+      
+      visibleItems.forEach(item => {
+        const valueElement = item.querySelector('[data-value]');
+        
+        if (!valueElement) {
+          itemsWithoutValues.push(item);
+          return;
+        }
+        
+        const rawValue = valueElement.getAttribute('data-value');
+        if (rawValue) {
+          const numValue = parseFloat(rawValue.replace(/,/g, ''));
+          if (!isNaN(numValue)) {
+            sortedItems.push({
+              element: item,
+              value: numValue
+            });
+          } else {
+            itemsWithoutValues.push(item);
+          }
+        } else {
+          itemsWithoutValues.push(item);
+        }
+      });
+      
+      // Sort ascending (lowest value first, which is best value per oz)
+      sortedItems.sort((a, b) => a.value - b.value);
+      
+      // 🚀 PERFORMANCE: Use DocumentFragment for efficient DOM reordering
+      const fragment = document.createDocumentFragment();
+      
+      // Append sorted items first
+      sortedItems.forEach(item => {
+        fragment.appendChild(item.element);
+      });
+      
+      // Append items without values at the end to keep them visible
+      itemsWithoutValues.forEach(item => {
+        fragment.appendChild(item);
+      });
+      
+      this.gridContainer.appendChild(fragment);
+      
+      // Reduced logging frequency
+      if (!this._lastInvestorSortTime || Date.now() - this._lastInvestorSortTime > 2000) {
+        console.log(`🚀 SORT: ${sortedItems.length} items by investment value`);
+        this._lastInvestorSortTime = Date.now();
       }
     }
 
