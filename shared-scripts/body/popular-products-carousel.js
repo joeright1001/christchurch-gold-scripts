@@ -104,43 +104,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }, { passive: true });
 
-    // --- High-Performance Gentle Easing Function ---
-    // Cubic easing curve for smooth start and long gentle finish
-    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
-
-    let isAnimating = false;
-    function gentleScroll(container, distance, duration = 800) {
-      if (isAnimating) return; // Prevent double-clicking from skipping
-      isAnimating = true;
-
-      const startPosition = container.scrollLeft;
-      const startTime = performance.now();
-
-      function animationStep(currentTime) {
-        const timeElapsed = currentTime - startTime;
-        const progress = Math.min(timeElapsed / duration, 1);
-        
-        container.scrollLeft = startPosition + (distance * easeOutCubic(progress));
-
-        if (progress < 1) {
-          window.requestAnimationFrame(animationStep);
-        } else {
-          isAnimating = false;
-          updateArrows();
-        }
-      }
-      window.requestAnimationFrame(animationStep);
-    }
-
-    // Scroll roughly 80% of the visible container width for context, up to 1000px max
+    // --- Native Smooth Scrolling ---
+    // Scroll roughly 80% of the visible container width to allow for context overlap
     leftArrow?.addEventListener('click', () => {
-      const distance = Math.min(scrollContainer.clientWidth * 0.8, 1000);
-      gentleScroll(scrollContainer, -distance, 800);
+      scrollContainer.scrollBy({ left: -scrollContainer.clientWidth * 0.8, behavior: 'smooth' });
     });
     
     rightArrow?.addEventListener('click', () => {
-      const distance = Math.min(scrollContainer.clientWidth * 0.8, 1000);
-      gentleScroll(scrollContainer, distance, 800);
+      scrollContainer.scrollBy({ left: scrollContainer.clientWidth * 0.8, behavior: 'smooth' });
     });
 
     updateArrows(); // Init setup
@@ -159,21 +130,23 @@ document.addEventListener('DOMContentLoaded', () => {
       scrollLeft = scrollContainer.scrollLeft;
     });
 
-    scrollContainer.addEventListener('mouseleave', () => {
+    const endDrag = () => {
+      if (!isDown) return;
       isDown = false;
-      scrollContainer.classList.remove('is-dragging');
-    });
+      // Tiny timeout prevents snapping from violently pulling the card before drag momentum finishes
+      setTimeout(() => {
+        scrollContainer.classList.remove('is-dragging');
+      }, 50);
+    };
 
-    scrollContainer.addEventListener('mouseup', () => {
-      isDown = false;
-      scrollContainer.classList.remove('is-dragging');
-    });
+    scrollContainer.addEventListener('mouseleave', endDrag);
+    scrollContainer.addEventListener('mouseup', endDrag);
 
     scrollContainer.addEventListener('mousemove', (e) => {
       if (!isDown) return;
       e.preventDefault(); 
       const x = e.pageX - scrollContainer.offsetLeft;
-      const walk = (x - startX) * 1.2; // Drag speed 
+      const walk = (x - startX) * 1.5; // Drag speed multiplier
 
       if (Math.abs(walk) > 10) { 
         wasDragged = true; // Flag to prevent accidental click on release
