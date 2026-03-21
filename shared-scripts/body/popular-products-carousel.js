@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  /* ────── A. INSTANT UI UPDATES (Runs immediately, zero delay) ────── */
+  /* ────── 1. NORMALISE & CONFIG ────── */
   document.querySelectorAll('[id$="-prod-panel"]').forEach(p => {
     p.classList.add('product-panel-background');
   });
@@ -21,17 +21,20 @@ document.addEventListener('DOMContentLoaded', () => {
     "all": "#fff7e0"
   };
 
+  /* ────── 2. PROCESS PRODUCTS (COLOURS & ICONS) ────── */
   document.querySelectorAll('.product-data').forEach(d => {
     const slug = d.dataset.slug;
     const stock = d.dataset.stockStatus;
     const metal = d.dataset.metal?.toLowerCase();
 
+    // Set stock icon
     const iconEl = document.getElementById(`${slug}-stock-icon`);
     if(iconEl && STOCK_ICONS[stock]) {
       iconEl.src = STOCK_ICONS[stock];
       iconEl.alt = stock.replace(/-/g, ' ');
     }
 
+    // Set background colour
     const panelEl = document.getElementById(`${slug}-prod-panel`);
     if(panelEl && metal) {
       if(metal === 'all') {
@@ -54,62 +57,114 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  /* ────── 3. ADD TO CART HANDLER ────── */
   document.querySelectorAll('.add-cart-icon').forEach(icon => {
     icon.addEventListener('click', function(e) {
       e.preventDefault(); 
       e.stopPropagation(); 
       const cmsID = this.getAttribute('data-value-cms');
-      if (cmsID) window.location.href = '/app/cart?data-value-cms=' + cmsID;
+      if (cmsID) {
+        window.location.href = '/app/cart?data-value-cms=' + cmsID;
+      }
     });
   });
 
-  /* ────── B. ASYNC LOAD SWIPER.JS (Bypasses Webflow warnings) ────── */
-  const loadSwiper = () => {
-    // 1. Inject CSS safely
-    const swiperCSS = document.createElement('link');
-    swiperCSS.rel = 'stylesheet';
-    swiperCSS.href = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css';
-    document.head.appendChild(swiperCSS);
+  /* ────── 4. CAROUSEL SCROLL & DRAG LOGIC ────── */
+  const scrollContainer = document.querySelector('.cms-popular-products-lists');
+  const leftArrow = document.getElementById('left-arrow');
+  const rightArrow = document.getElementById('right-arrow-pop');
+  
+  if (scrollContainer) {
+    const leftArrowIcon = document.getElementById('left-arrow-icon') || leftArrow?.querySelector('.w-embed, svg, img');
+    const rightArrowIcon = document.getElementById('right-arrow-icon') || rightArrow?.querySelector('.w-embed, svg, img');
 
-    // 2. Inject JS safely
-    const swiperJS = document.createElement('script');
-    swiperJS.src = 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js';
-    swiperJS.defer = true; // Tells browser not to block rendering
-    
-    // 3. Initialize ONLY when script finishes downloading
-    swiperJS.onload = () => {
-      new Swiper('.cms-popular-products-wrapper', {
-        wrapperClass: 'cms-popular-products-lists',
-        slideClass: 'cms-popular-products-items',
-        
-        slidesPerView: 'auto',
-        spaceBetween: 16,
-        speed: 800, // Luxurious 800ms glide duration
-        grabCursor: true,
-        
-        mousewheel: {
-          forceToAxis: true,
-          sensitivity: 1,
-        },
-        
-        navigation: {
-          nextEl: '#right-arrow-pop',
-          prevEl: '#left-arrow',
-          disabledClass: 'swiper-button-disabled',
-        },
-        
-        freeMode: {
-          enabled: true,
-          sticky: false, 
-          momentumBounce: false,
-        }
-      });
+    // Update Arrow Visibilities
+    const updateArrows = () => {
+      const isStart = scrollContainer.scrollLeft <= 10;
+      const isEnd = scrollContainer.scrollLeft >= scrollContainer.scrollWidth - scrollContainer.clientWidth - 10;
+
+      if(leftArrowIcon) {
+        leftArrowIcon.style.opacity = isStart ? '0' : '1';
+        leftArrowIcon.style.visibility = isStart ? 'hidden' : 'visible';
+        leftArrow.style.pointerEvents = isStart ? 'none' : 'auto';
+      }
+      if(rightArrowIcon) {
+        rightArrowIcon.style.opacity = isEnd ? '0' : '1';
+        rightArrowIcon.style.visibility = isEnd ? 'hidden' : 'visible';
+        rightArrow.style.pointerEvents = isEnd ? 'none' : 'auto';
+      }
     };
-    
-    document.body.appendChild(swiperJS);
-  };
 
-  // Trigger the loading
-  loadSwiper();
+    // Smooth Throttle for the scroll event
+    let ticking = false;
+    scrollContainer.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          updateArrows();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
 
+    // Arrow Button Click Events
+    const SCROLL_AMOUNT = window.innerWidth > 768 ? 800 : 350; // Dynamic scroll amount based on screen
+    leftArrow?.addEventListener('click', () => {
+      scrollContainer.scrollBy({ left: -SCROLL_AMOUNT, behavior: 'smooth' });
+    });
+    rightArrow?.addEventListener('click', () => {
+      scrollContainer.scrollBy({ left: SCROLL_AMOUNT, behavior: 'smooth' });
+    });
+
+    updateArrows(); // Init setup
+
+    /* ────── DESKTOP MOUSE DRAGGING ────── */
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+    let wasDragged = false; // Tracks if movement was large enough to cancel a click
+
+    scrollContainer.addEventListener('mousedown', (e) => {
+      isDown = true;
+      wasDragged = false;
+      scrollContainer.classList.add('is-dragging');
+      startX = e.pageX - scrollContainer.offsetLeft;
+      scrollLeft = scrollContainer.scrollLeft;
+    });
+
+    scrollContainer.addEventListener('mouseleave', () => {
+      isDown = false;
+      scrollContainer.classList.remove('is-dragging');
+    });
+
+    scrollContainer.addEventListener('mouseup', () => {
+      isDown = false;
+      scrollContainer.classList.remove('is-dragging');
+    });
+
+    scrollContainer.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault(); 
+      const x = e.pageX - scrollContainer.offsetLeft;
+      const walk = (x - startX) * 1.5; // Drag speed multiplier
+
+      if (Math.abs(walk) > 10) { 
+        wasDragged = true; // User moved the mouse enough, it's a drag, not a click!
+      }
+      scrollContainer.scrollLeft = scrollLeft - walk;
+    });
+
+    // Intercept clicks on products ONLY IF the user was dragging the slider
+    scrollContainer.addEventListener('click', (e) => {
+      if (wasDragged) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    }, true); // Use capture phase
+
+    // Stop native image dragging from breaking our JS drag
+    scrollContainer.querySelectorAll('img').forEach(img => {
+      img.addEventListener('dragstart', (e) => e.preventDefault());
+    });
+  }
 });
