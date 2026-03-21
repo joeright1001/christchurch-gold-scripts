@@ -104,14 +104,51 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }, { passive: true });
 
-    // --- Native Smooth Scrolling ---
-    // Scroll roughly 80% of the visible container width to allow for context overlap
+    // --- Optimized JS Smooth Scrolling (Fix for native smooth scroll jumps) ---
+    // We use a custom JS scroll because native scroll-behavior: smooth jumps instantly 
+    // when scroll-snap is active in certain browsers (like Safari).
+    const easeOutQuad = (t) => t * (2 - t); // Faster, smoother tail than cubic
+
+    let isAnimating = false;
+    function smoothScrollTo(container, distance, duration = 400) {
+      if (isAnimating) return;
+      isAnimating = true;
+
+      // Disable snap during animation so it doesn't fight the JS
+      container.style.scrollSnapType = 'none';
+
+      const startPosition = container.scrollLeft;
+      const startTime = performance.now();
+
+      function animationStep(currentTime) {
+        const timeElapsed = currentTime - startTime;
+        const progress = Math.min(timeElapsed / duration, 1);
+        
+        container.scrollLeft = startPosition + (distance * easeOutQuad(progress));
+
+        if (progress < 1) {
+          window.requestAnimationFrame(animationStep);
+        } else {
+          isAnimating = false;
+          // Re-enable snap after a tiny delay so it doesn't violently snap right away
+          setTimeout(() => {
+            container.style.scrollSnapType = '';
+            updateArrows();
+          }, 50);
+        }
+      }
+      window.requestAnimationFrame(animationStep);
+    }
+
+    // Scroll roughly 80% of the visible container width
     leftArrow?.addEventListener('click', () => {
-      scrollContainer.scrollBy({ left: -scrollContainer.clientWidth * 0.8, behavior: 'smooth' });
+      const dist = Math.min(scrollContainer.clientWidth * 0.8, 800);
+      smoothScrollTo(scrollContainer, -dist);
     });
     
     rightArrow?.addEventListener('click', () => {
-      scrollContainer.scrollBy({ left: scrollContainer.clientWidth * 0.8, behavior: 'smooth' });
+      const dist = Math.min(scrollContainer.clientWidth * 0.8, 800);
+      smoothScrollTo(scrollContainer, dist);
     });
 
     updateArrows(); // Init setup
