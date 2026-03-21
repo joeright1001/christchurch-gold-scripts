@@ -1,0 +1,68 @@
+/* ────── CAROUSEL SCROLL CONTAINER ────── */
+.cms-popular-products-lists {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: var(--gap, 1rem);
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  cursor: grab;
+  -webkit-overflow-scrolling: touch; /* Fluid iOS scrolling */
+  scroll-behavior: smooth; /* Native smooth scroll for arrows */
+  scroll-snap-type: x mandatory; /* Better mobile swiping */
+}
+
+.cms-popular-products-lists::-webkit-scrollbar { 
+  display: none; /* Chrome/Safari */
+}
+
+/* Snap individual cards so they rest nicely in frame */
+.cms-popular-products-items {
+  flex: 0 0 auto;
+  scroll-snap-align: start; 
+}
+
+/* ────── DESKTOP DRAGGING OVERRIDES ────── */
+/* Turns off snapping and smooth behavior while grabbing with mouse */
+.cms-popular-products-lists.is-dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  scroll-behavior: auto; 
+}
+.cms-popular-products-lists.is-dragging [role="listitem"] {
+  pointer-events: none; /* Prevent hover artifacts while dragging */
+}
+
+/* ────── CSS HARDWARE-ACCELERATED HOVER EFFECTS ────── */
+.image-bullion-productlist-front, 
+.image-bullion-productlist-back,
+.click-to-view-box {
+  transition: opacity 0.3s ease, transform 0.3s ease !important;
+}
+
+/* Only apply hover effects on devices with a mouse (prevents mobile sticky tap bug) */
+@media (hover: hover) {
+  .product-background-pop-productlist:hover .image-bullion-productlist-front {
+    opacity: 0 !important;
+  }
+  .product-background-pop-productlist:hover .image-bullion-productlist-back {
+    opacity: 1 !important;
+  }
+  .product-background-pop-productlist:hover .click-to-view-box {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+}
+
+/* ────── ARROW TRANSITIONS ────── */
+#left-arrow-icon,
+#right-arrow-icon,
+#left-arrow .w-embed,
+#right-arrow-pop .w-embed {
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.2s ease;
+}
+
+#left-arrow:hover .w-embed,
+#right-arrow-pop:hover .w-embed {
+  transform: scale(1.1);
+}
