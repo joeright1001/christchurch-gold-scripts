@@ -1,36 +1,44 @@
-/* ────── CAROUSEL SCROLL CONTAINER ────── */
+/* ────── GPU ACCELERATED CAROUSEL ────── */
+.cms-popular-products-wrapper {
+  overflow: hidden; /* Hides the scrollbar safely while Swiper loads */
+}
+
 .cms-popular-products-lists {
-  display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  gap: var(--gap, 1rem);
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
-  cursor: grab;
-  -webkit-overflow-scrolling: touch; /* Fluid iOS scrolling */
-  scroll-behavior: smooth; /* Native smooth scroll for arrows */
-  scroll-snap-type: x mandatory; /* Better mobile swiping */
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  /* We remove native scrolling completely, Swiper handles the math */
 }
 
-.cms-popular-products-lists::-webkit-scrollbar { 
-  display: none; /* Chrome/Safari */
-}
-
-/* Snap individual cards so they rest nicely in frame */
 .cms-popular-products-items {
-  flex: 0 0 auto;
-  scroll-snap-align: start; 
+  flex-shrink: 0 !important;
+  height: auto;
 }
 
-/* ────── DESKTOP DRAGGING OVERRIDES ────── */
-/* Turns off snapping and smooth behavior while grabbing with mouse */
-.cms-popular-products-lists.is-dragging {
-  cursor: grabbing;
-  scroll-snap-type: none;
-  scroll-behavior: auto; 
+/* ────── ARROWS DISABLED STATE (Controlled by Swiper) ────── */
+#left-arrow, #right-arrow-pop {
+  transition: opacity 0.3s ease;
 }
-.cms-popular-products-lists.is-dragging [role="listitem"] {
-  pointer-events: none; /* Prevent hover artifacts while dragging */
+
+.swiper-button-disabled {
+  pointer-events: none !important;
+}
+
+.swiper-button-disabled .w-embed,
+.swiper-button-disabled img {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+#left-arrow .w-embed,
+#right-arrow-pop .w-embed {
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.2s ease;
+  opacity: 1; 
+  visibility: visible;
+}
+
+#left-arrow:hover .w-embed,
+#right-arrow-pop:hover .w-embed {
+  transform: scale(1.1);
 }
 
 /* ────── CSS HARDWARE-ACCELERATED HOVER EFFECTS ────── */
@@ -40,7 +48,6 @@
   transition: opacity 0.3s ease, transform 0.3s ease !important;
 }
 
-/* Only apply hover effects on devices with a mouse (prevents mobile sticky tap bug) */
 @media (hover: hover) {
   .product-background-pop-productlist:hover .image-bullion-productlist-front {
     opacity: 0 !important;
@@ -52,17 +59,4 @@
     opacity: 1 !important;
     transform: translateY(0) !important;
   }
-}
-
-/* ────── ARROW TRANSITIONS ────── */
-#left-arrow-icon,
-#right-arrow-icon,
-#left-arrow .w-embed,
-#right-arrow-pop .w-embed {
-  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.2s ease;
-}
-
-#left-arrow:hover .w-embed,
-#right-arrow-pop:hover .w-embed {
-  transform: scale(1.1);
 }
