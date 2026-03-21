@@ -7,27 +7,21 @@
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
   cursor: grab;
-  -webkit-overflow-scrolling: touch; /* Fluid iOS scrolling */
-  scroll-behavior: smooth; /* Native smooth scroll for arrows */
-  scroll-snap-type: x mandatory; /* Better mobile swiping */
+  /* NO scroll-behavior or scroll-snap here, to allow for custom gentle easing */
+  -webkit-overflow-scrolling: touch; /* Fluid iOS touch scrolling */
 }
 
 .cms-popular-products-lists::-webkit-scrollbar { 
   display: none; /* Chrome/Safari */
 }
 
-/* Snap individual cards so they rest nicely in frame */
 .cms-popular-products-items {
   flex: 0 0 auto;
-  scroll-snap-align: start; 
 }
 
 /* ────── DESKTOP DRAGGING OVERRIDES ────── */
-/* Turns off snapping and smooth behavior while grabbing with mouse */
 .cms-popular-products-lists.is-dragging {
   cursor: grabbing;
-  scroll-snap-type: none;
-  scroll-behavior: auto; 
 }
 .cms-popular-products-lists.is-dragging [role="listitem"] {
   pointer-events: none; /* Prevent hover artifacts while dragging */
@@ -40,7 +34,7 @@
   transition: opacity 0.3s ease, transform 0.3s ease !important;
 }
 
-/* Only apply hover effects on devices with a mouse (prevents mobile sticky tap bug) */
+/* Only apply hover effects on devices with a mouse */
 @media (hover: hover) {
   .product-background-pop-productlist:hover .image-bullion-productlist-front {
     opacity: 0 !important;
