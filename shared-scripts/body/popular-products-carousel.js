@@ -104,18 +104,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }, { passive: true });
 
-    // --- Optimized JS Smooth Scrolling (Fix for native smooth scroll jumps) ---
-    // We use a custom JS scroll because native scroll-behavior: smooth jumps instantly 
-    // when scroll-snap is active in certain browsers (like Safari).
-    const easeOutQuad = (t) => t * (2 - t); // Faster, smoother tail than cubic
+    // --- High-Performance Gentle Easing Function ---
+    // Cubic easing curve for smooth start and long gentle finish
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
     let isAnimating = false;
-    function smoothScrollTo(container, distance, duration = 400) {
-      if (isAnimating) return;
+    function gentleScroll(container, distance, duration = 800) {
+      if (isAnimating) return; // Prevent double-clicking from skipping
       isAnimating = true;
-
-      // Disable snap during animation so it doesn't fight the JS
-      container.style.scrollSnapType = 'none';
 
       const startPosition = container.scrollLeft;
       const startTime = performance.now();
@@ -124,31 +120,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const timeElapsed = currentTime - startTime;
         const progress = Math.min(timeElapsed / duration, 1);
         
-        container.scrollLeft = startPosition + (distance * easeOutQuad(progress));
+        container.scrollLeft = startPosition + (distance * easeOutCubic(progress));
 
         if (progress < 1) {
           window.requestAnimationFrame(animationStep);
         } else {
           isAnimating = false;
-          // Re-enable snap after a tiny delay so it doesn't violently snap right away
-          setTimeout(() => {
-            container.style.scrollSnapType = '';
-            updateArrows();
-          }, 50);
+          updateArrows();
         }
       }
       window.requestAnimationFrame(animationStep);
     }
 
-    // Scroll roughly 80% of the visible container width
+    // Scroll roughly 80% of the visible container width for context, up to 1000px max
     leftArrow?.addEventListener('click', () => {
-      const dist = Math.min(scrollContainer.clientWidth * 0.8, 800);
-      smoothScrollTo(scrollContainer, -dist);
+      const distance = Math.min(scrollContainer.clientWidth * 0.8, 1000);
+      gentleScroll(scrollContainer, -distance, 800);
     });
     
     rightArrow?.addEventListener('click', () => {
-      const dist = Math.min(scrollContainer.clientWidth * 0.8, 800);
-      smoothScrollTo(scrollContainer, dist);
+      const distance = Math.min(scrollContainer.clientWidth * 0.8, 1000);
+      gentleScroll(scrollContainer, distance, 800);
     });
 
     updateArrows(); // Init setup
@@ -167,23 +159,21 @@ document.addEventListener('DOMContentLoaded', () => {
       scrollLeft = scrollContainer.scrollLeft;
     });
 
-    const endDrag = () => {
-      if (!isDown) return;
+    scrollContainer.addEventListener('mouseleave', () => {
       isDown = false;
-      // Tiny timeout prevents snapping from violently pulling the card before drag momentum finishes
-      setTimeout(() => {
-        scrollContainer.classList.remove('is-dragging');
-      }, 50);
-    };
+      scrollContainer.classList.remove('is-dragging');
+    });
 
-    scrollContainer.addEventListener('mouseleave', endDrag);
-    scrollContainer.addEventListener('mouseup', endDrag);
+    scrollContainer.addEventListener('mouseup', () => {
+      isDown = false;
+      scrollContainer.classList.remove('is-dragging');
+    });
 
     scrollContainer.addEventListener('mousemove', (e) => {
       if (!isDown) return;
       e.preventDefault(); 
       const x = e.pageX - scrollContainer.offsetLeft;
-      const walk = (x - startX) * 1.5; // Drag speed multiplier
+      const walk = (x - startX) * 1.2; // Drag speed 
 
       if (Math.abs(walk) > 10) { 
         wasDragged = true; // Flag to prevent accidental click on release
