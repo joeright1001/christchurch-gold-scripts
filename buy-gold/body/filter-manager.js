@@ -63,6 +63,13 @@ document.addEventListener('DOMContentLoaded', function() {
       };
       this.originalDivStates = {}; // Store original visibility states
       
+      // Initialize external filter evaluator logic
+      if (window.FilterEvaluator) {
+        this.evaluator = new window.FilterEvaluator(this.config);
+      } else {
+        console.error('🚀 FILTER ERROR: window.FilterEvaluator is not defined! Check script load order.');
+      }
+      
       this.init();
     }
 
@@ -683,86 +690,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     shouldShowProduct(dataElement) {
-      // Check specific products list acting as a whitelist
-      if (this.specificProductSlugs && this.specificProductSlugs.length > 0) {
-        const slug = dataElement.getAttribute('data-slug');
-        if (!this.specificProductSlugs.includes(slug)) {
-          return false;
-        }
+      if (!this.evaluator) {
+        console.error('FilterEvaluator not initialized');
+        return true; // Fallback
       }
-
-      const activeFilters = Object.entries(this.filterStates).filter(([_, isActive]) => isActive);
-      if (activeFilters.length === 0) return true;
-
-      // Special handling for dealer filter
-      if (this.filterStates.checkbox_dealer) {
-        return false;
-      }
-
-      // Group active filters by attribute to implement additive logic (OR within groups, AND between groups)
-      const filtersByAttribute = {};
-      
-      // Process active filters
-      for (const [filterName, isActive] of activeFilters) {
-        if (!isActive) continue;
-
-        // Handle special filters that don't fit the attribute grouping
-        if (filterName === 'checkbox_popular') {
-             const popularValue = dataElement.getAttribute('data-popular');
-             if (!popularValue || isNaN(parseInt(popularValue))) {
-               return false;
-             }
-             continue;
-        }
-        
-        if (filterName === 'checkbox_starter') {
-             const starterValue = dataElement.getAttribute('data-getting-started');
-             if (!starterValue || isNaN(parseInt(starterValue))) {
-               return false;
-             }
-             continue;
-        }
-
-        // Skip dealer as it's handled above
-        if (filterName === 'checkbox_dealer') continue;
-
-        const rule = this.config.rules[filterName];
-        if (!rule) continue;
-
-        // Use attribute for grouping
-        // Note: Stock filters (in_stock, live_mint) share 'data-stock-status' attribute, so they will be grouped together
-        const groupKey = rule.attribute || filterName;
-        
-        if (!filtersByAttribute[groupKey]) {
-            filtersByAttribute[groupKey] = [];
-        }
-        filtersByAttribute[groupKey].push(rule);
-      }
-
-      // Check each attribute group (AND logic between groups)
-      for (const [attribute, rules] of Object.entries(filtersByAttribute)) {
-          const productValue = dataElement.getAttribute(attribute);
-          
-          if (!productValue) {
-              // If product doesn't have the attribute but filters are active for it, hide it
-              return false;
-          }
-
-          // Check if product matches ANY of the rules in this group (OR logic within group)
-          let matchFound = false;
-          for (const rule of rules) {
-              if (rule.values && rule.values.includes(productValue)) {
-                  matchFound = true;
-                  break;
-              }
-          }
-
-          if (!matchFound) {
-              return false;
-          }
-      }
-
-      return true;
+      return this.evaluator.evaluateProduct(dataElement, this.filterStates, this.specificProductSlugs);
     }
 
     // =========================================================================

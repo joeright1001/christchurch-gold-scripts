@@ -238,5 +238,14 @@ window.FILTER_CONFIG = {
 
   // Defines groups where only one filter can be active at a time
   // Empty object means all filters are additive (multiple selections allowed)
-  exclusiveGroups: {}
+  exclusiveGroups: {
+    popular_group: [
+      'checkbox_popular',
+      'checkbox_hot',
+      'checkbox_investor',
+      'checkbox_starter',
+      'checkbox_dealer',
+      'checkbox_collectables'
+    ]
+  }
 };
