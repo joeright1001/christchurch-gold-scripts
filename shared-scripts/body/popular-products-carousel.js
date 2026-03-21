@@ -27,14 +27,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const stock = d.dataset.stockStatus;
     const metal = d.dataset.metal?.toLowerCase();
 
-    // Set stock icon
     const iconEl = document.getElementById(`${slug}-stock-icon`);
     if(iconEl && STOCK_ICONS[stock]) {
       iconEl.src = STOCK_ICONS[stock];
       iconEl.alt = stock.replace(/-/g, ' ');
     }
 
-    // Set background colour
     const panelEl = document.getElementById(`${slug}-prod-panel`);
     if(panelEl && metal) {
       if(metal === 'all') {
@@ -69,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  /* ────── 4. CAROUSEL SCROLL & DRAG LOGIC ────── */
+  /* ────── 4. CUSTOM GENTLE SCROLL & LOGIC ────── */
   const scrollContainer = document.querySelector('.cms-popular-products-lists');
   const leftArrow = document.getElementById('left-arrow');
   const rightArrow = document.getElementById('right-arrow-pop');
@@ -78,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const leftArrowIcon = document.getElementById('left-arrow-icon') || leftArrow?.querySelector('.w-embed, svg, img');
     const rightArrowIcon = document.getElementById('right-arrow-icon') || rightArrow?.querySelector('.w-embed, svg, img');
 
-    // Update Arrow Visibilities
+    // Arrow Visibilities
     const updateArrows = () => {
       const isStart = scrollContainer.scrollLeft <= 10;
       const isEnd = scrollContainer.scrollLeft >= scrollContainer.scrollWidth - scrollContainer.clientWidth - 10;
@@ -95,7 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
 
-    // Smooth Throttle for the scroll event
     let ticking = false;
     scrollContainer.addEventListener('scroll', () => {
       if (!ticking) {
@@ -107,13 +104,43 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }, { passive: true });
 
-    // Arrow Button Click Events
-    const SCROLL_AMOUNT = window.innerWidth > 768 ? 800 : 350; // Dynamic scroll amount based on screen
+    // --- High-Performance Gentle Easing Function ---
+    // Cubic easing curve for smooth start and long gentle finish
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+    let isAnimating = false;
+    function gentleScroll(container, distance, duration = 800) {
+      if (isAnimating) return; // Prevent double-clicking from skipping
+      isAnimating = true;
+
+      const startPosition = container.scrollLeft;
+      const startTime = performance.now();
+
+      function animationStep(currentTime) {
+        const timeElapsed = currentTime - startTime;
+        const progress = Math.min(timeElapsed / duration, 1);
+        
+        container.scrollLeft = startPosition + (distance * easeOutCubic(progress));
+
+        if (progress < 1) {
+          window.requestAnimationFrame(animationStep);
+        } else {
+          isAnimating = false;
+          updateArrows();
+        }
+      }
+      window.requestAnimationFrame(animationStep);
+    }
+
+    // Scroll roughly 80% of the visible container width for context, up to 1000px max
     leftArrow?.addEventListener('click', () => {
-      scrollContainer.scrollBy({ left: -SCROLL_AMOUNT, behavior: 'smooth' });
+      const distance = Math.min(scrollContainer.clientWidth * 0.8, 1000);
+      gentleScroll(scrollContainer, -distance, 800);
     });
+    
     rightArrow?.addEventListener('click', () => {
-      scrollContainer.scrollBy({ left: SCROLL_AMOUNT, behavior: 'smooth' });
+      const distance = Math.min(scrollContainer.clientWidth * 0.8, 1000);
+      gentleScroll(scrollContainer, distance, 800);
     });
 
     updateArrows(); // Init setup
@@ -122,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let isDown = false;
     let startX;
     let scrollLeft;
-    let wasDragged = false; // Tracks if movement was large enough to cancel a click
+    let wasDragged = false;
 
     scrollContainer.addEventListener('mousedown', (e) => {
       isDown = true;
@@ -146,10 +173,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!isDown) return;
       e.preventDefault(); 
       const x = e.pageX - scrollContainer.offsetLeft;
-      const walk = (x - startX) * 1.5; // Drag speed multiplier
+      const walk = (x - startX) * 1.2; // Drag speed 
 
       if (Math.abs(walk) > 10) { 
-        wasDragged = true; // User moved the mouse enough, it's a drag, not a click!
+        wasDragged = true; // Flag to prevent accidental click on release
       }
       scrollContainer.scrollLeft = scrollLeft - walk;
     });
@@ -160,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         e.stopPropagation();
       }
-    }, true); // Use capture phase
+    }, true);
 
     // Stop native image dragging from breaking our JS drag
     scrollContainer.querySelectorAll('img').forEach(img => {
