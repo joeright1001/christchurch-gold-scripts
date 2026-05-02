@@ -210,8 +210,9 @@ document.addEventListener('DOMContentLoaded', () => {
         showElement('get-quote-btn', 'inline-block');
         showElement('broker-text');
         showElement('broker');
-        showElement('state-35-days', 'flex');
-        showElement('icon-35-days');
+        // UPDATED: Changed from state-35-days/icon-35-days to state-34-weeks/icon-34-weeks as per request
+        showElement('state-34-weeks', 'flex');
+        showElement('icon-34-weeks');
       }
       // All other combinations: hide all (default behavior)
     }
