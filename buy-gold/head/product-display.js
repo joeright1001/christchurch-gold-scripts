@@ -6,11 +6,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const outOfStockImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a181380123c0be15d520b7_out-stock-notify.webp";
   const liveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/698e690fd335c584c843c194_in-stock-2-5weeks.webp";
   const inStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a1922a1c649958c68f32a0_in-stock3.webp";
+  const lowStockImage   = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/698e690fd335c584c843c194_in-stock-2-5weeks.webp";
 
   // Popular combo-images
   const popularOutOfStockImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a181380123c0be15d520b7_out-stock-notify.webp";
   const popularLiveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/698e690e6dc96a4e3bb98f28_best-seller-2-5weeks.webp";
   const popularInStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/69a2223e47ada4f9c4cecd1f_best-seller-nextday.webp";
+  const popularLowStockImage   = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/698e690e6dc96a4e3bb98f28_best-seller-2-5weeks.webp";
 
   // Metal colours
   const goldBackground  = "#fff7e0";
@@ -42,10 +44,13 @@ document.addEventListener('DOMContentLoaded', () => {
           imgSrc = usePopularImages ? popularLiveAtMintImage : liveAtMintImage;
           altText = "Live at the Mint";
           break;
-        case 'in-stock':
         case 'low-stock':
+          imgSrc = usePopularImages ? popularLowStockImage : lowStockImage;
+          altText = "Low Stock";
+          break;
+        case 'in-stock':
           imgSrc = usePopularImages ? popularInStockImage : inStockImage;
-          altText = stockStatus === 'in-stock' ? "In Stock" : "Low Stock";
+          altText = "In Stock";
           break;
         default:
           console.warn(`Unknown stock status: ${stockStatus} for ${slug}`);
