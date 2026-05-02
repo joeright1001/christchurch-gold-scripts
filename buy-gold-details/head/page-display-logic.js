@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showElement('broker');
         showElement('market-button-text-dg-closed');
       }
-      else if (market === 'local-closed' && stock === 'in-stock') {
+      else if ((market === 'local-closed' || market === 'dg-closed') && stock === 'in-stock') { // Added dg-closed for in-stock products
         showElement('state-market-dg-closed', 'block');
         showInvestorButtons(metal);
         showElement('icon-market-closed');
