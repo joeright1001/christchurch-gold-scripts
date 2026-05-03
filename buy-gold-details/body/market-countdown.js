@@ -134,9 +134,10 @@
             const diffTotalSecs = Math.floor(diffMs / 1000);
             const hours = Math.floor(diffTotalSecs / 3600);
             const minutes = Math.floor((diffTotalSecs % 3600) / 60);
+            const seconds = diffTotalSecs % 60;
 
-            // Format as Opens in: H:MM or HH:MM
-            const formattedTime = `${hours}:${minutes.toString().padStart(2, '0')}`;
+            // Format as Opens in: H:MM:SS or HH:MM:SS
+            const formattedTime = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             timerEl.textContent = `Opens in: ${formattedTime}`;
         }
     }
