@@ -2,9 +2,15 @@
  * Script: Market Countdown Timer
  * 
  * Purpose:
- * - Displays "Open" if market is currently active in NZ Time.
+ * - Displays "PROCESSING" if market is currently active in NZ Time.
  * - Displays countdown "H:MM:SS" if the market is closed.
  * - Displays next opening information in 'market-status-sub-text' when closed.
+ * 
+ * Visibility Note:
+ * - This element is typically only visible when the market is closed (e.g., 'dg-closed' or 'local-closed' 
+ *   states controlled by 'page-display-logic.js'). 
+ * - If the page logic shows this block while the market is technically open (due to sync delays 
+ *   or status update lags), it will display "PROCESSING" as a fallback.
  * 
  * Operating Hours (NZ Time):
  * - Monday: 11:00 AM - 10:00 PM
@@ -147,7 +153,7 @@
         const isOpen = config && config.open !== null && comp.hour >= config.open && comp.hour < config.close;
 
         if (isOpen) {
-            timerEl.textContent = 'Open';
+            timerEl.textContent = 'PROCESSING';
             // Do not update subTextEl if open, as per instructions
         } else {
             const nextOpen = getNextOpenTime(now);
