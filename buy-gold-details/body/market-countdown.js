@@ -2,16 +2,35 @@
  * Script: Market Countdown Timer
  * 
  * Purpose:
- * - Displays "Open" if current time is Mon-Fri 9am-10pm (NZ Time).
- * - Displays "Opens in: HH:MM" if the market is closed.
- * - Synchronizes with server time via the 'Date' header to avoid reliance on the user's local clock.
+ * - Displays "Open" if market is currently active in NZ Time.
+ * - Displays countdown "H:MM:SS" if the market is closed.
+ * - Displays next opening information in 'market-status-sub-text' when closed.
+ * 
+ * Operating Hours (NZ Time):
+ * - Monday: 11:00 AM - 10:00 PM
+ * - Tuesday - Friday: 9:00 AM - 10:00 PM
+ * - Saturday - Sunday: Closed
+ * 
+ * Messaging (when closed):
+ * - Weekends & Monday: "Opens Monday 11:00am"
+ * - Tuesday - Friday: "Opens [Day-of-Week] 9:00am"
  */
 
 (function() {
-    const TARGET_ID = 'market-timer';
-    const OPEN_HOUR = 9;
-    const CLOSE_HOUR = 22; // 10pm
+    const TIMER_ID = 'market-timer';
+    const SUB_TEXT_ID = 'market-status-sub-text';
     const TIMEZONE = 'Pacific/Auckland';
+
+    // Day configuration
+    const DAY_CONFIG = {
+        'Mon': { open: 11, close: 22, fullName: 'Monday' },
+        'Tue': { open: 9,  close: 22, fullName: 'Tuesday' },
+        'Wed': { open: 9,  close: 22, fullName: 'Wednesday' },
+        'Thu': { open: 9,  close: 22, fullName: 'Thursday' },
+        'Fri': { open: 9,  close: 22, fullName: 'Friday' },
+        'Sat': { open: null, close: null, fullName: 'Saturday' },
+        'Sun': { open: null, close: null, fullName: 'Sunday' }
+    };
 
     let serverOffset = 0; // Local time - Server time
     let isSynced = false;
@@ -78,67 +97,77 @@
 
     /**
      * Calculate next opening time.
+     * Returns an object { date: Date, config: Object }
      */
     function getNextOpenTime(now) {
-        // Create a copy of the date in NZ timezone
-        // We'll iterate day by day until we find the next open slot
         let target = new Date(now.getTime());
         
-        while (true) {
+        // Loop up to 7 days to find the next opening
+        for (let i = 0; i < 8; i++) {
             const comp = getNZComponents(target);
-            const isWeekday = !['Sat', 'Sun'].includes(comp.weekday);
-            
-            // If it's a weekday and before opening, the open time is today at 9am
-            if (isWeekday && comp.hour < OPEN_HOUR) {
-                const openTime = new Date(target.getTime());
-                // This is tricky because we need to set the time in NZ.
-                // We'll use a simpler approach: construct an ISO string in NZ timezone
-                // and parse it back, but that's complex.
-                // Instead, let's just adjust the current target date.
-                
-                // Set hours/mins/secs to 9:00:00 in NZ time
-                // We'll do this by finding the difference
-                const diffMs = ((OPEN_HOUR - comp.hour) * 3600 - comp.minute * 60 - comp.second) * 1000;
-                return new Date(target.getTime() + diffMs);
+            const config = DAY_CONFIG[comp.weekday];
+
+            // If this day has an opening hour and we haven't passed it yet today
+            if (config && config.open !== null) {
+                // If we are looking at 'today' (i=0), check if we are before the open hour
+                // If we are looking at a future day, the first one with an open hour is our target
+                if (i > 0 || comp.hour < config.open) {
+                    // Calculate the exact date for this day's opening
+                    // We adjust target to the opening hour
+                    const diffMs = ((config.open - comp.hour) * 3600 - comp.minute * 60 - comp.second) * 1000;
+                    return {
+                        date: new Date(target.getTime() + diffMs),
+                        config: config
+                    };
+                }
             }
             
-            // Otherwise, move to tomorrow at 9am (in current timezone, then we check weekday)
-            // Reset to beginning of next day (approx)
-            target.setHours(target.getHours() + (24 - comp.hour)); // Jump to roughly tomorrow
-            // Reset to 00:00 roughly to start fresh check
+            // Move to start of next day
+            target.setHours(target.getHours() + (24 - comp.hour));
             const newComp = getNZComponents(target);
             const adjustToStartOfDay = (newComp.hour * 3600 + newComp.minute * 60 + newComp.second) * 1000;
             target = new Date(target.getTime() - adjustToStartOfDay);
         }
+        return null; // Should never happen
     }
 
     /**
      * Update the timer display.
      */
     function updateTimer() {
-        const timerEl = document.getElementById(TARGET_ID);
+        const timerEl = document.getElementById(TIMER_ID);
+        const subTextEl = document.getElementById(SUB_TEXT_ID);
+        
         if (!timerEl) return;
 
         const now = getAdjustedTime();
         const comp = getNZComponents(now);
+        const config = DAY_CONFIG[comp.weekday];
 
-        const isWeekday = !['Sat', 'Sun'].includes(comp.weekday);
-        const isOpen = isWeekday && comp.hour >= OPEN_HOUR && comp.hour < CLOSE_HOUR;
+        const isOpen = config && config.open !== null && comp.hour >= config.open && comp.hour < config.close;
 
         if (isOpen) {
             timerEl.textContent = 'Open';
+            // Do not update subTextEl if open, as per instructions
         } else {
             const nextOpen = getNextOpenTime(now);
-            const diffMs = nextOpen.getTime() - now.getTime();
-            
-            const diffTotalSecs = Math.floor(diffMs / 1000);
+            if (!nextOpen) return;
+
+            // 1. Update Countdown Timer
+            const diffMs = nextOpen.date.getTime() - now.getTime();
+            const diffTotalSecs = Math.max(0, Math.floor(diffMs / 1000));
             const hours = Math.floor(diffTotalSecs / 3600);
             const minutes = Math.floor((diffTotalSecs % 3600) / 60);
             const seconds = diffTotalSecs % 60;
 
-            // Format as H:MM:SS or HH:MM:SS
             const formattedTime = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             timerEl.textContent = formattedTime;
+
+            // 2. Update Sub-text Message
+            if (subTextEl) {
+                const openHourStr = nextOpen.config.open === 11 ? '11:00am' : '9:00am';
+                subTextEl.textContent = `Opens ${nextOpen.config.fullName} ${openHourStr}`;
+            }
         }
     }
 
@@ -149,6 +178,6 @@
         setInterval(updateTimer, 1000);
     });
 
-    // Re-sync occasionally (e.g., every 10 minutes)
+    // Re-sync occasionally (every 10 minutes)
     setInterval(syncWithServer, 600000);
 })();
