@@ -130,7 +130,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     cacheProducts() {
       this.productElements = Array.from(document.querySelectorAll('.product-data'));
-      this.gridContainer = document.querySelector('.w-dyn-items.w-row');
+      
+      // Try to find the grid container more robustly
+      this.gridContainer = document.querySelector('.w-dyn-items');
+      
+      if (!this.gridContainer) {
+        console.error('🚀 FILTER: Grid container (.w-dyn-items) not found!');
+      }
       
       // Store original DOM order
       this.captureOriginalOrder();
@@ -478,11 +484,16 @@ document.addEventListener('DOMContentLoaded', function() {
     applyPopularSortCSS() {
       if (!this.filterStates.checkbox_popular || !this.gridContainer) return;
       
-      const visibleItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item:not(.filter-hidden)'));
+      const visibleItems = Array.from(this.gridContainer.children).filter(child => 
+        (child.classList.contains('w-dyn-item') || child.getAttribute('role') === 'listitem') &&
+        !child.classList.contains('filter-hidden')
+      );
+
       const sortedItems = [];
       
       visibleItems.forEach(item => {
-        const dataElement = item.querySelector('.product-data');
+        const dataElement = item.querySelector('.product-data') || 
+                           (item.classList.contains('product-data') ? item : null);
         if (!dataElement) return;
         
         const popularValue = dataElement.getAttribute('data-popular');
@@ -517,11 +528,16 @@ document.addEventListener('DOMContentLoaded', function() {
     applyStarterSortCSS() {
       if (!this.filterStates.checkbox_starter || !this.gridContainer) return;
       
-      const visibleItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item:not(.filter-hidden)'));
+      const visibleItems = Array.from(this.gridContainer.children).filter(child => 
+        (child.classList.contains('w-dyn-item') || child.getAttribute('role') === 'listitem') &&
+        !child.classList.contains('filter-hidden')
+      );
+
       const sortedItems = [];
       
       visibleItems.forEach(item => {
-        const dataElement = item.querySelector('.product-data');
+        const dataElement = item.querySelector('.product-data') || 
+                           (item.classList.contains('product-data') ? item : null);
         if (!dataElement) return;
         
         const starterValue = dataElement.getAttribute('data-getting-started');
@@ -594,12 +610,17 @@ document.addEventListener('DOMContentLoaded', function() {
     applyInvestorSortCSS() {
       if (!this.filterStates.checkbox_investor || !this.gridContainer) return;
       
-      const visibleItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item:not(.filter-hidden)'));
+      const visibleItems = Array.from(this.gridContainer.children).filter(child => 
+        (child.classList.contains('w-dyn-item') || child.getAttribute('role') === 'listitem') &&
+        !child.classList.contains('filter-hidden')
+      );
+
       const sortedItems = [];
       const itemsWithoutValues = [];
       
       visibleItems.forEach(item => {
-        const valueElement = item.querySelector('[data-value]');
+        const valueElement = item.querySelector('[data-value]') || 
+                            (item.hasAttribute('data-value') ? item : null);
         
         if (!valueElement) {
           itemsWithoutValues.push(item);
@@ -1070,9 +1091,16 @@ document.addEventListener('DOMContentLoaded', function() {
     captureOriginalOrder() {
       if (!this.gridContainer) return;
       
-      const items = this.gridContainer.querySelectorAll('.w-dyn-item');
+      // Find all items within the grid container
+      const items = Array.from(this.gridContainer.children).filter(child => 
+        child.classList.contains('w-dyn-item') || child.getAttribute('role') === 'listitem'
+      );
+
       items.forEach(item => {
-        const productData = item.querySelector('.product-data');
+        // Find product-data within the item, or check if the item itself is product-data
+        const productData = item.querySelector('.product-data') || 
+                           (item.classList.contains('product-data') ? item : null);
+        
         if (productData) {
           const slug = productData.getAttribute('data-slug');
           if (slug && !this.originalOrder.includes(slug)) {
@@ -1093,7 +1121,10 @@ document.addEventListener('DOMContentLoaded', function() {
       this.originalOrder.forEach(slug => {
         const item = this.gridContainer.querySelector(`[data-slug="${slug}"]`);
         if (item) {
-          const container = item.closest('.w-dyn-item');
+          // Find the container (w-dyn-item or role="listitem")
+          const container = item.classList.contains('w-dyn-item') || item.getAttribute('role') === 'listitem' ? 
+                           item : item.closest('.w-dyn-item, [role="listitem"]');
+          
           if (container) {
             fragment.appendChild(container);
           }

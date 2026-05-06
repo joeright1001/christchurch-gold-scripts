@@ -80,13 +80,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     captureOriginalOrder() {
-      // Cache the grid container
-      this.gridContainer = document.querySelector('.w-dyn-items.w-row');
+      // Cache the grid container more robustly
+      this.gridContainer = document.querySelector('.w-dyn-items');
       
       if (this.gridContainer) {
-        const items = this.gridContainer.querySelectorAll('.w-dyn-item');
+        // Find all items within the grid container
+        const items = Array.from(this.gridContainer.children).filter(child => 
+          child.classList.contains('w-dyn-item') || child.getAttribute('role') === 'listitem'
+        );
+
         items.forEach(item => {
-          const productData = item.querySelector('.product-data');
+          // Find product-data within the item
+          const productData = item.querySelector('.product-data') || 
+                             (item.classList.contains('product-data') ? item : null);
+          
           if (productData) {
             this.originalOrder.push(productData.getAttribute('data-slug'));
           }
@@ -94,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         console.log(`🚀 PERFORMANCE: Found products container with ${this.originalOrder.length} products`);
       } else {
-        console.error('Could not find products container');
+        console.error('Could not find products container (.w-dyn-items)');
       }
     }
 
@@ -158,7 +165,11 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
 
-      const allItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item'));
+      // Find all items within the grid container robustly
+      const allItems = Array.from(this.gridContainer.children).filter(child => 
+        child.classList.contains('w-dyn-item') || child.getAttribute('role') === 'listitem'
+      );
+
       const itemsWithValues = [];
       const unsortedVisibleItems = [];
       const hiddenItems = [];
@@ -169,7 +180,9 @@ document.addEventListener('DOMContentLoaded', function() {
           return;
         }
 
-        const dataElement = item.querySelector(`[${rule.attribute}]`);
+        const dataElement = item.querySelector(`[${rule.attribute}]`) || 
+                           (item.hasAttribute(rule.attribute) ? item : null);
+        
         if (!dataElement) {
           unsortedVisibleItems.push(item);
           return;
@@ -309,7 +322,11 @@ document.addEventListener('DOMContentLoaded', function() {
       const rule = this.config.rules[sortType];
       if (!rule || !this.gridContainer) return;
 
-      const allItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item'));
+      // Find all items within the grid container robustly
+      const allItems = Array.from(this.gridContainer.children).filter(child => 
+        child.classList.contains('w-dyn-item') || child.getAttribute('role') === 'listitem'
+      );
+
       const itemsWithValues = [];
       const unsortedVisibleItems = [];
       const hiddenItems = [];
@@ -320,7 +337,9 @@ document.addEventListener('DOMContentLoaded', function() {
           return;
         }
 
-        const dataElement = item.querySelector(`[${rule.attribute}]`);
+        const dataElement = item.querySelector(`[${rule.attribute}]`) || 
+                           (item.hasAttribute(rule.attribute) ? item : null);
+        
         if (!dataElement) {
           unsortedVisibleItems.push(item);
           return;
