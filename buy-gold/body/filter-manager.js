@@ -353,18 +353,25 @@ document.addEventListener('DOMContentLoaded', function() {
       // Check if specific products are set
       const hasSpecificProducts = this.specificProductSlugs && this.specificProductSlugs.length > 0;
       
-      // If no filters active and no search and no specific products, show all items and restore original order
+      // If no filters active and no search and no specific products, show all items
       if (activeFilters.length === 0 && !hasActiveSearch && !hasSpecificProducts) {
         this.showAllItemsCSS();
-        this.restoreOriginalOrder();
+        // REMOVED PER USER REQUEST: stop forcing original order, respect active sort
+        // this.restoreOriginalOrder();
         this.manageDivVisibility();
+        
+        // Refresh active sort for the full set
+        if (window.sortManager && window.sortManager.refreshSort) {
+          window.sortManager.refreshSort();
+        }
         return;
       }
       
-      // Check if popular, starter, hot, or investor filters were just turned off and restore order
+      // Check if popular, starter, hot, or investor filters were just turned off
       const hasSortingFilter = this.filterStates.checkbox_popular || this.filterStates.checkbox_starter || this.filterStates.checkbox_hot || this.filterStates.checkbox_investor;
       if (!hasSortingFilter && this.needsOrderRestoration) {
-        this.restoreOriginalOrder();
+        // REMOVED PER USER REQUEST: stop forcing original order
+        // this.restoreOriginalOrder();
         this.needsOrderRestoration = false;
       }
       
@@ -431,6 +438,11 @@ document.addEventListener('DOMContentLoaded', function() {
       */
 
       this.manageDivVisibility();
+      
+      // 🚀 PERFORMANCE: Refresh the active sort for the new visible set
+      if (window.sortManager && window.sortManager.refreshSort) {
+        window.sortManager.refreshSort();
+      }
       
       // Reduce console logging frequency
       if (!this._lastFilterLogTime || Date.now() - this._lastFilterLogTime > 1000) {

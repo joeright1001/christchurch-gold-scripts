@@ -275,7 +275,12 @@ document.addEventListener('DOMContentLoaded', function() {
      */
     refreshSort() {
       if (this.activeSortType && this.config.rules[this.activeSortType]) {
+        console.log(`🚀 SORT: Refreshing active sort: ${this.activeSortType}`);
         this.applySortRuleOptimized(this.activeSortType);
+      } else {
+        // If no active sort (Default), restore original order to ensure popular-first
+        console.log('🚀 SORT: No active sort rule, restoring original order (popular-first)');
+        this.restoreOriginalOrder();
       }
     }
 
