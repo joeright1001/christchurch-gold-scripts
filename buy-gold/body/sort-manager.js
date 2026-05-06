@@ -69,12 +69,11 @@ document.addEventListener('DOMContentLoaded', function() {
       this.dropdown = document.getElementById(this.config.dropdownId);
       
       if (!this.dropdown) {
-        console.log('[SORT DEBUG] ❌ #custom-filter NOT found — retrying...');
+        console.log('Waiting for sort dropdown to be ready...');
         setTimeout(() => this.findDropdown(), this.config.retryDelay);
         return;
       }
 
-      console.log(`[SORT DEBUG] ✅ #custom-filter found. isConnected=${this.dropdown.isConnected}`, this.dropdown);
       this.captureOriginalOrder();
       this.bindEvents();
       console.log('🚀 PERFORMANCE OPTIMIZED Sort Manager initialized');
@@ -100,10 +99,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     bindEvents() {
-      console.log(`[SORT DEBUG] 📌 Registering "sortOperation" listener on element:`, this.dropdown, `isConnected=${this.dropdown.isConnected}`);
       // Listen to sortOperation events
       this.dropdown.addEventListener('sortOperation', (event) => {
-        console.log('[SORT DEBUG] 🎯 sortOperation event RECEIVED!', event.detail);
         const { operation, resetFirst } = event.detail;
         this.handleSortSelection(operation, resetFirst);
       });

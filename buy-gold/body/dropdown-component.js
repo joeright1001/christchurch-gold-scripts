@@ -68,18 +68,23 @@
       this.element = document.getElementById(this.config.elementId);
       
       if (!this.element) {
-        console.log(`[DROPDOWN DEBUG] ❌ Element '#${this.config.elementId}' NOT found — retrying in ${this.config.retryDelay}ms`);
+        console.log(`Waiting for '${this.config.elementId}' element to be available...`);
         setTimeout(() => this.init(), this.config.retryDelay);
         return;
       }
 
-      console.log(`[DROPDOWN DEBUG] ✅ Element '#${this.config.elementId}' found. isConnected=${this.element.isConnected}`);
       this.buildDropdown();
       this.bindEvents();
-      console.log('[DROPDOWN DEBUG] ✅ Custom dropdown initialized + events bound');
+      console.log('Custom dropdown initialized successfully');
     }
 
     buildDropdown() {
+      // Strip Webflow IX2 control: remove data-w-id so Webflow animations cannot
+      // re-apply inline styles (e.g. border-color/color: white) after we build the dropdown.
+      this.element.removeAttribute('data-w-id');
+      // Remove any inline styles Webflow IX2 may have already injected (white-on-white etc.)
+      this.element.removeAttribute('style');
+
       this.element.innerHTML = '';
       this.element.className = 'custom-dropdown';
 
@@ -136,16 +141,11 @@
     }
 
     handleOptionClick(e) {
-      console.log(`[DROPDOWN DEBUG] 🖱️ handleOptionClick fired — e.target:`, e.target);
       const optionElement = e.target.closest('.filter-option');
-      if (!optionElement) {
-        console.warn('[DROPDOWN DEBUG] ⚠️ Click did not hit a .filter-option element — ignoring');
-        return;
-      }
+      if (!optionElement) return;
       
       const value = optionElement.getAttribute('data-value');
       const text = optionElement.textContent.trim(); // Use textContent to get clean text without SVG
-      console.log(`[DROPDOWN DEBUG] ✅ Option selected: value="${value}", text="${text}"`);
       this.selectOption(value, text);
     }
 
@@ -161,14 +161,12 @@
     dispatchOperationEvent(value, text) {
       const mapping = OPERATION_MAPPING[value];
       if (!mapping) {
-        console.warn(`[DROPDOWN DEBUG] ❌ No operation mapping found for value: "${value}"`);
+        console.warn(`No operation mapping found for: ${value}`);
         return;
       }
 
       const eventType = mapping.type === 'filter' ? 'filterOperation' : 'sortOperation';
       const isMobile = window.innerWidth <= 1023;
-      
-      console.log(`[DROPDOWN DEBUG] 📡 Dispatching "${eventType}" on element:`, this.element, `| isConnected=${this.element.isConnected} | operation="${mapping.operation}" | isMobile=${isMobile}`);
       
       const operationEvent = new CustomEvent(eventType, {
         detail: {
@@ -181,7 +179,7 @@
       });
       
       this.element.dispatchEvent(operationEvent);
-      console.log(`[DROPDOWN DEBUG] ✅ Dispatched "${eventType}" for: ${mapping.operation}`);
+      console.log(`Dispatched ${eventType} for: ${mapping.operation}`);
     }
 
     handleOutsideClick(e) {
