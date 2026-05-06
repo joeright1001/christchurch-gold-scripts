@@ -80,21 +80,31 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     captureOriginalOrder() {
-      // Cache the grid container
-      this.gridContainer = document.querySelector('.w-dyn-items.w-row');
+      // Cache the grid container(s)
+      // Webflow uses .w-dyn-items for collection lists. 
+      // We look for all instances to ensure popular and main lists are both covered.
+      this.gridContainers = Array.from(document.querySelectorAll('.w-dyn-items'));
       
-      if (this.gridContainer) {
-        const items = this.gridContainer.querySelectorAll('.w-dyn-item');
-        items.forEach(item => {
-          const productData = item.querySelector('.product-data');
-          if (productData) {
-            this.originalOrder.push(productData.getAttribute('data-slug'));
-          }
+      if (this.gridContainers.length > 0) {
+        this.gridContainers.forEach(container => {
+          const items = container.querySelectorAll('.w-dyn-item');
+          items.forEach(item => {
+            const productData = item.querySelector('.product-data');
+            if (productData) {
+              const slug = productData.getAttribute('data-slug');
+              if (slug) {
+                this.originalOrder.push(slug);
+              }
+            }
+          });
         });
         
-        console.log(`🚀 PERFORMANCE: Found products container with ${this.originalOrder.length} products`);
+        // For backwards compatibility with older methods, keep a reference to the first container
+        this.gridContainer = this.gridContainers[0];
+        
+        console.log(`🚀 PERFORMANCE: Found ${this.gridContainers.length} products container(s) with ${this.originalOrder.length} products total`);
       } else {
-        console.error('Could not find products container');
+        console.error('Could not find products container (.w-dyn-items)');
       }
     }
 
@@ -153,13 +163,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
       
-      if (!this.gridContainer) {
-        console.error('Grid container not found');
+      if (!this.gridContainers || this.gridContainers.length === 0) {
+        console.error('Grid containers not found');
         return;
       }
 
-      // 🚀 PERFORMANCE: Only process visible items (not hidden by filters)
-      const currentItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item:not(.filter-hidden)'));
+      // 🚀 PERFORMANCE: Only process visible items (not hidden by filters) from ALL containers
+      const currentItems = [];
+      this.gridContainers.forEach(container => {
+        currentItems.push(...Array.from(container.querySelectorAll('.w-dyn-item:not(.filter-hidden)')));
+      });
+
       const itemsWithValues = [];
       
       currentItems.forEach(item => {
@@ -187,8 +201,8 @@ document.addEventListener('DOMContentLoaded', function() {
         fragment.appendChild(item.element);
       });
       
-      // Append all sorted items at once
-      this.gridContainer.appendChild(fragment);
+      // Append all sorted items to the main container (effectively merging lists during sort)
+      this.gridContainers[0].appendChild(fragment);
       
       this.activeSortType = sortType;
       console.log(`🚀 PERFORMANCE: Sorted ${itemsWithValues.length} items by ${rule.name}`);
@@ -226,8 +240,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     restoreOriginalOrder() {
-      // Reset filters first to get all items back
-      
       // Clear any "no results" message before restoring order
       if (window.searchManager && window.searchManager.clearNoResultsMessage) {
         window.searchManager.clearNoResultsMessage();
@@ -242,22 +254,28 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       
       // 🚀 PERFORMANCE FIX: Actually restore DOM elements to original order
-      if (this.gridContainer && this.originalOrder.length > 0) {
+      if (this.gridContainers && this.gridContainers.length > 0 && this.originalOrder.length > 0) {
         const fragment = document.createDocumentFragment();
         
         // Reorder items based on original order
         this.originalOrder.forEach(slug => {
-          const item = this.gridContainer.querySelector(`[data-slug="${slug}"]`);
-          if (item) {
-            const container = item.closest('.w-dyn-item');
-            if (container) {
-              fragment.appendChild(container);
+          // Search in all containers for the item
+          let foundItem = null;
+          for (const container of this.gridContainers) {
+            const item = container.querySelector(`[data-slug="${slug}"]`);
+            if (item) {
+              foundItem = item.closest('.w-dyn-item');
+              if (foundItem) break;
             }
+          }
+          
+          if (foundItem) {
+            fragment.appendChild(foundItem);
           }
         });
         
-        // Append all items in original order
-        this.gridContainer.appendChild(fragment);
+        // Append all items in original order to the first container
+        this.gridContainers[0].appendChild(fragment);
         
         console.log(`🚀 PERFORMANCE: Restored ${this.originalOrder.length} items to original order`);
       }

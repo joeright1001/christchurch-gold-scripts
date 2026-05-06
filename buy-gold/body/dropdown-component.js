@@ -167,7 +167,7 @@
           operation: mapping.operation,
           originalValue: value,
           text: text,
-          resetFirst: isMobile
+          resetFirst: false // Changed from isMobile to allow sorts and filters to work together
         },
         bubbles: true
       });

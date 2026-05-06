@@ -394,6 +394,7 @@ function setupMobileFilterButton() {
         window.sortManager.handleSortSelection('default', false);
       }
 
+      /* REMOVED PER USER REQUEST: stop forcing items to top
       // CUSTOMIZATION: Prioritize specified products at the top (from CUSTOM_FILTER_PROFILES)
       setTimeout(() => {
         const gridContainer = document.querySelector('.w-dyn-items.w-row');
@@ -413,6 +414,7 @@ function setupMobileFilterButton() {
           });
         }
       }, 300);
+      */
     }
 
     // Scroll the button to the top of the page (with smooth behavior and 8rem offset for navbar)

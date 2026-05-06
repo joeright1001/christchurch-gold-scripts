@@ -130,12 +130,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     cacheProducts() {
       this.productElements = Array.from(document.querySelectorAll('.product-data'));
-      this.gridContainer = document.querySelector('.w-dyn-items.w-row');
+      
+      // Cache grid containers (support multiple for popular/main lists)
+      this.gridContainers = Array.from(document.querySelectorAll('.w-dyn-items'));
+      
+      // For backwards compatibility
+      this.gridContainer = this.gridContainers[0];
       
       // Store original DOM order
       this.captureOriginalOrder();
       
-      console.log(`🚀 PERFORMANCE: Cached ${this.productElements.length} product elements`);
+      console.log(`🚀 PERFORMANCE: Cached ${this.productElements.length} product elements across ${this.gridContainers.length} container(s)`);
     }
 
     // =========================================================================
@@ -334,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 🚀 PERFORMANCE OPTIMIZED: CSS-based filtering instead of DOM cloning
     applyAllFiltersOptimized() {
-      if (!this.gridContainer) return;
+      if (!this.gridContainers || this.gridContainers.length === 0) return;
       
       // Clear any "no results" message before filtering
       if (window.searchManager && window.searchManager.clearNoResultsMessage) {
@@ -1065,40 +1070,56 @@ document.addEventListener('DOMContentLoaded', function() {
     // =========================================================================
 
     captureOriginalOrder() {
-      if (!this.gridContainer) return;
+      // Find all grid containers
+      this.gridContainers = Array.from(document.querySelectorAll('.w-dyn-items'));
       
-      const items = this.gridContainer.querySelectorAll('.w-dyn-item');
-      items.forEach(item => {
-        const productData = item.querySelector('.product-data');
-        if (productData) {
-          const slug = productData.getAttribute('data-slug');
-          if (slug && !this.originalOrder.includes(slug)) {
-            this.originalOrder.push(slug);
-          }
-        }
-      });
-      
-      console.log(`🚀 PERFORMANCE: Captured original order for ${this.originalOrder.length} products`);
+      if (this.gridContainers.length > 0) {
+        this.gridContainers.forEach(container => {
+          const items = container.querySelectorAll('.w-dyn-item');
+          items.forEach(item => {
+            const productData = item.querySelector('.product-data');
+            if (productData) {
+              const slug = productData.getAttribute('data-slug');
+              if (slug && !this.originalOrder.includes(slug)) {
+                this.originalOrder.push(slug);
+              }
+            }
+          });
+        });
+        
+        // For backwards compatibility
+        this.gridContainer = this.gridContainers[0];
+        
+        console.log(`🚀 PERFORMANCE: Captured original order for ${this.originalOrder.length} products across ${this.gridContainers.length} container(s)`);
+      } else {
+        console.warn('🚀 FILTER WARNING: No grid containers found (.w-dyn-items)');
+      }
     }
 
     restoreOriginalOrder() {
-      if (!this.gridContainer || this.originalOrder.length === 0) return;
+      if (!this.gridContainers || this.gridContainers.length === 0 || this.originalOrder.length === 0) return;
       
       const fragment = document.createDocumentFragment();
       
       // Reorder items based on original order
       this.originalOrder.forEach(slug => {
-        const item = this.gridContainer.querySelector(`[data-slug="${slug}"]`);
-        if (item) {
-          const container = item.closest('.w-dyn-item');
-          if (container) {
-            fragment.appendChild(container);
+        // Search in all containers
+        let foundItem = null;
+        for (const container of this.gridContainers) {
+          const item = container.querySelector(`[data-slug="${slug}"]`);
+          if (item) {
+            foundItem = item.closest('.w-dyn-item');
+            if (foundItem) break;
           }
+        }
+        
+        if (foundItem) {
+          fragment.appendChild(foundItem);
         }
       });
       
-      // Append all items in original order
-      this.gridContainer.appendChild(fragment);
+      // Append all items in original order to the first container
+      this.gridContainers[0].appendChild(fragment);
       
       // Reduce frequency of logs
       if (!this._lastLogTime || Date.now() - this._lastLogTime > 2000) {
