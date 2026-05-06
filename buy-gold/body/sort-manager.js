@@ -98,6 +98,27 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
 
+    // Re-capture originalOrder at sort time if Webflow CMS hadn't rendered at DOMContentLoaded
+    ensureOriginalOrder() {
+      const liveContainer = document.querySelector('.w-dyn-items.w-row');
+      if (!liveContainer) return;
+      this.gridContainer = liveContainer;
+
+      if (this.originalOrder.length === 0) {
+        const items = this.gridContainer.querySelectorAll('.w-dyn-item');
+        items.forEach(item => {
+          const productData = item.querySelector('.product-data');
+          if (productData) {
+            const slug = productData.getAttribute('data-slug');
+            if (slug && !this.originalOrder.includes(slug)) {
+              this.originalOrder.push(slug);
+            }
+          }
+        });
+        console.log(`🚀 SORT: Lazy-captured original order for ${this.originalOrder.length} products`);
+      }
+    }
+
     bindEvents() {
       // Listen to sortOperation events
       this.dropdown.addEventListener('sortOperation', (event) => {
@@ -108,6 +129,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     handleSortSelection(sortType, resetFirst) {
       console.log(`🚀 PERFORMANCE: Sort selected: ${sortType}, resetFirst: ${resetFirst}`);
+
+      // Ensure we have the live container + original order before any sort/restore
+      this.ensureOriginalOrder();
 
       // Reset filters if requested (mobile always resets)
       if (resetFirst) {
