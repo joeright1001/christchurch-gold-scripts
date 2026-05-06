@@ -154,7 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
     scrollContainer.addEventListener('mousedown', (e) => {
       isDown = true;
       wasDragged = false;
-      scrollContainer.classList.add('is-dragging');
       startX = e.pageX - scrollContainer.offsetLeft;
       scrollLeft = scrollContainer.scrollLeft;
     });
@@ -177,6 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (Math.abs(walk) > 10) { 
         wasDragged = true; // Flag to prevent accidental click on release
+        scrollContainer.classList.add('is-dragging');
       }
       scrollContainer.scrollLeft = scrollLeft - walk;
     });
