@@ -158,13 +158,22 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
 
-      // 🚀 PERFORMANCE: Only process visible items (not hidden by filters)
-      const currentItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item:not(.filter-hidden)'));
+      const allItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item'));
       const itemsWithValues = [];
+      const unsortedVisibleItems = [];
+      const hiddenItems = [];
       
-      currentItems.forEach(item => {
+      allItems.forEach(item => {
+        if (item.classList.contains('filter-hidden')) {
+          hiddenItems.push(item);
+          return;
+        }
+
         const dataElement = item.querySelector(`[${rule.attribute}]`);
-        if (!dataElement) return;
+        if (!dataElement) {
+          unsortedVisibleItems.push(item);
+          return;
+        }
         
         const rawValue = dataElement.getAttribute(rule.attribute);
         const sortValue = this.parseSortValue(rawValue, rule);
@@ -175,6 +184,8 @@ document.addEventListener('DOMContentLoaded', function() {
             value: sortValue,
             rawValue: rawValue
           });
+        } else {
+          unsortedVisibleItems.push(item);
         }
       });
       
@@ -185,6 +196,12 @@ document.addEventListener('DOMContentLoaded', function() {
       const fragment = document.createDocumentFragment();
       itemsWithValues.forEach(item => {
         fragment.appendChild(item.element);
+      });
+      unsortedVisibleItems.forEach(item => {
+        fragment.appendChild(item);
+      });
+      hiddenItems.forEach(item => {
+        fragment.appendChild(item);
       });
       
       // Append all sorted items at once
@@ -286,13 +303,22 @@ document.addEventListener('DOMContentLoaded', function() {
       const rule = this.config.rules[sortType];
       if (!rule || !this.gridContainer) return;
 
-      // Only sort visible items (not hidden by filters)
-      const visibleItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item:not(.filter-hidden)'));
+      const allItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item'));
       const itemsWithValues = [];
+      const unsortedVisibleItems = [];
+      const hiddenItems = [];
       
-      visibleItems.forEach(item => {
+      allItems.forEach(item => {
+        if (item.classList.contains('filter-hidden')) {
+          hiddenItems.push(item);
+          return;
+        }
+
         const dataElement = item.querySelector(`[${rule.attribute}]`);
-        if (!dataElement) return;
+        if (!dataElement) {
+          unsortedVisibleItems.push(item);
+          return;
+        }
         
         const rawValue = dataElement.getAttribute(rule.attribute);
         const sortValue = this.parseSortValue(rawValue, rule);
@@ -303,6 +329,8 @@ document.addEventListener('DOMContentLoaded', function() {
             value: sortValue,
             rawValue: rawValue
           });
+        } else {
+          unsortedVisibleItems.push(item);
         }
       });
       
@@ -312,6 +340,12 @@ document.addEventListener('DOMContentLoaded', function() {
       const fragment = document.createDocumentFragment();
       itemsWithValues.forEach(item => {
         fragment.appendChild(item.element);
+      });
+      unsortedVisibleItems.forEach(item => {
+        fragment.appendChild(item);
+      });
+      hiddenItems.forEach(item => {
+        fragment.appendChild(item);
       });
       
       this.gridContainer.appendChild(fragment);
