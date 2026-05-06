@@ -79,12 +79,6 @@
     }
 
     buildDropdown() {
-      // Strip Webflow IX2 control: remove data-w-id so Webflow animations cannot
-      // re-apply inline styles (e.g. border-color/color: white) after we build the dropdown.
-      this.element.removeAttribute('data-w-id');
-      // Remove any inline styles Webflow IX2 may have already injected (white-on-white etc.)
-      this.element.removeAttribute('style');
-
       this.element.innerHTML = '';
       this.element.className = 'custom-dropdown';
 
