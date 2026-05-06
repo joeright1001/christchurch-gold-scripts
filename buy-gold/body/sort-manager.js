@@ -195,14 +195,14 @@ document.addEventListener('DOMContentLoaded', function() {
       // 🚀 PERFORMANCE OPTIMIZED: Use DocumentFragment for efficient DOM reordering
       const fragment = document.createDocumentFragment();
       
-      // 1. Append unsorted visible items FIRST (this keeps the dropdown at the top!)
-      unsortedVisibleItems.forEach(item => {
-        fragment.appendChild(item);
-      });
-      
-      // 2. Append sorted items
+      // 1. Append sorted items FIRST
       itemsWithValues.forEach(item => {
         fragment.appendChild(item.element);
+      });
+      
+      // 2. Append unsorted visible items (keep them below sorted results)
+      unsortedVisibleItems.forEach(item => {
+        fragment.appendChild(item);
       });
       
       // 3. Append hidden items
@@ -345,14 +345,14 @@ document.addEventListener('DOMContentLoaded', function() {
       // Use DocumentFragment for efficient reordering
       const fragment = document.createDocumentFragment();
       
-      // 1. Append unsorted visible items FIRST (this keeps the dropdown at the top!)
-      unsortedVisibleItems.forEach(item => {
-        fragment.appendChild(item);
-      });
-      
-      // 2. Append sorted items
+      // 1. Append sorted items first
       itemsWithValues.forEach(item => {
         fragment.appendChild(item.element);
+      });
+      
+      // 2. Append unsorted visible items
+      unsortedVisibleItems.forEach(item => {
+        fragment.appendChild(item);
       });
       
       // 3. Append hidden items

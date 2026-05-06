@@ -356,7 +356,14 @@ document.addEventListener('DOMContentLoaded', function() {
       // If no filters active and no search and no specific products, show all items and restore original order
       if (activeFilters.length === 0 && !hasActiveSearch && !hasSpecificProducts) {
         this.showAllItemsCSS();
-        this.restoreOriginalOrder();
+        
+        // 🚀 COORDINATION: If a dropdown sort is active, don't restore original order, refresh sort instead
+        if (window.sortManager && window.sortManager.getCurrentSort && window.sortManager.getCurrentSort()) {
+           window.sortManager.refreshSort();
+        } else {
+           this.restoreOriginalOrder();
+        }
+
         this.manageDivVisibility();
         return;
       }
@@ -411,9 +418,14 @@ document.addEventListener('DOMContentLoaded', function() {
       // We apply sorting here (only on visible items) to bubble priority items up.
       // =========================================================================
       
+      const hasSpecialSort = this.filterStates.checkbox_popular || 
+                            this.filterStates.checkbox_starter || 
+                            this.filterStates.checkbox_hot || 
+                            this.filterStates.checkbox_investor;
+
       if (this.filterStates.checkbox_popular) {
         this.applyPopularSortCSS();
-        this.needsOrderRestoration = true; // Flags that original order is broken and needs reset later
+        this.needsOrderRestoration = true;
       }
       if (this.filterStates.checkbox_starter) {
         this.applyStarterSortCSS();
@@ -426,6 +438,11 @@ document.addEventListener('DOMContentLoaded', function() {
       if (this.filterStates.checkbox_investor) {
         this.applyInvestorSortCSS();
         this.needsOrderRestoration = true;
+      }
+
+      // 🚀 COORDINATION: If no special filter-sort is active, but a dropdown sort IS active, refresh it
+      if (!hasSpecialSort && window.sortManager && window.sortManager.refreshSort) {
+        window.sortManager.refreshSort();
       }
 
       this.manageDivVisibility();
@@ -484,7 +501,7 @@ document.addEventListener('DOMContentLoaded', function() {
       sortedItems.forEach(item => {
         fragment.appendChild(item.element);
       });
-      this.gridContainer.appendChild(fragment);
+      this.gridContainer.prepend(fragment);
       
       // Reduced logging frequency
       if (!this._lastPopularSortTime || Date.now() - this._lastPopularSortTime > 2000) {
@@ -523,7 +540,7 @@ document.addEventListener('DOMContentLoaded', function() {
       sortedItems.forEach(item => {
         fragment.appendChild(item.element);
       });
-      this.gridContainer.appendChild(fragment);
+      this.gridContainer.prepend(fragment);
       
       // Reduced logging frequency
       if (!this._lastStarterSortTime || Date.now() - this._lastStarterSortTime > 2000) {
@@ -621,7 +638,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fragment.appendChild(item);
       });
       
-      this.gridContainer.appendChild(fragment);
+      this.gridContainer.prepend(fragment);
       
       // Reduced logging frequency
       if (!this._lastInvestorSortTime || Date.now() - this._lastInvestorSortTime > 2000) {
