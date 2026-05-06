@@ -194,17 +194,23 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // 🚀 PERFORMANCE OPTIMIZED: Use DocumentFragment for efficient DOM reordering
       const fragment = document.createDocumentFragment();
-      itemsWithValues.forEach(item => {
-        fragment.appendChild(item.element);
-      });
+      
+      // 1. Append unsorted visible items FIRST (this keeps the dropdown at the top!)
       unsortedVisibleItems.forEach(item => {
         fragment.appendChild(item);
       });
+      
+      // 2. Append sorted items
+      itemsWithValues.forEach(item => {
+        fragment.appendChild(item.element);
+      });
+      
+      // 3. Append hidden items
       hiddenItems.forEach(item => {
         fragment.appendChild(item);
       });
       
-      // Append all sorted items at once
+      // Append all items at once to maintain DOM order
       this.gridContainer.appendChild(fragment);
       
       this.activeSortType = sortType;
@@ -338,12 +344,18 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // Use DocumentFragment for efficient reordering
       const fragment = document.createDocumentFragment();
-      itemsWithValues.forEach(item => {
-        fragment.appendChild(item.element);
-      });
+      
+      // 1. Append unsorted visible items FIRST (this keeps the dropdown at the top!)
       unsortedVisibleItems.forEach(item => {
         fragment.appendChild(item);
       });
+      
+      // 2. Append sorted items
+      itemsWithValues.forEach(item => {
+        fragment.appendChild(item.element);
+      });
+      
+      // 3. Append hidden items
       hiddenItems.forEach(item => {
         fragment.appendChild(item);
       });
