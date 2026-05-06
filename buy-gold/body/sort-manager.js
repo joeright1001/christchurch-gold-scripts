@@ -82,40 +82,41 @@ document.addEventListener('DOMContentLoaded', function() {
     captureOriginalOrder() {
       // Cache the grid container
       this.gridContainer = document.querySelector('.w-dyn-items.w-row');
+
+      // Use .product-data elements (the hidden data layer) to discover slugs — same as filter-manager.
+      // These are reliably populated even when .w-dyn-item querys inside the grid return empty
+      // at DOMContentLoaded because Webflow CMS rendering may not be complete yet.
+      const dataElements = Array.from(document.querySelectorAll('.product-data'));
+      dataElements.forEach(el => {
+        const slug = el.getAttribute('data-slug');
+        if (slug && !this.originalOrder.includes(slug)) {
+          this.originalOrder.push(slug);
+        }
+      });
       
-      if (this.gridContainer) {
-        const items = this.gridContainer.querySelectorAll('.w-dyn-item');
-        items.forEach(item => {
-          const productData = item.querySelector('.product-data');
-          if (productData) {
-            this.originalOrder.push(productData.getAttribute('data-slug'));
-          }
-        });
-        
-        console.log(`🚀 PERFORMANCE: Found products container with ${this.originalOrder.length} products`);
-      } else {
-        console.error('Could not find products container');
+      console.log(`🚀 PERFORMANCE: Found ${this.originalOrder.length} products via .product-data`);
+      if (!this.gridContainer) {
+        console.error('Could not find .w-dyn-items.w-row grid container');
       }
     }
 
-    // Re-capture originalOrder at sort time if Webflow CMS hadn't rendered at DOMContentLoaded
+    // Refresh gridContainer reference and originalOrder at sort time — guards against
+    // Webflow CMS rendering after DOMContentLoaded leaving the init-time snapshot stale.
     ensureOriginalOrder() {
       const liveContainer = document.querySelector('.w-dyn-items.w-row');
-      if (!liveContainer) return;
-      this.gridContainer = liveContainer;
+      if (liveContainer) {
+        this.gridContainer = liveContainer;
+      }
 
       if (this.originalOrder.length === 0) {
-        const items = this.gridContainer.querySelectorAll('.w-dyn-item');
-        items.forEach(item => {
-          const productData = item.querySelector('.product-data');
-          if (productData) {
-            const slug = productData.getAttribute('data-slug');
-            if (slug && !this.originalOrder.includes(slug)) {
-              this.originalOrder.push(slug);
-            }
+        const dataElements = Array.from(document.querySelectorAll('.product-data'));
+        dataElements.forEach(el => {
+          const slug = el.getAttribute('data-slug');
+          if (slug && !this.originalOrder.includes(slug)) {
+            this.originalOrder.push(slug);
           }
         });
-        console.log(`🚀 SORT: Lazy-captured original order for ${this.originalOrder.length} products`);
+        console.log(`🚀 SORT: Lazy-captured ${this.originalOrder.length} products`);
       }
     }
 
@@ -182,23 +183,37 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
 
-      // 🚀 PERFORMANCE: Only process visible items (not hidden by filters)
-      const currentItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item:not(.filter-hidden)'));
+      // 🚀 PERFORMANCE: Use .product-data elements (the hidden data layer) to read sort attributes,
+      // then locate their parent .w-dyn-item containers — same pattern as filter-manager.
+      // Direct query of [data-attribute] inside .w-dyn-item fails because those attributes live
+      // on the hidden .product-data elements, not on the visible card DOM.
+      const processedSlugs = new Set();
       const itemsWithValues = [];
+
+      const allDataElements = Array.from(document.querySelectorAll('.product-data'));
       
-      currentItems.forEach(item => {
-        const dataElement = item.querySelector(`[${rule.attribute}]`);
-        if (!dataElement) return;
-        
+      allDataElements.forEach(dataElement => {
+        const slug = dataElement.getAttribute('data-slug');
+        if (!slug || processedSlugs.has(slug)) return;
+
+        const container = dataElement.closest('.w-dyn-item');
+        if (!container) return;
+
+        // Skip items hidden by filters
+        if (container.classList.contains('filter-hidden')) return;
+
         const rawValue = dataElement.getAttribute(rule.attribute);
+        if (rawValue === null) return;
+
         const sortValue = this.parseSortValue(rawValue, rule);
         
         if (sortValue !== null) {
           itemsWithValues.push({
-            element: item,
+            element: container,
             value: sortValue,
             rawValue: rawValue
           });
+          processedSlugs.add(slug);
         }
       });
       
@@ -265,24 +280,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
       }
       
-      // 🚀 PERFORMANCE FIX: Actually restore DOM elements to original order
+      // 🚀 PERFORMANCE FIX: Restore DOM elements to original order.
+      // Use document.querySelector('.product-data') to find items — the data-slug attribute
+      // lives on the hidden .product-data element, not directly on .w-dyn-item children.
       if (this.gridContainer && this.originalOrder.length > 0) {
         const fragment = document.createDocumentFragment();
         
-        // Reorder items based on original order
         this.originalOrder.forEach(slug => {
-          const item = this.gridContainer.querySelector(`[data-slug="${slug}"]`);
-          if (item) {
-            const container = item.closest('.w-dyn-item');
+          const dataEl = document.querySelector(`.product-data[data-slug="${slug}"]`);
+          if (dataEl) {
+            const container = dataEl.closest('.w-dyn-item');
             if (container) {
               fragment.appendChild(container);
             }
           }
         });
         
-        // Append all items in original order
         this.gridContainer.appendChild(fragment);
-        
         console.log(`🚀 PERFORMANCE: Restored ${this.originalOrder.length} items to original order`);
       }
       
