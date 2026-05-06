@@ -60,7 +60,13 @@ document.addEventListener('DOMContentLoaded', function() {
       this.searchInput = document.getElementById(this.config.inputId);
       this.searchIcon = document.getElementById(this.config.iconId);
       this.backToTopButton = document.getElementById('back-to-top-m');
-      this.gridContainer = document.querySelector('.w-dyn-items.w-row');
+      
+      const firstProduct = document.querySelector('.product-data');
+      if (firstProduct) {
+        this.gridContainer = firstProduct.closest('.w-dyn-items, .collection-list, .w-row') || 
+                             document.querySelector('.w-dyn-items') || 
+                             firstProduct.parentElement.parentElement;
+      }
       
       if (!this.searchInput) {
         console.error(`Search input with ID '${this.config.inputId}' not found`);
@@ -415,7 +421,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const shouldShow = matchesSearch && passesFilters;
         
         // Find the parent w-dyn-item container
-        const container = productData.closest('.w-dyn-item');
+        const container = productData.closest('.w-dyn-item, .product-item, [role="listitem"]');
         if (container) {
           // 🚀 PERFORMANCE FIX: Use CSS class to hide/show
           container.classList.toggle('filter-hidden', !shouldShow);
@@ -488,7 +494,7 @@ document.addEventListener('DOMContentLoaded', function() {
      */
     showAllItemsCSS() {
       this.originalProducts.forEach(productData => {
-        const container = productData.closest('.w-dyn-item');
+        const container = productData.closest('.w-dyn-item, .product-item, [role="listitem"]');
         if (container) {
           container.classList.remove('filter-hidden');
         }

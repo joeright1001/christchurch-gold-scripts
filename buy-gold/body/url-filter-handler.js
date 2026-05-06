@@ -396,7 +396,14 @@ function setupMobileFilterButton() {
 
       // CUSTOMIZATION: Prioritize specified products at the top (from CUSTOM_FILTER_PROFILES)
       setTimeout(() => {
-        const gridContainer = document.querySelector('.w-dyn-items.w-row');
+        const firstProduct = document.querySelector('.product-data');
+        let gridContainer = null;
+        if (firstProduct) {
+          gridContainer = firstProduct.closest('.w-dyn-items, .collection-list, .w-row') || 
+                          document.querySelector('.w-dyn-items') || 
+                          firstProduct.parentElement.parentElement;
+        }
+
         if (gridContainer && window.CUSTOM_FILTER_PROFILES && window.CUSTOM_FILTER_PROFILES.mobileInStockPriority) {
           // Reverse array to ensure first item in array ends up at the very top after prepending
           const prioritySlugs = [...window.CUSTOM_FILTER_PROFILES.mobileInStockPriority].reverse();
@@ -404,7 +411,7 @@ function setupMobileFilterButton() {
           prioritySlugs.forEach(slug => {
             const itemToMove = gridContainer.querySelector(`[data-slug="${slug}"]`);
             if (itemToMove) {
-              const container = itemToMove.closest('.w-dyn-item');
+              const container = itemToMove.closest('.w-dyn-item, .product-item, [role="listitem"]');
               if (container) {
                 gridContainer.prepend(container);
                 console.log(`URL Filter Handler: Prioritized ${slug} to top`);

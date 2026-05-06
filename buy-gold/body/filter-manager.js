@@ -130,7 +130,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     cacheProducts() {
       this.productElements = Array.from(document.querySelectorAll('.product-data'));
-      this.gridContainer = document.querySelector('.w-dyn-items.w-row');
+      
+      // Robust grid container selection
+      const firstProduct = this.productElements[0];
+      if (firstProduct) {
+        this.gridContainer = firstProduct.closest('.w-dyn-items, .collection-list, .w-row') || 
+                             document.querySelector('.w-dyn-items') || 
+                             firstProduct.parentElement.parentElement;
+      }
       
       // Store original DOM order
       this.captureOriginalOrder();
@@ -391,7 +398,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (processedSlugs.has(slug)) return;
         
-        const container = dataElement.closest('.w-dyn-item');
+        const container = dataElement.closest('.w-dyn-item, .product-item, [role="listitem"]');
         if (!container) return;
         
         // Check if item passes filters
@@ -440,7 +447,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 🚀 PERFORMANCE: CSS-based show all
     showAllItemsCSS() {
       this.productElements.forEach(dataElement => {
-        const container = dataElement.closest('.w-dyn-item');
+        const container = dataElement.closest('.w-dyn-item, .product-item, [role="listitem"]');
         if (container) {
           container.classList.remove('filter-hidden');
         }
@@ -461,7 +468,7 @@ document.addEventListener('DOMContentLoaded', function() {
     applyPopularSortCSS() {
       if (!this.filterStates.checkbox_popular || !this.gridContainer) return;
       
-      const visibleItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item:not(.filter-hidden)'));
+      const visibleItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item:not(.filter-hidden), .product-item:not(.filter-hidden), [role="listitem"]:not(.filter-hidden)'));
       const sortedItems = [];
       
       visibleItems.forEach(item => {
@@ -500,7 +507,7 @@ document.addEventListener('DOMContentLoaded', function() {
     applyStarterSortCSS() {
       if (!this.filterStates.checkbox_starter || !this.gridContainer) return;
       
-      const visibleItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item:not(.filter-hidden)'));
+      const visibleItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item:not(.filter-hidden), .product-item:not(.filter-hidden), [role="listitem"]:not(.filter-hidden)'));
       const sortedItems = [];
       
       visibleItems.forEach(item => {
@@ -577,7 +584,7 @@ document.addEventListener('DOMContentLoaded', function() {
     applyInvestorSortCSS() {
       if (!this.filterStates.checkbox_investor || !this.gridContainer) return;
       
-      const visibleItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item:not(.filter-hidden)'));
+      const visibleItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item:not(.filter-hidden), .product-item:not(.filter-hidden), [role="listitem"]:not(.filter-hidden)'));
       const sortedItems = [];
       const itemsWithoutValues = [];
       
@@ -996,7 +1003,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (processedSlugs.has(slug)) return;
         
         const isMatch = this.doesProductMatchSearch(dataElement, searchTerm);
-        const container = dataElement.closest('.w-dyn-item');
+        const container = dataElement.closest('.w-dyn-item, .product-item, [role="listitem"]');
         
         if (container) {
           // 🚀 PERFORMANCE: CSS class toggle instead of DOM manipulation
@@ -1053,7 +1060,7 @@ document.addEventListener('DOMContentLoaded', function() {
     captureOriginalOrder() {
       if (!this.gridContainer) return;
       
-      const items = this.gridContainer.querySelectorAll('.w-dyn-item');
+      const items = this.gridContainer.querySelectorAll('.w-dyn-item, .product-item, [role="listitem"]');
       items.forEach(item => {
         const productData = item.querySelector('.product-data');
         if (productData) {

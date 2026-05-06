@@ -80,11 +80,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     captureOriginalOrder() {
-      // Cache the grid container
-      this.gridContainer = document.querySelector('.w-dyn-items.w-row');
+      // Cache the grid container robustly
+      const firstProduct = document.querySelector('.product-data');
+      if (firstProduct) {
+        this.gridContainer = firstProduct.closest('.w-dyn-items') || 
+                             document.querySelector('.w-dyn-items') || 
+                             firstProduct.parentElement.parentElement;
+      }
       
       if (this.gridContainer) {
-        const items = this.gridContainer.querySelectorAll('.w-dyn-item');
+        const items = this.gridContainer.querySelectorAll('.w-dyn-item, .product-item, [role="listitem"]');
         items.forEach(item => {
           const productData = item.querySelector('.product-data');
           if (productData) {
@@ -159,12 +164,17 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       // 🚀 PERFORMANCE: Only process visible items (not hidden by filters)
-      const currentItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item:not(.filter-hidden)'));
+      const currentItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item:not(.filter-hidden), .product-item:not(.filter-hidden), [role="listitem"]:not(.filter-hidden)'));
       const itemsWithValues = [];
+      const itemsWithoutValues = [];
       
       currentItems.forEach(item => {
         const dataElement = item.querySelector(`[${rule.attribute}]`);
-        if (!dataElement) return;
+        
+        if (!dataElement) {
+          itemsWithoutValues.push(item);
+          return;
+        }
         
         const rawValue = dataElement.getAttribute(rule.attribute);
         const sortValue = this.parseSortValue(rawValue, rule);
@@ -175,6 +185,8 @@ document.addEventListener('DOMContentLoaded', function() {
             value: sortValue,
             rawValue: rawValue
           });
+        } else {
+          itemsWithoutValues.push(item);
         }
       });
       
@@ -185,6 +197,11 @@ document.addEventListener('DOMContentLoaded', function() {
       const fragment = document.createDocumentFragment();
       itemsWithValues.forEach(item => {
         fragment.appendChild(item.element);
+      });
+      
+      // Append items without sortable values at the end, so they don't get stuck at the top
+      itemsWithoutValues.forEach(item => {
+        fragment.appendChild(item);
       });
       
       // Append all sorted items at once
@@ -249,7 +266,7 @@ document.addEventListener('DOMContentLoaded', function() {
         this.originalOrder.forEach(slug => {
           const item = this.gridContainer.querySelector(`[data-slug="${slug}"]`);
           if (item) {
-            const container = item.closest('.w-dyn-item');
+            const container = item.closest('.w-dyn-item, .product-item, [role="listitem"]');
             if (container) {
               fragment.appendChild(container);
             }
@@ -287,12 +304,17 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!rule || !this.gridContainer) return;
 
       // Only sort visible items (not hidden by filters)
-      const visibleItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item:not(.filter-hidden)'));
+      const visibleItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item:not(.filter-hidden), .product-item:not(.filter-hidden), [role="listitem"]:not(.filter-hidden)'));
       const itemsWithValues = [];
+      const itemsWithoutValues = [];
       
       visibleItems.forEach(item => {
         const dataElement = item.querySelector(`[${rule.attribute}]`);
-        if (!dataElement) return;
+        
+        if (!dataElement) {
+          itemsWithoutValues.push(item);
+          return;
+        }
         
         const rawValue = dataElement.getAttribute(rule.attribute);
         const sortValue = this.parseSortValue(rawValue, rule);
@@ -303,6 +325,8 @@ document.addEventListener('DOMContentLoaded', function() {
             value: sortValue,
             rawValue: rawValue
           });
+        } else {
+          itemsWithoutValues.push(item);
         }
       });
       
@@ -312,6 +336,10 @@ document.addEventListener('DOMContentLoaded', function() {
       const fragment = document.createDocumentFragment();
       itemsWithValues.forEach(item => {
         fragment.appendChild(item.element);
+      });
+      
+      itemsWithoutValues.forEach(item => {
+        fragment.appendChild(item);
       });
       
       this.gridContainer.appendChild(fragment);
