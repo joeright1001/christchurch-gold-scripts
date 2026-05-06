@@ -411,6 +411,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // We apply sorting here (only on visible items) to bubble priority items up.
       // =========================================================================
       
+      /* REMOVED PER USER REQUEST: stop treating the popular as a different group
       if (this.filterStates.checkbox_popular) {
         this.applyPopularSortCSS();
         this.needsOrderRestoration = true; // Flags that original order is broken and needs reset later
@@ -427,6 +428,7 @@ document.addEventListener('DOMContentLoaded', function() {
         this.applyInvestorSortCSS();
         this.needsOrderRestoration = true;
       }
+      */
 
       this.manageDivVisibility();
       

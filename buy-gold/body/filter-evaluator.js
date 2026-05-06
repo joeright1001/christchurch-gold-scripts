@@ -10,6 +10,7 @@ class FilterEvaluator {
 
     // The Popular Group acts as the base selection.
     // It is an exclusive group (defined in filter-config.js) meaning only one can be active.
+    /* REMOVED PER USER REQUEST: stop treating the popular as a different group
     this.popularGroupFilters = [
       'checkbox_popular',
       'checkbox_hot',
@@ -18,6 +19,8 @@ class FilterEvaluator {
       'checkbox_dealer',
       'checkbox_collectables'
     ];
+    */
+    this.popularGroupFilters = [];
   }
 
   /**
@@ -52,6 +55,7 @@ class FilterEvaluator {
       return false;
     }
 
+    /* REMOVED PER USER REQUEST: stop treating the popular as a different group
     // -------------------------------------------------------------------------
     // STEP 3: Popular Group Evaluation (Base Set)
     // -------------------------------------------------------------------------
@@ -83,6 +87,7 @@ class FilterEvaluator {
         return false;
       }
     }
+    */
 
     // -------------------------------------------------------------------------
     // STEP 4: Standard Attribute Grouping
@@ -126,7 +131,13 @@ class FilterEvaluator {
       // Check if product matches ANY of the rules in this group (OR logic within group)
       let matchFound = false;
       for (const rule of rules) {
-        if (rule.values && rule.values.includes(productValue)) {
+        if (rule.specialHandling === true) {
+          // Special handling for popular and starter: just check if attribute exists and is numeric
+          if (productValue && !isNaN(parseInt(productValue, 10))) {
+            matchFound = true;
+            break;
+          }
+        } else if (rule.values && rule.values.includes(productValue)) {
           matchFound = true;
           break;
         }
