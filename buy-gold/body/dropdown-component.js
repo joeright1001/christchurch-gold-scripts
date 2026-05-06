@@ -68,14 +68,15 @@
       this.element = document.getElementById(this.config.elementId);
       
       if (!this.element) {
-        console.log(`Waiting for '${this.config.elementId}' element to be available...`);
+        console.log(`[DROPDOWN DEBUG] ❌ Element '#${this.config.elementId}' NOT found — retrying in ${this.config.retryDelay}ms`);
         setTimeout(() => this.init(), this.config.retryDelay);
         return;
       }
 
+      console.log(`[DROPDOWN DEBUG] ✅ Element '#${this.config.elementId}' found. isConnected=${this.element.isConnected}`);
       this.buildDropdown();
       this.bindEvents();
-      console.log('Custom dropdown initialized successfully');
+      console.log('[DROPDOWN DEBUG] ✅ Custom dropdown initialized + events bound');
     }
 
     buildDropdown() {
@@ -135,11 +136,16 @@
     }
 
     handleOptionClick(e) {
+      console.log(`[DROPDOWN DEBUG] 🖱️ handleOptionClick fired — e.target:`, e.target);
       const optionElement = e.target.closest('.filter-option');
-      if (!optionElement) return;
+      if (!optionElement) {
+        console.warn('[DROPDOWN DEBUG] ⚠️ Click did not hit a .filter-option element — ignoring');
+        return;
+      }
       
       const value = optionElement.getAttribute('data-value');
       const text = optionElement.textContent.trim(); // Use textContent to get clean text without SVG
+      console.log(`[DROPDOWN DEBUG] ✅ Option selected: value="${value}", text="${text}"`);
       this.selectOption(value, text);
     }
 
@@ -155,12 +161,14 @@
     dispatchOperationEvent(value, text) {
       const mapping = OPERATION_MAPPING[value];
       if (!mapping) {
-        console.warn(`No operation mapping found for: ${value}`);
+        console.warn(`[DROPDOWN DEBUG] ❌ No operation mapping found for value: "${value}"`);
         return;
       }
 
       const eventType = mapping.type === 'filter' ? 'filterOperation' : 'sortOperation';
       const isMobile = window.innerWidth <= 1023;
+      
+      console.log(`[DROPDOWN DEBUG] 📡 Dispatching "${eventType}" on element:`, this.element, `| isConnected=${this.element.isConnected} | operation="${mapping.operation}" | isMobile=${isMobile}`);
       
       const operationEvent = new CustomEvent(eventType, {
         detail: {
@@ -173,7 +181,7 @@
       });
       
       this.element.dispatchEvent(operationEvent);
-      console.log(`Dispatched ${eventType} for: ${mapping.operation}`);
+      console.log(`[DROPDOWN DEBUG] ✅ Dispatched "${eventType}" for: ${mapping.operation}`);
     }
 
     handleOutsideClick(e) {

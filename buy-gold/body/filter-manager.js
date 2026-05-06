@@ -227,11 +227,14 @@ document.addEventListener('DOMContentLoaded', function() {
     bindMobileEvents() {
       const dropdown = document.getElementById('custom-filter');
       if (!dropdown) {
+        console.log('[FILTER DEBUG] ❌ #custom-filter NOT found for filterOperation listener — retrying...');
         setTimeout(() => this.bindMobileEvents(), 300);
         return;
       }
 
+      console.log(`[FILTER DEBUG] 📌 Registering "filterOperation" listener on element:`, dropdown, `isConnected=${dropdown.isConnected}`);
       dropdown.addEventListener('filterOperation', (event) => {
+        console.log('[FILTER DEBUG] 🎯 filterOperation event RECEIVED!', event.detail);
         const { operation, resetFirst } = event.detail;
         
         if (resetFirst) {
@@ -240,6 +243,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (this.config.rules[operation]) {
           this.applyFilter(operation, true);
+        } else {
+          console.warn(`[FILTER DEBUG] ⚠️ No filter rule found for operation: "${operation}"`);
         }
       });
     }
