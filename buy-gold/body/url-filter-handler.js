@@ -244,10 +244,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 100);
             }
             
-            // Activate mobile profile button if profile has display name
+            // Activate desktop notification banner if displayName is present
             if (profile.displayName) {
-                activateMobileProfileButton(profile.displayName);
                 activateDesktopProfileNotification(profile.displayName);
+            }
+
+            // Activate mobile profile button if displayNameMobile is present
+            if (profile.displayNameMobile) {
+                activateMobileProfileButton(profile.displayNameMobile);
             }
 
             return; // Skip standard processing

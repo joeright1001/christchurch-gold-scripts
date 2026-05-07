@@ -1,14 +1,15 @@
 /**
  * URL Filter Profiles Configuration
- * 
+ *
  * Defines shortcut profiles for URL filtering.
  * Usage: ?filter=profile-name
- * 
+ *
  * Each profile maps to:
  * - filters: Array of checkbox IDs to activate
  * - products: (Optional) Array of product slugs to show (whitelist). If present, only these products are shown.
  * - sort: (Optional) Sort type to apply (e.g., 'value', 'lowest-price', 'lowest-weight')
- * - displayName: Text to display on the mobile "Clear Filter" button AND the desktop notification banner.
+ * - displayName: (Optional) Text to display on the DESKTOP notification banner. If absent, desktop banner is not shown.
+ * - displayNameMobile: (Optional) Text to display on the MOBILE "Clear Filter" button. If absent, mobile button is not shown.
  */
 window.FILTER_PROFILES = {
   // Silver Profiles
@@ -30,9 +31,10 @@ window.FILTER_PROFILES = {
 
   // Migrated from handler
   'all-live': {
-    filters: ['checkbox_in_stock', 'checkbox_live_mint'],
+    filters: ['checkbox_in_stock'],
     sort: 'value',
-    displayName: 'Currently viewing In Stock & Live at Mint. Click to clear'
+    displayName: 'Currently viewing In Stock & Live at Mint. Click to clear',
+    displayNameMobile: 'Currently viewing In Stock & Live at Mint. Click to clear'
   },
 
   // Example Profiles (Placeholders)
