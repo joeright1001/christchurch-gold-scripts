@@ -32,8 +32,7 @@ window.FILTER_PROFILES = {
   'all-live': {
     filters: ['checkbox_in_stock'],
     sort: 'default',
-    displayName: 'Showing in-stock only: Clear',
-    displayNameMobile: 'Only showing in-stock'
+    displayName: 'Showing in-stock only: Clear'
   },
 
   // Example Profiles (Placeholders)

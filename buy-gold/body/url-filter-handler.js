@@ -178,39 +178,34 @@ document.addEventListener('DOMContentLoaded', () => {
               }
 
               /**
-               * Activates the profile notification banner.
+               * Activates the desktop profile notification banner.
                *
                * Shows the 'custom-filter-notice' element and updates its text.
                * Attaches a click listener to the inner '.filter-box' to clear all filters,
                * emulating the behavior of the main "Clear All" button.
                *
-               * @param {string} displayName - The text to display in the notification (Desktop)
-               * @param {string} displayNameMobile - (Optional) The text to display on mobile
+               * @param {string} displayName - The text to display in the notification
                */
-              function activateDesktopProfileNotification(displayName, displayNameMobile) {
-                const isMobile = window.innerWidth <= 991;
-                
-                // Only run on desktop unless mobile text is explicitly provided
-                if (isMobile && !displayNameMobile) return;
-                if (!isMobile && !displayName) return;
+              function activateDesktopProfileNotification(displayName) {
+                // Only run on desktop
+                if (window.innerWidth <= 991) return;
 
                 const noticeElement = document.getElementById('custom-filter-notice');
                 const textElement = document.getElementById('d-filter-notice-text2');
 
                 if (!noticeElement) {
-                    console.warn('URL Filter Handler: Notice element not found');
+                    console.warn('URL Filter Handler: Desktop notice element not found');
                     return;
                 }
 
-                const displayValue = isMobile ? displayNameMobile : displayName;
-                console.log(`URL Filter Handler: Activating notification for "${displayValue}"`);
+                console.log(`URL Filter Handler: Activating desktop notification for "${displayName}"`);
 
                 // Show the notice
                 noticeElement.style.display = 'flex'; // Assuming flex layout
 
                 // Update text
                 if (textElement) {
-                    textElement.textContent = displayValue;
+                    textElement.textContent = displayName;
                 }
 
                 // Add click listener to clear filter
@@ -250,9 +245,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             // Activate mobile profile button if profile has display name
-            if (profile.displayName || profile.displayNameMobile) {
+            if (profile.displayName) {
                 activateMobileProfileButton(profile.displayName);
-                activateDesktopProfileNotification(profile.displayName, profile.displayNameMobile);
+                activateDesktopProfileNotification(profile.displayName);
             }
 
             return; // Skip standard processing
