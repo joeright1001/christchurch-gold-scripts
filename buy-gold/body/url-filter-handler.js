@@ -44,8 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- Desktop Initialization ---
-  // Ensure the desktop profile notification banner is hidden by default
+  // --- Profile Notification Initialization ---
+  // Ensure the profile notification banner is hidden by default
   const desktopNotice = document.getElementById('custom-filter-notice');
   if (desktopNotice) {
       desktopNotice.style.display = 'none';
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
               }
 
               /**
-               * Activates the desktop profile notification banner.
+               * Activates the profile notification banner (Mobile Only).
                *
                * Shows the 'custom-filter-notice' element and updates its text.
                * Attaches a click listener to the inner '.filter-box' to clear all filters,
@@ -187,8 +187,8 @@ document.addEventListener('DOMContentLoaded', () => {
                * @param {string} displayName - The text to display in the notification
                */
               function activateDesktopProfileNotification(displayName) {
-                // Only run on desktop (Disabled: now runs on mobile too)
-                // if (window.innerWidth <= 991) return;
+                // Only run on mobile
+                if (window.innerWidth > 991) return;
 
                 const noticeElement = document.getElementById('custom-filter-notice');
                 const textElement = document.getElementById('d-filter-notice-text2');
