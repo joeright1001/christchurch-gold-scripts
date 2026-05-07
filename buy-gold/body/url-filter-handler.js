@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (textElement) {
                   textElement.textContent = displayName;
                 } else {
-                    const textElementByClass = profileButton.querySelector('.buy-banner-title1-filter');
+                    const textElementByClass = profileButton.querySelector('.buy-banner-title1-filterr2');
                     if (textElementByClass) {
                         textElementByClass.textContent = displayName;
                     } else {
