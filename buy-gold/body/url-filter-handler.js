@@ -187,8 +187,8 @@ document.addEventListener('DOMContentLoaded', () => {
                * @param {string} displayName - The text to display in the notification
                */
               function activateDesktopProfileNotification(displayName) {
-                // Only run on desktop
-                if (window.innerWidth <= 991) return;
+                // Only run on desktop (Disabled: now runs on mobile too)
+                // if (window.innerWidth <= 991) return;
 
                 const noticeElement = document.getElementById('custom-filter-notice');
                 const textElement = document.getElementById('d-filter-notice-text2');
@@ -244,9 +244,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 100);
             }
             
-            // Activate mobile profile button if profile has display name
+            // Activate profile notification if profile has display name
             if (profile.displayName) {
-                activateMobileProfileButton(profile.displayName);
+                // activateMobileProfileButton(profile.displayName);
                 activateDesktopProfileNotification(profile.displayName);
             }
 
