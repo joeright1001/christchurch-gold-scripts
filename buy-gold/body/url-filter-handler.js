@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (textElement) {
                   textElement.textContent = displayName;
                 } else {
-                    const textElementByClass = profileButton.querySelector('.buy-banner-title1-filterr2');
+                    const textElementByClass = profileButton.querySelector('.buy-banner-title1-filter');
                     if (textElementByClass) {
                         textElementByClass.textContent = displayName;
                     } else {
@@ -244,14 +244,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 }, 100);
             }
             
-            // Activate desktop notification banner if displayName is present
+            // Activate mobile profile button if profile has display name
             if (profile.displayName) {
+                activateMobileProfileButton(profile.displayName);
                 activateDesktopProfileNotification(profile.displayName);
-            }
-
-            // Activate mobile profile button if displayNameMobile is present
-            if (profile.displayNameMobile) {
-                activateMobileProfileButton(profile.displayNameMobile);
             }
 
             return; // Skip standard processing
