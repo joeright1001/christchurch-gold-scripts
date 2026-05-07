@@ -33,7 +33,7 @@ window.FILTER_PROFILES = {
   'all-live': {
     filters: ['checkbox_in_stock'],
     sort: 'default',
-    displayNameMobile: 'Currently viewing In Stock & Live at Mint. Click to clear'
+    displayNameMobile: 'Showing in-stock only'
   },
 
   // Example Profiles (Placeholders)
