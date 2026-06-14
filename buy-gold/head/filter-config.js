@@ -9,6 +9,7 @@ window.FILTER_CONFIG = {
     checkbox_10g: 'checkbox_10g',
     checkbox_20g: 'checkbox_20g',
     checkbox_25g: 'checkbox_25g',
+    checkbox_50g: 'checkbox_50g',
     checkbox_1_20oz: 'checkbox_1_20oz',
     checkbox_1_10oz: 'checkbox_1_10oz',
     checkbox_1_4oz: 'checkbox_1_4oz',
@@ -78,6 +79,10 @@ window.FILTER_CONFIG = {
     checkbox_25g: {
       attribute: 'data-size',
       values: ['25g']
+    },
+    checkbox_50g: {
+      attribute: 'data-size',
+      values: ['50g']
     },
     checkbox_1_20oz: {
       attribute: 'data-size',
