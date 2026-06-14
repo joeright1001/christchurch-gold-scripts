@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
       this.needsOrderRestoration = false; // Flag to track if order needs restoration
       this.scrollTriggerFilters = [
         'checkbox_coin', 'checkbox_minted_bar', 'checkbox_cast_bar', // Type
-        'checkbox_1g', 'checkbox_2_5g', 'checkbox_5g', 'checkbox_10g', 'checkbox_20g', 'checkbox_25g',
+        'checkbox_1g', 'checkbox_2_5g', 'checkbox_5g', 'checkbox_10g', 'checkbox_20g', 'checkbox_25g', 'checkbox_50g',
         'checkbox_1_20oz', 'checkbox_1_10oz', 'checkbox_1_4oz', 'checkbox_1_2oz', 'checkbox_1oz',
         'checkbox_2oz', 'checkbox_5oz', 'checkbox_10oz', 'checkbox_100oz', 'checkbox_100g', 'checkbox_250g', 'checkbox_500g', 'checkbox_1kg', // Weight
         'checkbox_asahi', 'checkbox_austrian', 'checkbox_gsm', 'checkbox_investment', 'checkbox_nzmint',
