@@ -1,0 +1,33 @@
+  '57bx9y=aWQ9R1RNLVA5UjNKUjg%3D&sort=asc');</script><meta hid="article:publisher" name="article:publisher" content="https://www.facebook.com/MyGoldNZ/"><meta hid="og:site_name" name="og:site_name" content="MyGold"><meta hid="og:locale" name="og:locale" content="en_NZ"><meta hid="description" name="description" content="Invest now with New Zealand's Gold Merchants - MyGold®. NZ's highest reviewed dealers. Buy gold coins and gold bullion online today."><meta hid="og:title" name="og:title" content="Buy Gold Online | Purchase Gold Bullion & Coins Auckland & NZ | MyGold"><meta hid="og:url" name="og:url" content="https://www.mygold.co.nz/"><meta hid="og:image" name="og:image" content="https://www.mygold.co.nz/_nuxt/logo.LgzHVTk5.svg"><meta hid="og:description" name="og:description" content="Invest now with New Zealand's Gold Merchants - MyGold®. NZ's highest reviewed dealers. Buy gold coins and gold bullion online today."><meta hid="twitter:card" name="twitter:card" content="summary_large_image"><meta hid="twitter:site" name="twitter:site" content="@mygoldnz"><link rel="canonical" href="https://www.mygold.co.nz/" data-hid="canonical"><script type="application/ld+json" children="{
+  &quot;@context&quot;: &quot;https://schema.org&quot;,
+  &quot;@type&quot;: &quot;WebSite&quot;,
+  &quot;url&quot;: &quot;https://www.mygold.co.nz/&quot;,
+  &quot;potentialAction&quot;: {
+    &quot;@type&quot;: &quot;SearchAction&quot;,
+    &quot;target&quot;: {
+      &quot;@type&quot;: &quot;EntryPoint&quot;,
+      &quot;urlTemplate&quot;: &quot;https://www.mygold.co.nz/buy/?search={search_term_string}&quot;
+    },
+    &quot;query-input&quot;: &quot;required name=search_term_string&quot;
+  }
+}"></script><script type="application/ld+json" children="{
+  &quot;@context&quot;: &quot;http://schema.org&quot;,
+  &quot;@type&quot;: &quot;JewelryStore&quot;,
+  &quot;name&quot;: &quot;MyGold&quot;,
+  &quot;description&quot;: &quot;Located in central Auckland, MyGold® is an independent, family-owned company that manufactures and sources physical gold and silver products for investors across New Zealand. We are trusted by thousands of investors, offering a solution to fit all budgets. Whether a complete novice to precious metals investment or a seasoned investor, we guide our customers through the journey seamlessly. With a broad selection of products from the world’s best-known mints and refineries, along with our own signature products, customers are assured of the highest quality levels.&quot;,
+  &quot;address&quot;: {
+    &quot;@type&quot;: &quot;PostalAddress&quot;,
+    &quot;streetAddress&quot;: &quot;Ramada Building, Unit 7, 147 Victoria St. West&quot;,
+    &quot;addressLocality&quot;: &quot;Auckland CBD&quot;,
+    &quot;postalCode&quot;: &quot;1010&quot;,
+    &quot;addressRegion&quot;: &quot;Auckland&quot;,
+    &quot;addressCountry&quot;: &quot;NZ&quot;
+  },
+  &quot;telephone&quot;: &quot;0800 465 369&quot;,
+  &quot;openingHours&quot;: &quot;Mo-Fr 09:00-17:00&quot;,
+  &quot;priceRange&quot;: &quot;$$$&quot;,
+  &quot;url&quot;: &quot;https://www.mygold.co.nz/&quot;,
+  &quot;image&quot;: [
+    &quot;https://www.mygold.co.nz/_nuxt/mygold-auckland.mJwXAzjh.webp&quot;
+  ],
+  &quot;logo&quot;: &quot;https://www.mygold.co.nz/_nuxt/logo.LgzHVTk5.svg&quot;

@@ -1,0 +1,193 @@
+<!-- Resource hints -->
+<link rel="preconnect" href="https://cdn.prod.website-files.com" crossorigin>
+
+<!-- Generic system-font stack & smoothing -->
+<style>
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+               Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
+               'Helvetica Neue', sans-serif !important;
+}
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -o-font-smoothing: antialiased;
+  -webkit-appearance: none;
+}
+</style>
+
+<script>
+/*
+(function(){
+  // only on production
+  if (window.location.hostname === 'www.christchurchgold.co.nz') {
+    // wait for everything else to finish
+    document.addEventListener('DOMContentLoaded', function(){
+      // inject a style override so it wins over anything else
+      var style = document.createElement('style');
+      style.textContent = `
+        #broker-text,
+        #get-quote,
+        #place-order {
+          display: none !important;
+        }
+      `;
+      document.head.appendChild(style);
+    });
+  }
+})();
+*/
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type":["LocalBusiness", "Store", "FinancialService", "JewelryStore"],
+  "@id": "https://www.christchurchgold.co.nz/#localbusiness",
+  "additionalType": "https://en.wikipedia.org/wiki/Gold_as_an_investment",
+  "name": "Christchurch Gold",
+  "url": "https://www.christchurchgold.co.nz/",
+  "logo": "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/69fee5cd48d6eac10c86385a_christchurch-gold-logo-black.svg",
+  "image": "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/69ffafae0804ede72fc99e7b_christchurch-gold-inside-office.jpg",
+  "description": "Christchurch's leading gold and silver dealer. Buy gold Christchurch, buy silver Christchurch, and get live gold price NZ and silver price NZ updates. We offer private viewings and instant quotes for bullion and jewellery. Visits are strictly by appointment only.",
+  "priceRange": "$300 - $100,000+",
+  "telephone":[
+    "+64-3-925-7715",
+    "+64-21-245-1178"
+  ],
+  "email": "sales@christchurchgold.co.nz",
+  "publicAccess": false,
+  "paymentAccepted": "Cash, Credit Card, Union Pay, AliPay, Blink Pay, Poli Pay, Account to Account",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "3b/37 Shands Road",
+    "addressLocality": "Hornby",
+    "addressRegion": "Christchurch",
+    "postalCode": "8042",
+    "addressCountry": "NZ"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": -43.5461957184395,
+    "longitude": 172.5236652687334
+  },
+  "areaServed": {
+    "@type": "City",
+    "name": "Christchurch"
+  },
+  "openingHoursSpecification":[
+    {
+      "@type": "OpeningHoursSpecification",
+      "description": "Office Hours (By Appointment Only)",
+      "dayOfWeek":[
+        "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"
+      ],
+      "opens": "09:30",
+      "closes": "17:30"
+    }
+  ],
+  "department": {
+    "@type": "OnlineStore",
+    "name": "Christchurch Gold Online Shopping",
+    "url": "https://www.christchurchgold.co.nz/",
+    "openingHoursSpecification":[
+      {
+        "@type": "OpeningHoursSpecification",
+        "description": "Online Shopping Hours",
+        "dayOfWeek": "Monday",
+        "opens": "11:00",
+        "closes": "22:00"
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        "description": "Online Shopping Hours",
+        "dayOfWeek":[
+          "Tuesday", "Wednesday", "Thursday", "Friday"
+        ],
+        "opens": "09:00",
+        "closes": "22:00"
+      }
+    ]
+  },
+  "potentialAction":[
+    {
+      "@type": "ViewAction",
+      "name": "View Live Gold Price",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://www.christchurchgold.co.nz/live-prices/gold-price-nz"
+      }
+    },
+    {
+      "@type": "BuyAction",
+      "name": "Buy Gold Online",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://www.christchurchgold.co.nz/buy-gold"
+      }
+    },
+    {
+      "@type": "BuyAction",
+      "name": "Buy Silver Online",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://www.christchurchgold.co.nz/buy-gold"
+      }
+    },
+    {
+      "@type": "SellAction",
+      "name": "Get Instant Sell Quote",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://www.christchurchgold.co.nz/jewellery-calculator"
+      }
+    },
+    {
+      "@type": "ReserveAction",
+      "name": "Book an Appointment",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://www.christchurchgold.co.nz/contact-us"
+      }
+    }
+  ],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Gold and Silver Bullion Services",
+    "itemListElement":[
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Buy Gold Christchurch",
+          "description": "Premium gold bullion bars and coins for sale in Christchurch."
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Buy Silver Christchurch",
+          "description": "High-quality silver bullion bars and coins for sale in Christchurch."
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Live Gold Price NZ",
+          "description": "Real-time gold spot prices in NZD, refreshed every minute."
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Silver Price NZ Today",
+          "description": "Current silver market rates in New Zealand Dollars."
+        }
+      }
+    ]
+  }
+}
+</script>

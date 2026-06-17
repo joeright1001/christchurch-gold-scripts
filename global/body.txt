@@ -1,0 +1,99 @@
+<script>
+// Final nuclear cleanup
+(function() {
+    // Remove any webfont scripts that somehow loaded
+    var scripts = document.querySelectorAll('script');
+    scripts.forEach(function(script) {
+        if (script.src && script.src.includes('webfont')) {
+            script.remove();
+            console.log('REMOVED webfont script:', script.src);
+        }
+    });
+    
+    // Override any webfont functions that exist
+    if (window.WebFont) {
+        window.WebFont.load = function() { console.log('WebFont.load BLOCKED in cleanup'); };
+    }
+})();
+</script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Determine the environment value once
+    const environmentValue = location.hostname.includes('webflow.io') ? 'STAGING' : 'PRODUCTION';
+
+    // List of input IDs that need to be updated
+    const inputIdsToUpdate =[
+        'environment', 
+        'chat-environment', 
+        'environment-deals-promo', 
+        'environment-gold-app', 
+        'environment-form-footer', 
+        'out-stock-environment'
+    ];
+
+    // Iterate over the list of IDs and update the corresponding input fields
+    inputIdsToUpdate.forEach(id => {
+        const inputField = document.getElementById(id);
+        // Only update if the field exists on the current page. Do nothing if it's missing.
+        if (inputField) {
+            inputField.value = environmentValue;
+        }
+    });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Attach sanitizers to any input with id="mobile"
+  const attachMobileSanitizer = (el) => {
+    if (el.__mobileSanitized) return;
+    const sanitize = () => {
+      const start = el.selectionStart;
+      const before = typeof start === 'number' ? el.value.slice(0, start) : '';
+      const spacesBefore = (before.match(/\s/g) || []).length;
+
+      const newVal = el.value.replace(/\s+/g, ''); // remove ALL whitespace
+      if (el.value !== newVal) {
+        el.value = newVal;
+        // keep cursor position stable if possible
+        if (typeof start === 'number') {
+          const newPos = Math.max(0, start - spacesBefore);
+          el.setSelectionRange(newPos, newPos);
+        }
+      }
+    };
+
+    ['input', 'change', 'blur', 'paste'].forEach(evt =>
+      el.addEventListener(evt, sanitize)
+    );
+
+    el.__mobileSanitized = true;
+  };
+
+  // Initial pass (supports duplicate IDs across forms)
+  document.querySelectorAll('input#mobile').forEach(attachMobileSanitizer);
+
+  // Observe DOM changes (Webflow can inject forms dynamically)
+  const obs = new MutationObserver(() => {
+    document.querySelectorAll('input#mobile').forEach(attachMobileSanitizer);
+  });
+  obs.observe(document.body, { childList: true, subtree: true });
+
+  // Final safety: sanitize right before any form submission
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', () => {
+      form.querySelectorAll('input#mobile').forEach(el => {
+        el.value = el.value.replace(/\s+/g, '');
+      });
+    });
+  });
+});
+</script>
+
+
+
+
+
+<script src="/app/cart-updater.js" defer></script>
+

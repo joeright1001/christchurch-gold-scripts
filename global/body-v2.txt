@@ -1,0 +1,77 @@
+<script>
+/**
+ * Christchurch Gold - Global Body Scripts v2
+ * 1. Environment Handling
+ * 2. Mobile Input Sanitization (Event Delegation)
+ * 3. Performance Optimized
+ */
+(function() {
+    const init = () => {
+        // 1. Environment Handling
+        const isStaging = location.hostname.includes('webflow.io');
+        const env = isStaging ? 'STAGING' : 'PRODUCTION';
+        
+        const envIds = [
+            'environment', 
+            'chat-environment', 
+            'environment-deals-promo', 
+            'environment-gold-app', 
+            'environment-form-footer', 
+            'out-stock-environment'
+        ];
+        
+        // Use querySelectorAll to catch potential duplicate IDs (common in Webflow)
+        envIds.forEach(id => {
+            document.querySelectorAll('#' + id).forEach(el => {
+                if (el.value !== env) el.value = env;
+            });
+        });
+
+        // 2. Mobile Sanitization Logic
+        const sanitizeMobile = (el) => {
+            const val = el.value;
+            const newVal = val.replace(/\s+/g, '');
+            if (val !== newVal) {
+                const start = el.selectionStart;
+                const before = typeof start === 'number' ? val.slice(0, start) : '';
+                const spacesBefore = (before.match(/\s/g) || []).length;
+                
+                el.value = newVal;
+                
+                if (typeof start === 'number') {
+                    const newPos = Math.max(0, start - spacesBefore);
+                    el.setSelectionRange(newPos, newPos);
+                }
+            }
+        };
+
+        // Event delegation for input (handles dynamic elements and is more performant than MutationObserver)
+        document.body.addEventListener('input', (e) => {
+            if (e.target && (e.target.id === 'mobile' || e.target.name === 'mobile')) {
+                sanitizeMobile(e.target);
+            }
+        }, true);
+
+        // Pre-submit safety check for all forms
+        document.body.addEventListener('submit', (e) => {
+            const form = e.target;
+            if (form.tagName === 'FORM') {
+                form.querySelectorAll('input#mobile, input[name="mobile"]').forEach(el => {
+                    el.value = el.value.replace(/\s+/g, '');
+                });
+            }
+        }, true);
+
+        // Initial pass for any mobile fields already in DOM
+        document.querySelectorAll('input#mobile, input[name="mobile"]').forEach(sanitizeMobile);
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+</script>
+
+<script src="/app/cart-updater.js" defer></script>

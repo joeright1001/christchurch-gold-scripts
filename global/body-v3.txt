@@ -1,0 +1,76 @@
+<script>
+/**
+ * Christchurch Gold - Global Body Scripts v3
+ * 1. Environment Handling (Optimized Selector)
+ * 2. Mobile Input Sanitization (Event Delegation)
+ * 3. Best Practices (Try-Catch, Performance Guards)
+ */
+(function() {
+    const init = () => {
+        try {
+            // 1. Environment Handling
+            const env = location.hostname.includes('webflow.io') ? 'STAGING' : 'PRODUCTION';
+            
+            // Optimized: Select all potential environment fields in one pass
+            const selector = [
+                '#environment', '#chat-environment', '#environment-deals-promo', 
+                '#environment-gold-app', '#environment-form-footer', '#out-stock-environment'
+            ].join(',');
+            
+            document.querySelectorAll(selector).forEach(el => {
+                if (el.value !== env) el.value = env;
+            });
+
+            // 2. Mobile Sanitization Logic
+            const sanitizeMobile = (el) => {
+                if (!el || !el.value) return;
+                const val = el.value;
+                const newVal = val.replace(/\s+/g, '');
+                if (val !== newVal) {
+                    const start = el.selectionStart;
+                    const before = typeof start === 'number' ? val.slice(0, start) : '';
+                    const spacesBefore = (before.match(/\s/g) || []).length;
+                    
+                    el.value = newVal;
+                    
+                    if (typeof start === 'number') {
+                        const newPos = Math.max(0, start - spacesBefore);
+                        el.setSelectionRange(newPos, newPos);
+                    }
+                }
+            };
+
+            // Event delegation for real-time input (High Performance)
+            document.body.addEventListener('input', (e) => {
+                if (e.target && (e.target.id === 'mobile' || e.target.name === 'mobile')) {
+                    sanitizeMobile(e.target);
+                }
+            }, { passive: true });
+
+            // Pre-submit safety check for all forms
+            document.body.addEventListener('submit', (e) => {
+                if (e.target && e.target.tagName === 'FORM') {
+                    e.target.querySelectorAll('input#mobile, input[name="mobile"]').forEach(el => {
+                        el.value = el.value.replace(/\s+/g, '');
+                    });
+                }
+            });
+
+            // Initial pass for elements already in DOM
+            document.querySelectorAll('input#mobile, input[name="mobile"]').forEach(sanitizeMobile);
+
+        } catch (err) {
+            console.error('Global script error:', err);
+        }
+    };
+
+    // Run as soon as possible
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+</script>
+
+<script src="/app/cart-updater.js" defer></script>
