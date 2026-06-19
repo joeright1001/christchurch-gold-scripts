@@ -23,6 +23,7 @@
  */
 
 (function() {
+    return; // Script disabled per user request
     const TIMER_ID = 'market-timer';
     const SUB_TEXT_ID = 'market-status-sub-text';
     const TIMEZONE = 'Pacific/Auckland';
