@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
     .modal-icon {
       width: 48px;
       height: 48px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #1e293b;
       border-radius: 12px;
       display: flex;
       align-items: center;
@@ -113,13 +113,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: #1e293b;
       color: white;
     }
 
     .btn-primary:hover {
+      background: #0f172a;
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
     }
 
     .btn-secondary {
@@ -165,10 +166,10 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
         <div class="modal-body">
           <h2>Market Currently Closed</h2>
-          <p>The market is closed. You can wait until trading recommences or speak to a broker during business hours for more options.</p>
+          <p>The market is closed. Trading weekdays 7am-11pm (Monday: 10am start). Saturday 7am-10am. Closed Pub Holidays.<br><br>Please contact directly for more options or online checkout will resume shortly.</p>
           <div class="modal-actions">
-            <button class="btn-secondary" id="wait-btn">Wait for Market Open</button>
-            <button class="btn-primary" id="contact-broker">Bullion Broker</button>
+            <button class="btn-primary" id="contact-us-btn">Contact Us</button>
+            <button class="btn-secondary" id="close-btn">Close</button>
           </div>
         </div>
       </div>
@@ -181,8 +182,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const marketClosedButton = document.getElementById('button-closed');
   const modal = document.getElementById('market-closed-modal');
   const closeModal = document.getElementById('modal-close');
-  const waitBtn = document.getElementById('wait-btn');
-  const contactBrokerBtn = document.getElementById('contact-broker');
+  const closeBtn = document.getElementById('close-btn');
+  const contactUsBtn = document.getElementById('contact-us-btn');
 
   // Show modal when market closed button is clicked
   if (marketClosedButton) {
@@ -216,15 +217,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Wait button functionality
-  waitBtn.addEventListener('click', function() {
+  // Close button functionality
+  closeBtn.addEventListener('click', function() {
     closeModalFunction();
-    // Add your logic here for what happens when user chooses to wait
-    console.log('User chose to wait for market open');
   });
 
-  // Bullion Broker button functionality - redirects to /broker
-  contactBrokerBtn.addEventListener('click', function() {
+  // Contact Us button functionality
+  contactUsBtn.addEventListener('click', function() {
     window.location.href = '/contact-us';
   });
 });
