@@ -166,9 +166,10 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
         <div class="modal-body">
           <h2>Market Currently Closed</h2>
-          <p>The market is closed. Trading weekdays 7am-11pm (Monday: 10am start). Saturday 7am-10am. Closed Pub Holidays.<br><br>Please contact directly for more options or online checkout will resume shortly.</p>
+          <p>The market is closed. Trading weekdays 7am-11pm (Monday: 10am start). Saturday 7am-10am. Closed Pub Holidays.<br><br>All pricing is based on live-market data referencing exchanges in New York and London.<br><br>Please contact directly for more options or online checkout will resume shortly.</p>
           <div class="modal-actions">
             <button class="btn-primary" id="contact-us-btn">Contact Us</button>
+            <button class="btn-primary" id="live-pricing-btn">Live Pricing</button>
             <button class="btn-secondary" id="close-btn">Close</button>
           </div>
         </div>
@@ -184,6 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const closeModal = document.getElementById('modal-close');
   const closeBtn = document.getElementById('close-btn');
   const contactUsBtn = document.getElementById('contact-us-btn');
+  const livePricingBtn = document.getElementById('live-pricing-btn');
 
   // Show modal when market closed button is clicked
   if (marketClosedButton) {
@@ -226,4 +228,11 @@ document.addEventListener('DOMContentLoaded', function() {
   contactUsBtn.addEventListener('click', function() {
     window.location.href = '/contact-us';
   });
+
+  // Live Pricing button functionality
+  if (livePricingBtn) {
+    livePricingBtn.addEventListener('click', function() {
+      window.location.href = '/live-price/gold-price-nz';
+    });
+  }
 });
