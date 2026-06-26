@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
         <div class="modal-body">
           <h2>Online Checkout Closed</h2>
-          <p>Available Monday to Friday, 7:00am–11:00pm, with a 10:00am start on Mondays. Saturday checkout is available from 7:00am–10:00am. Closed on NZ public holidays.<br><br>For after-hours trading, please contact us directly for assistance.</p>
+          <p>Available Monday to Friday, 7:00am–11:00pm, with a 11:00am start on Mondays. Saturday checkout is available from 7:00am–10:00am. Closed on NZ public holidays.<br><br>For after-hours trading, please contact us directly for assistance.</p>
           <div class="modal-actions">
             <button class="btn-primary" id="contact-us-btn">Contact Us</button>
             <button class="btn-secondary" id="close-btn">Close</button>
