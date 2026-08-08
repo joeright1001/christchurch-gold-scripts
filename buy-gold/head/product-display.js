@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Popular combo-images
   const popularOutOfStockImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a181380123c0be15d520b7_out-stock-notify.webp";
   const popularLiveAtMintImage = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/698e690e6dc96a4e3bb98f28_best-seller-2-5weeks.webp";
-  const popularInStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/69a2223e47ada4f9c4cecd1f_best-seller-nextday.webp";
+  const popularInStockImage    = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/68a1922a1c649958c68f32a0_in-stock3.webp";
   const popularLowStockImage   = "https://cdn.prod.website-files.com/676bc93dc0d75728455c893b/698e690e6dc96a4e3bb98f28_best-seller-2-5weeks.webp";
 
   // Metal colours
