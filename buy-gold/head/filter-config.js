@@ -150,7 +150,7 @@ window.FILTER_CONFIG = {
     },
     checkbox_investment: {
       attribute: 'data-mint',
-      values: ['Value Selection']
+      values: ['Investment Selection', 'Value Selection']
     },
     checkbox_nzmint: {
       attribute: 'data-mint',
@@ -190,7 +190,7 @@ window.FILTER_CONFIG = {
     },
     checkbox_investor: {
       attribute: 'data-mint',
-      values: ['Value Selection']
+      values: ['Investment Selection', 'Value Selection']
     },
     checkbox_collectables: {
       attribute: 'data-product-type',
