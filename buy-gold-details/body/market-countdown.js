@@ -29,8 +29,8 @@
             const minutes = parseInt(timeMatch[2], 10);
             const seconds = timeMatch[3] ? parseInt(timeMatch[3], 10) : 0;
             
-            // Calculate exact target time from now
-            const targetTime = Date.now() + (hours * 3600000) + (minutes * 60000) + (seconds * 1000);
+            // Calculate exact target time from now (plus 60s buffer for CMS sync)
+            const targetTime = Date.now() + (hours * 3600000) + (minutes * 60000) + (seconds * 1000) + 60000;
             
             let intervalId;
             
@@ -41,6 +41,7 @@
                 if (remaining <= 0) {
                     targetEl.textContent = '00:00:00';
                     if (intervalId) clearInterval(intervalId);
+                    window.location.reload();
                     return;
                 }
                 
