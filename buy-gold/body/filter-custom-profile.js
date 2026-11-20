@@ -1,25 +1,31 @@
 /**
- * Custom Filter Profiles Configuration
- * 
- * Centralized configuration for custom sorting and priority sequences used by the filtering system.
- * Modifying these lists will alter the display order when specific filters or buttons are active.
+ * Popular order comes from the CMS, with the highest positive number first.
+ * Empty legacy priority lists prevent the mobile stock button overriding it.
  */
 window.CUSTOM_FILTER_PROFILES = {
-  // Sequence of product slugs to prioritize at the very top of the grid 
-  // when the mobile "In Stock" (Hottest) button is activated.
-  // The first item in this array will be at the very top of the stack.
-  mobileInStockPriority: [
-    '5-oz-silver-various-dg',
-    '100-oz-silver-lbma-brands-dg',
-    '1-kg-silver'
-  ],
-
-  // Sequence of product slugs to prioritize at the very top of the grid
-  // when the "Hot" filter checkbox is active.
-  // The first item in this array will be at the very top of the stack.
-  hotFilterSequence: [
-    '5-oz-silver-various-dg',
-    '100-oz-silver-lbma-brands-dg',
-    '1-kg-silver'
-  ]
+  mobileInStockPriority: [],
+  hotFilterSequence: []
 };
+
+// Runs before the filter and sort managers capture their default/reset order.
+document.addEventListener('DOMContentLoaded', function() {
+  // Keep the pasted head configuration aligned with the existing Popular button.
+  if (window.FILTER_CONFIG && window.FILTER_CONFIG.rules) {
+    window.FILTER_CONFIG.rules.checkbox_hot = window.FILTER_CONFIG.rules.checkbox_popular;
+  }
+
+  const grid = document.querySelector('.w-dyn-items.w-row');
+  if (!grid) return;
+
+  const rank = item => {
+    const data = item.querySelector('.product-data');
+    const value = Number(data && data.getAttribute('data-popular'));
+    return Number.isFinite(value) && value > 0 ? value : 0;
+  };
+  const items = Array.from(grid.children).filter(item => item.classList.contains('w-dyn-item'));
+  // Equal scores and unranked products keep their CMS order.
+  items.sort((a, b) => rank(b) - rank(a));
+  const fragment = document.createDocumentFragment();
+  items.forEach(item => fragment.appendChild(item));
+  grid.appendChild(fragment);
+});

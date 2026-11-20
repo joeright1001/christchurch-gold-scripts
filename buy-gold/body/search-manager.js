@@ -425,6 +425,10 @@ document.addEventListener('DOMContentLoaded', function() {
         processedSlugs.add(slug);
       });
 
+      // Searching can reveal products that were hidden during the last sort.
+      if (window.filterControls && window.filterControls.refreshPopularSort) {
+        window.filterControls.refreshPopularSort();
+      }
       return matchingCount;
     }
 
@@ -547,10 +551,13 @@ document.addEventListener('DOMContentLoaded', function() {
       // 🚀 PERFORMANCE FIX: Explicitly remove filter-hidden class from search
       this.showAllItemsCSS();
 
-      // Reset filters to restore original grid
-      this.clearExistingFilters();
+      // Clearing search must preserve the active Popular/metal/stock filters.
+      if (window.filterControls && window.filterControls.hasActiveFilters &&
+          window.filterControls.hasActiveFilters() && window.filterControls.refreshFilters) {
+        window.filterControls.refreshFilters();
+      }
 
-      console.log('🚀 PERFORMANCE: Search cleared - showing all products');
+      console.log('🚀 PERFORMANCE: Search cleared - active filters retained');
     }
 
     /**

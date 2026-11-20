@@ -411,16 +411,12 @@ document.addEventListener('DOMContentLoaded', function() {
       // We apply sorting here (only on visible items) to bubble priority items up.
       // =========================================================================
       
-      if (this.filterStates.checkbox_popular) {
+      if (this.filterStates.checkbox_popular || this.filterStates.checkbox_hot) {
         this.applyPopularSortCSS();
         this.needsOrderRestoration = true; // Flags that original order is broken and needs reset later
       }
       if (this.filterStates.checkbox_starter) {
         this.applyStarterSortCSS();
-        this.needsOrderRestoration = true;
-      }
-      if (this.filterStates.checkbox_hot) {
-        this.applyHotSortCSS();
         this.needsOrderRestoration = true;
       }
       if (this.filterStates.checkbox_investor) {
@@ -454,12 +450,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // =========================================================================
 
     // 🚀 PERFORMANCE OPTIMIZED: CSS-based sorting with DocumentFragment
-    // HARDCODED LOGIC FOR "POPULAR" FILTER:
-    // This reads the 'data-popular' attribute from each product to determine its numeric rank.
-    // Products with a valid 'data-popular' integer are extracted, sorted numerically,
-    // and then appended back to the grid in their sorted order.
+    // CMS POPULAR RANKING (also used by the legacy checkbox_hot control):
+    // Positive numeric scores sort highest first; stock does not change the rank.
     applyPopularSortCSS() {
-      if (!this.filterStates.checkbox_popular || !this.gridContainer) return;
+      if (!(this.filterStates.checkbox_popular || this.filterStates.checkbox_hot) || !this.gridContainer) return;
       
       const visibleItems = Array.from(this.gridContainer.querySelectorAll('.w-dyn-item:not(.filter-hidden)'));
       const sortedItems = [];
@@ -468,16 +462,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const dataElement = item.querySelector('.product-data');
         if (!dataElement) return;
         
-        const popularValue = dataElement.getAttribute('data-popular');
-        if (popularValue && !isNaN(parseInt(popularValue))) {
+        const popularValue = Number(dataElement.getAttribute('data-popular'));
+        if (Number.isFinite(popularValue) && popularValue > 0) {
           sortedItems.push({
             element: item,
-            value: parseInt(popularValue)
+            value: popularValue
           });
         }
       });
       
-      sortedItems.sort((a, b) => a.value - b.value);
+      sortedItems.sort((a, b) => b.value - a.value);
       
       // 🚀 PERFORMANCE: Use DocumentFragment for efficient DOM reordering
       const fragment = document.createDocumentFragment();
@@ -485,6 +479,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fragment.appendChild(item.element);
       });
       this.gridContainer.appendChild(fragment);
+      this.needsOrderRestoration = true;
       
       // Reduced logging frequency
       if (!this._lastPopularSortTime || Date.now() - this._lastPopularSortTime > 2000) {
@@ -529,45 +524,6 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!this._lastStarterSortTime || Date.now() - this._lastStarterSortTime > 2000) {
         console.log(`🚀 SORT: ${sortedItems.length} items by starter order`);
         this._lastStarterSortTime = Date.now();
-      }
-    }
-
-    // 🚀 PERFORMANCE OPTIMIZED: CSS-based sorting with DocumentFragment for Hot filter
-    // CUSTOM LOGIC FOR "HOT PRODUCTS" FILTER:
-    // When the Hot filter is checked, we specifically want certain products 
-    // to always appear at the very top of the grid in a defined sequence.
-    // We locate the items by slug, ensure they are visible, and prepend them to the container.
-    // Sequence is defined in window.CUSTOM_FILTER_PROFILES.hotFilterSequence.
-    applyHotSortCSS() {
-      if (!this.filterStates.checkbox_hot || !this.gridContainer) return;
-      
-      let hotSlugsSequence = [];
-      if (window.CUSTOM_FILTER_PROFILES && window.CUSTOM_FILTER_PROFILES.hotFilterSequence) {
-        hotSlugsSequence = window.CUSTOM_FILTER_PROFILES.hotFilterSequence;
-      }
-      
-      // Reverse the array because prepend pushes elements to the top. 
-      // To keep them in array order, the first element must be prepended last.
-      const reversedSlugs = [...hotSlugsSequence].reverse();
-      
-      reversedSlugs.forEach(slug => {
-        const itemToMove = this.gridContainer.querySelector(`[data-slug="${slug}"]`);
-        if (itemToMove) {
-          const container = itemToMove.closest('.w-dyn-item');
-          if (container) {
-            // Force it to be visible even if it didn't pass the hot filter criteria
-            container.classList.remove('filter-hidden'); 
-            
-            // Prepend moves it to the very top of the grid container
-            this.gridContainer.prepend(container);
-          }
-        }
-      });
-      
-      // Reduced logging frequency
-      if (!this._lastHotSortTime || Date.now() - this._lastHotSortTime > 2000) {
-        console.log(`🚀 SORT: Prepended hot items: ${hotSlugsSequence.join(', ')}`);
-        this._lastHotSortTime = Date.now();
       }
     }
 
@@ -1104,6 +1060,8 @@ document.addEventListener('DOMContentLoaded', function() {
       window.filterControls.resetAllFilters = () => this.resetAllFilters();
       window.filterControls.clearAllFilters = () => this.clearAllFilters(); // Expose clearAllFilters (clears search too)
       window.filterControls.resetFiltersOnly = () => this.resetFiltersOnly();
+      window.filterControls.refreshFilters = () => this.applyAllFiltersOptimized();
+      window.filterControls.refreshPopularSort = () => this.applyPopularSortCSS();
       window.filterControls.getActiveFilters = () => {
         return Object.entries(this.filterStates)
           .filter(([_, isActive]) => isActive)

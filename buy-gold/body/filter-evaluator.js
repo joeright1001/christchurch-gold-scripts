@@ -61,9 +61,10 @@ class FilterEvaluator {
     if (activePopularFilter) {
       let passesPopular = false;
 
-      if (activePopularFilter === 'checkbox_popular') {
-        const val = dataElement.getAttribute('data-popular');
-        passesPopular = (val && !isNaN(parseInt(val, 10)));
+      // The published Popular button retains the legacy checkbox_hot ID.
+      if (activePopularFilter === 'checkbox_popular' || activePopularFilter === 'checkbox_hot') {
+        const val = Number(dataElement.getAttribute('data-popular'));
+        passesPopular = Number.isFinite(val) && val > 0;
       } else if (activePopularFilter === 'checkbox_starter') {
         const val = dataElement.getAttribute('data-getting-started');
         passesPopular = (val && !isNaN(parseInt(val, 10)));
